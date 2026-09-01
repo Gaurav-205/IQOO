@@ -241,33 +241,33 @@ export default function App() {
   }[step]
 
   return (
-    <div className="relative flex min-h-dvh w-full items-center justify-center bg-[#eeece7] text-[#212121] p-0 md:py-6 overflow-x-hidden">
+    <div className="relative flex min-h-dvh w-full items-center justify-center bg-[#eeece7] text-[#212121] p-0 md:py-8 overflow-x-hidden">
       {/* Real-World Production Live Telemetry Inspector */}
       <LiveSystemInspector
         isOpen={showInspector}
         onClose={() => setShowInspector(false)}
       />
 
-      {/* iPhone 16 Pro Max Device Chassis Frame (440px x 932px viewport) */}
-      <div className="relative w-full max-w-none md:max-w-[440px] h-dvh md:h-[932px] md:max-h-[96vh] bg-[#121316] md:p-3.5 md:rounded-[56px] md:border-[4px] md:border-[#38373b] md:shadow-[0_30px_90px_rgba(0,0,0,0.4),0_15px_35px_rgba(0,0,0,0.22)] md:ring-1 md:ring-white/20 flex flex-col justify-center">
+      {/* iPhone 16 Pro Max Device Chassis Frame (Authentic 19.5:9 Tall Proportion) */}
+      <div className="relative w-full max-w-none md:w-[412px] md:max-w-[420px] h-dvh md:h-[878px] md:max-h-[92vh] aspect-auto md:aspect-[9/19.5] bg-[#121316] md:p-3.5 md:rounded-[54px] md:border-[4px] md:border-[#2e2f36] md:shadow-[0_25px_80px_rgba(0,0,0,0.38),0_10px_30px_rgba(0,0,0,0.18)] md:ring-1 md:ring-white/15 flex flex-col justify-center shrink-0">
         {/* iPhone 16 Pro Max Hardware Buttons */}
         {/* Left: Action Button */}
-        <div className="hidden md:block absolute -left-[5.5px] top-24 w-[3.5px] h-8 bg-[#5c5b61] rounded-l-sm" />
+        <div className="hidden md:block absolute -left-[5.5px] top-24 w-[3.5px] h-8 bg-[#4e4d53] rounded-l-sm" />
         {/* Left: Volume Up & Down */}
-        <div className="hidden md:block absolute -left-[5.5px] top-36 w-[3.5px] h-12 bg-[#38373b] rounded-l-sm" />
-        <div className="hidden md:block absolute -left-[5.5px] top-52 w-[3.5px] h-12 bg-[#38373b] rounded-l-sm" />
+        <div className="hidden md:block absolute -left-[5.5px] top-36 w-[3.5px] h-12 bg-[#333238] rounded-l-sm" />
+        <div className="hidden md:block absolute -left-[5.5px] top-52 w-[3.5px] h-12 bg-[#333238] rounded-l-sm" />
         {/* Right: Side Power Key */}
-        <div className="hidden md:block absolute -right-[5.5px] top-32 w-[3.5px] h-18 bg-[#38373b] rounded-r-sm" />
+        <div className="hidden md:block absolute -right-[5.5px] top-32 w-[3.5px] h-18 bg-[#333238] rounded-r-sm" />
         {/* Right: iPhone 16 Pro Max Camera Control Capacitive Surface */}
-        <div className="hidden md:block absolute -right-[5.5px] top-64 w-[3.5px] h-14 bg-[#26252a] rounded-r-sm border-l border-white/20" />
+        <div className="hidden md:block absolute -right-[5.5px] top-64 w-[3.5px] h-14 bg-[#232227] rounded-r-sm border-l border-white/20" />
 
         {/* Inner Screen Display */}
-        <div className="relative z-10 flex h-full w-full flex-col bg-[#ffffff] md:rounded-[46px] overflow-hidden border-x border-[#e5e7eb] md:border-0 shadow-inner">
+        <div className="relative z-10 flex h-full w-full flex-col bg-[#ffffff] md:rounded-[44px] overflow-hidden border-x border-[#e5e7eb] md:border-0 shadow-inner">
           {/* Dynamic Island (iPhone 16 Pro Max) */}
-          <div className="hidden md:flex absolute top-3 left-1/2 -translate-x-1/2 z-40 h-[30px] w-[124px] rounded-full bg-black shadow-md items-center justify-between px-3 pointer-events-none border border-white/10">
+          <div className="hidden md:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-40 h-[28px] w-[118px] rounded-full bg-black shadow-md items-center justify-between px-3 pointer-events-none border border-white/10">
             {/* TrueDepth Lens */}
-            <div className="h-3 w-3 rounded-full bg-[#0d101a] border border-[#1f2438] flex items-center justify-center">
-              <div className="h-1.5 w-1.5 rounded-full bg-[#1b2a47] ring-0.5 ring-blue-500/30" />
+            <div className="h-2.5 w-2.5 rounded-full bg-[#0d101a] border border-[#1f2438] flex items-center justify-center">
+              <div className="h-1 w-1 rounded-full bg-[#1b2a47] ring-0.5 ring-blue-500/30" />
             </div>
             {/* Microphone / Ambient Light Sensor & Privacy Dot */}
             <div className="flex items-center gap-1.5">
@@ -275,12 +275,12 @@ export default function App() {
                 className="h-1.5 w-1.5 rounded-full bg-[#00875a] animate-pulse"
                 title="Secure NPU Coprocessor Active"
               />
-              <div className="h-2 w-2 rounded-full bg-[#181920]" />
+              <div className="h-1.5 w-1.5 rounded-full bg-[#181920]" />
             </div>
           </div>
 
           {/* Mobile Status Bar (Authentic Mobile System Status) */}
-          <header className="relative flex shrink-0 items-center justify-between px-5 pt-4 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
+          <header className="relative flex shrink-0 items-center justify-between px-4 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
             <div className="flex items-center gap-2">
               <span className="font-mono text-[12px] font-semibold text-[#17171c]">
                 14:20

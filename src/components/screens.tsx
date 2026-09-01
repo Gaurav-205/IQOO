@@ -1381,34 +1381,34 @@ export function Profile({ s }: { s: Store }) {
             {hi ? "क्रेडिट-रेडीनेस प्रोफ़ाइल" : "Credit-Readiness Profile"}
           </Eyebrow>
           <div
-            className={`mt-1 text-xl font-bold text-fg ${
+            className={`mt-1 text-xl font-bold text-[#17171c] ${
               hi ? "font-hindi" : "font-display"
             }`}
           >
             {hi ? activeWorker.nameHi : activeWorker.name}
           </div>
-          <div className="text-[12px] text-fg-faint">
+          <div className="text-[12px] text-[#75758a]">
             {hi ? activeWorker.cityHi : activeWorker.city} ·{" "}
             {activeWorker.idCode}
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <Pill tone="verify">
+          <Pill tone="pale-green">
             <Icon.badge size={13} /> {hi ? "सत्यापित" : "Verified"}
           </Pill>
           {!s.consentActive && (
-            <span className="font-mono text-[9px] text-warn font-semibold">
+            <span className="font-mono text-[9px] text-[#e28a00] font-semibold">
               CONSENT REVOKED
             </span>
           )}
         </div>
       </div>
 
-      {/* Hero Ring */}
-      <div className="mt-5 flex flex-col items-center rounded-3xl border border-hair-strong bg-gradient-to-b from-panel-2 via-panel to-ink p-6 shadow-xl">
+      {/* Hero Ring Card */}
+      <div className="mt-5 flex flex-col items-center rounded-3xl border border-[#d9d9dd] bg-[#eeece7] p-6 shadow-xs">
         <ReadinessRing value={readiness} animateTo={readiness} />
         <div
-          className={`mt-4 text-center text-[13px] leading-relaxed text-fg-dim ${
+          className={`mt-4 text-center text-[13px] leading-relaxed text-[#616161] ${
             hi ? "font-hindi" : ""
           }`}
         >
@@ -1424,16 +1424,17 @@ export function Profile({ s }: { s: Store }) {
               playTone("tap")
               setShowLoanModal(true)
             }}
-            className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-saffron/40 bg-saffron/10 py-2.5 text-[12px] font-semibold text-saffron-soft hover:bg-saffron/15 cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-full border border-[#d9d9dd] bg-[#ffffff] py-2.5 text-[12px] font-semibold text-[#17171c] hover:border-[#17171c] cursor-pointer shadow-xs"
           >
-            <Icon.spark size={14} /> {hi ? "लोन ऑफर देखें" : "View Loan Offers"}
+            <Icon.spark size={14} className="text-[#ff7759]" />{" "}
+            {hi ? "लोन ऑफर देखें" : "View Loan Offers"}
           </button>
           <button
             onClick={() => {
               playTone("tap")
               setShowQrModal(true)
             }}
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-hair bg-panel-2 px-3 py-2.5 text-[12px] font-semibold text-fg-dim hover:text-fg cursor-pointer"
+            className="flex items-center justify-center gap-1.5 rounded-full border border-[#d9d9dd] bg-[#ffffff] px-3.5 py-2.5 text-[12px] font-semibold text-[#17171c] hover:border-[#17171c] cursor-pointer shadow-xs"
           >
             <Icon.badge size={14} /> QR Pass
           </button>
@@ -1467,7 +1468,10 @@ export function Profile({ s }: { s: Store }) {
           const isOpen = open === r.key
           const isSpeaking = speakingKey === r.key
           return (
-            <Card key={r.key} className="overflow-hidden transition-all">
+            <Card
+              key={r.key}
+              className="overflow-hidden transition-all border border-[#e5e7eb] bg-[#ffffff] shadow-xs"
+            >
               <button
                 onClick={() => {
                   playTone("tap")
@@ -1478,7 +1482,7 @@ export function Profile({ s }: { s: Store }) {
                 <DimRing score={r.score} tone={levelTone(r.level)} />
                 <div className="min-w-0 flex-1">
                   <div
-                    className={`text-[15px] font-semibold text-fg ${
+                    className={`text-[15px] font-semibold text-[#17171c] ${
                       hi ? "font-hindi" : ""
                     }`}
                   >
@@ -1488,31 +1492,31 @@ export function Profile({ s }: { s: Store }) {
                 </div>
                 <Icon.chevron
                   size={18}
-                  className={`shrink-0 text-fg-faint transition-transform ${
+                  className={`shrink-0 text-[#75758a] transition-transform ${
                     isOpen ? "rotate-90" : ""
                   }`}
                 />
               </button>
               {isOpen && (
                 <div className="animate-fade-up space-y-3 px-4 pb-4">
-                  <p className="text-[13px] leading-relaxed text-fg-dim">
+                  <p className="text-[13px] leading-relaxed text-[#616161]">
                     {r.reason}
                   </p>
-                  <div className="flex items-start gap-2.5 rounded-xl border border-hair bg-panel-2/60 p-3">
+                  <div className="flex items-start gap-2.5 rounded-xl border border-[#d9d9dd] bg-[#f7f6f3] p-3">
                     <button
                       onClick={() =>
                         handleSpeak(r.key, hi ? r.reasonHi : r.reason)
                       }
                       className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors cursor-pointer ${
                         isSpeaking
-                          ? "bg-saffron text-ink font-bold"
-                          : "bg-saffron/15 text-saffron-soft hover:bg-saffron/25"
+                          ? "bg-[#ff7759] text-[#ffffff] font-bold"
+                          : "bg-[#ffffff] text-[#ff7759] border border-[#d9d9dd] hover:bg-[#eeece7]"
                       }`}
                       aria-label="Play Voice Explanation"
                     >
                       <Icon.volume size={15} />
                     </button>
-                    <p className="font-hindi text-[13px] leading-relaxed text-saffron-soft">
+                    <p className="font-hindi text-[13px] leading-relaxed text-[#17171c]">
                       {r.reasonHi}
                     </p>
                   </div>
@@ -1523,7 +1527,7 @@ export function Profile({ s }: { s: Store }) {
         })}
       </div>
 
-      <div className="mt-4 flex items-center justify-between rounded-2xl border border-hair bg-panel/50 px-4 py-3 text-[12px] text-fg-faint">
+      <div className="mt-4 flex items-center justify-between rounded-2xl border border-[#e5e7eb] bg-[#f7f6f3] px-4 py-3 text-[12px] text-[#75758a]">
         <span>{hi ? "बनाया गया" : "Generated"}</span>
         <span className="font-mono">01 Sep 2026 · 14:20 IST</span>
       </div>
@@ -1531,7 +1535,7 @@ export function Profile({ s }: { s: Store }) {
       <FooterBar>
         <div className="grid w-full grid-cols-2 gap-2.5">
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={() => {
               playTone("tap")
               s.go("offline")
@@ -1540,6 +1544,7 @@ export function Profile({ s }: { s: Store }) {
             <Icon.wifiOff size={17} /> {hi ? "ऑफ़लाइन" : "Offline"}
           </Button>
           <Button
+            variant="primary"
             onClick={() => {
               playTone("tap")
               s.go("share")
@@ -1553,60 +1558,61 @@ export function Profile({ s }: { s: Store }) {
       {/* Loan Offers Modal */}
       {showLoanModal && (
         <div
-          className="absolute inset-0 z-30 flex items-end bg-black/70 backdrop-blur-xs p-4 animate-fade"
+          className="absolute inset-0 z-30 flex items-end bg-black/50 backdrop-blur-xs p-4 animate-fade"
           onClick={() => setShowLoanModal(false)}
         >
-          <Card className="w-full animate-fade-up p-5 max-h-[85%] overflow-y-auto">
+          <Card className="w-full animate-fade-up p-5 max-h-[85%] overflow-y-auto border-[#e5e7eb] bg-[#ffffff] shadow-2xl">
             <div onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between border-b border-hair pb-3">
+              <div className="flex items-center justify-between border-b border-[#f2f2f2] pb-3">
                 <div>
-                  <div className="text-[11px] font-mono text-fg-faint uppercase">
+                  <div className="text-[11px] font-mono text-[#75758a] uppercase">
                     Pre-Approved Credit
                   </div>
-                  <div className="font-bold text-fg text-[16px]">
+                  <div className="font-bold text-[#17171c] text-[16px]">
                     Instant Micro-Credit Offers
                   </div>
                 </div>
-                <Pill tone="verify">READINESS: {readiness}%</Pill>
+                <Pill tone="pale-green">READINESS: {readiness}%</Pill>
               </div>
 
               <div className="mt-3.5 space-y-3">
                 {loanOffers.map((offer) => (
                   <div
                     key={offer.id}
-                    className="rounded-2xl border border-hair bg-panel-2 p-3.5 space-y-2"
+                    className="rounded-2xl border border-[#e5e7eb] bg-[#f7f6f3] p-3.5 space-y-2"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-fg text-[14px]">
+                      <span className="font-bold text-[#17171c] text-[14px]">
                         {offer.title}
                       </span>
                       <Pill tone="coral">{offer.tag}</Pill>
                     </div>
-                    <div className="text-[12px] text-fg-dim">
+                    <div className="text-[12px] text-[#616161]">
                       {offer.purpose}
                     </div>
-                    <div className="grid grid-cols-3 gap-2 rounded-xl bg-ink p-2 text-center text-[11px]">
+                    <div className="grid grid-cols-3 gap-2 rounded-xl bg-[#eeece7] p-2 text-center text-[11px] border border-[#d9d9dd]">
                       <div>
-                        <div className="text-fg-faint text-[9px]">Limit</div>
-                        <div className="font-bold text-fg font-mono">
+                        <div className="text-[#75758a] text-[9px]">Limit</div>
+                        <div className="font-bold text-[#17171c] font-mono">
                           {inr(offer.amount)}
                         </div>
                       </div>
                       <div>
-                        <div className="text-fg-faint text-[9px]">EMI</div>
-                        <div className="font-bold text-saffron font-mono">
+                        <div className="text-[#75758a] text-[9px]">EMI</div>
+                        <div className="font-bold text-[#ff7759] font-mono">
                           {inr(offer.monthlyEmi)}/mo
                         </div>
                       </div>
                       <div>
-                        <div className="text-fg-faint text-[9px]">Tenure</div>
-                        <div className="font-bold text-fg font-mono">
+                        <div className="text-[#75758a] text-[9px]">Tenure</div>
+                        <div className="font-bold text-[#17171c] font-mono">
                           {offer.tenureMonths} Mo
                         </div>
                       </div>
                     </div>
                     <Button
                       full
+                      variant="primary"
                       className="!py-2 text-[12.5px]"
                       onClick={() => {
                         playTone("beam")
@@ -1623,7 +1629,7 @@ export function Profile({ s }: { s: Store }) {
               <div className="mt-4">
                 <Button
                   full
-                  variant="soft"
+                  variant="outline"
                   onClick={() => setShowLoanModal(false)}
                 >
                   Close Offers
@@ -1637,23 +1643,23 @@ export function Profile({ s }: { s: Store }) {
       {/* QR Pass Modal */}
       {showQrModal && (
         <div
-          className="absolute inset-0 z-30 flex items-center justify-center bg-black/80 backdrop-blur-xs p-6 animate-fade"
+          className="absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-xs p-6 animate-fade"
           onClick={() => setShowQrModal(false)}
         >
-          <Card className="w-full max-w-[320px] animate-scale-in p-6 text-center">
+          <Card className="w-full max-w-[320px] animate-scale-in p-6 text-center border-[#e5e7eb] bg-[#ffffff] shadow-2xl">
             <div onClick={(e) => e.stopPropagation()}>
-              <div className="font-mono text-[11px] text-fg-faint uppercase">
+              <div className="font-mono text-[11px] text-[#75758a] uppercase">
                 Verifiable Pass
               </div>
-              <div className="font-display font-bold text-fg text-lg mt-0.5">
+              <div className="font-display font-bold text-[#17171c] text-lg mt-0.5">
                 {activeWorker.name}
               </div>
-              <div className="text-[11px] text-fg-dim font-mono">
+              <div className="text-[11px] text-[#75758a] font-mono">
                 {activeWorker.idCode}
               </div>
 
               {/* QR Pattern visual */}
-              <div className="my-5 mx-auto h-44 w-44 rounded-2xl bg-white p-3 shadow-2xl flex items-center justify-center">
+              <div className="my-5 mx-auto h-44 w-44 rounded-2xl bg-white p-3 shadow-md border border-[#e5e7eb] flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="h-full w-full">
                   <rect width="100" height="100" fill="white" />
                   <rect x="10" y="10" width="30" height="30" fill="black" />
@@ -1674,13 +1680,14 @@ export function Profile({ s }: { s: Store }) {
                 </svg>
               </div>
 
-              <div className="text-[11px] text-fg-dim">
+              <div className="text-[11px] text-[#616161]">
                 Scan with any RBI AA Lender Scanner to verify{" "}
                 {inr(activeWorker.document)}/mo income.
               </div>
 
               <Button
                 full
+                variant="primary"
                 className="mt-4"
                 onClick={() => setShowQrModal(false)}
               >
@@ -1728,7 +1735,7 @@ function ReadinessRing({
           cy="80"
           r={R}
           fill="none"
-          stroke="rgba(255,255,255,0.07)"
+          stroke="#d9d9dd"
           strokeWidth="10"
         />
         <circle
@@ -1745,17 +1752,17 @@ function ReadinessRing({
         />
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--color-saffron)" />
-            <stop offset="50%" stopColor="var(--color-coral)" />
-            <stop offset="100%" stopColor="var(--color-verify)" />
+            <stop offset="0%" stopColor="#ff7759" />
+            <stop offset="50%" stopColor="#ff9a3c" />
+            <stop offset="100%" stopColor="#00875a" />
           </linearGradient>
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="font-display text-4xl font-extrabold tabular-nums text-fg">
+        <div className="font-display text-4xl font-extrabold tabular-nums text-[#17171c]">
           {v}
         </div>
-        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-verify font-semibold">
+        <div className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#00875a] font-semibold">
           {label}
         </div>
       </div>
@@ -1771,11 +1778,7 @@ function DimRing({
   tone: "verify" | "warn" | "coral"
 }) {
   const color =
-    tone === "verify"
-      ? "var(--color-verify)"
-      : tone === "warn"
-        ? "var(--color-warn)"
-        : "var(--color-coral)"
+    tone === "verify" ? "#00875a" : tone === "warn" ? "#e28a00" : "#ff7759"
   const R = 16
   const C = 2 * Math.PI * R
   return (
@@ -1786,7 +1789,7 @@ function DimRing({
           cy="20"
           r={R}
           fill="none"
-          stroke="rgba(255,255,255,0.08)"
+          stroke="#e5e7eb"
           strokeWidth="4"
         />
         <circle
@@ -1801,7 +1804,7 @@ function DimRing({
           strokeDashoffset={C - (score / 100) * C}
         />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold text-fg">
+      <div className="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold text-[#17171c]">
         {score}
       </div>
     </div>
@@ -1821,36 +1824,42 @@ export function Offline({ s }: { s: Store }) {
           playTone("tap")
           s.go("profile")
         }}
-        className="mb-3 flex items-center gap-1 text-[13px] text-fg-faint hover:text-fg transition-colors cursor-pointer"
+        className="mb-3 flex items-center gap-1 text-[13px] text-[#75758a] hover:text-[#17171c] transition-colors cursor-pointer"
       >
         <Icon.arrowLeft size={16} /> {hi ? "प्रोफ़ाइल" : "Profile"}
       </button>
       <Header
         hi={hi}
-        icon={<Icon.wifiOff className="text-saffron" />}
+        icon={<Icon.wifiOff className="text-[#17171c]" />}
         en="Works without internet"
         hindi="इंटरनेट के बिना भी चलता है"
       />
-      <p className={`mt-2 text-[14px] text-fg-dim ${hi ? "font-hindi" : ""}`}>
+      <p
+        className={`mt-2 text-[13.5px] text-[#616161] ${
+          hi ? "font-hindi" : ""
+        }`}
+      >
         {hi
           ? "एक बार data आ जाने के बाद आपकी प्रोफ़ाइल फ़ोन पर सुरक्षित रहती है। नेटवर्क बंद करके देखिए।"
           : "Once your data is fetched, your profile lives privately on your phone. Try toggling offline mode."}
       </p>
 
-      <div className="mt-6 flex items-center justify-between rounded-3xl border border-hair bg-panel p-5 shadow-sm">
+      <div className="mt-6 flex items-center justify-between rounded-3xl border border-[#e5e7eb] bg-[#ffffff] p-5 shadow-xs">
         <div className="flex items-center gap-3">
           <div
             className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
-              s.offline ? "bg-warn/15 text-warn" : "bg-panel-2 text-fg-dim"
+              s.offline
+                ? "bg-[#fef3c7] text-[#b45309]"
+                : "bg-[#eeece7] text-[#17171c]"
             }`}
           >
             <Icon.wifiOff size={20} />
           </div>
           <div>
-            <div className="text-[15px] font-semibold text-fg">
+            <div className="text-[15px] font-semibold text-[#17171c]">
               {hi ? "एयरप्लेन मोड सिमुलेशन" : "Simulate Offline Mode"}
             </div>
-            <div className="text-[12px] text-fg-faint">
+            <div className="text-[12px] text-[#75758a]">
               {s.offline
                 ? hi
                   ? "नेटवर्क बंद है"
@@ -1867,7 +1876,7 @@ export function Offline({ s }: { s: Store }) {
             s.setOffline(!s.offline)
           }}
           className={`relative h-7 w-12 rounded-full transition-colors cursor-pointer ${
-            s.offline ? "bg-warn" : "bg-white/15"
+            s.offline ? "bg-[#e28a00]" : "bg-[#d9d9dd]"
           }`}
           aria-label="Toggle offline mode"
         >
@@ -1879,12 +1888,12 @@ export function Offline({ s }: { s: Store }) {
         </button>
       </div>
 
-      <Card className="mt-4 p-5">
+      <Card className="mt-4 p-5 border border-[#e5e7eb] bg-[#ffffff] shadow-xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Icon.badge size={18} className="text-verify" />
+            <Icon.badge size={18} className="text-[#00875a]" />
             <span
-              className={`text-[14px] font-semibold text-fg ${
+              className={`text-[14px] font-semibold text-[#17171c] ${
                 hi ? "font-hindi" : ""
               }`}
             >
@@ -1894,21 +1903,21 @@ export function Offline({ s }: { s: Store }) {
           {s.offline ? (
             <Pill tone="warn">{hi ? "ऑफ़लाइन" : "Offline"}</Pill>
           ) : (
-            <Pill tone="verify">{hi ? "ऑनलाइन" : "Online"}</Pill>
+            <Pill tone="pale-green">{hi ? "ऑनलाइन" : "Online"}</Pill>
           )}
         </div>
         <div className="mt-4 flex items-center gap-4">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-wider text-fg-faint">
+            <div className="font-mono text-[10px] uppercase tracking-wider text-[#75758a]">
               {hi ? "सत्यापित आय" : "Verified income"}
             </div>
-            <div className="font-display text-2xl font-bold text-fg">
+            <div className="font-display text-2xl font-bold text-[#17171c]">
               {inr(activeWorker.document)}
             </div>
           </div>
-          <div className="h-10 w-px bg-hair" />
+          <div className="h-10 w-px bg-[#e5e7eb]" />
           <div
-            className={`text-[12px] leading-snug text-fg-dim ${
+            className={`text-[12px] leading-snug text-[#616161] ${
               hi ? "font-hindi" : ""
             }`}
           >
@@ -1926,7 +1935,7 @@ export function Offline({ s }: { s: Store }) {
       <FooterBar>
         <Button
           full
-          variant="ghost"
+          variant="outline"
           onClick={() => {
             playTone("tap")
             s.go("profile")
@@ -1968,13 +1977,13 @@ export function Share({ s }: { s: Store }) {
           playTone("tap")
           s.go("profile")
         }}
-        className="mb-3 flex items-center gap-1 text-[13px] text-fg-faint hover:text-fg transition-colors cursor-pointer"
+        className="mb-3 flex items-center gap-1 text-[13px] text-[#75758a] hover:text-[#17171c] transition-colors cursor-pointer"
       >
         <Icon.arrowLeft size={16} /> {hi ? "प्रोफ़ाइल" : "Profile"}
       </button>
       <Header
         hi={hi}
-        icon={<Icon.send className="text-saffron" />}
+        icon={<Icon.send className="text-[#17171c]" />}
         en="Send to a loan officer"
         hindi="लोन अधिकारी को भेजें"
       />
@@ -1982,7 +1991,9 @@ export function Share({ s }: { s: Store }) {
       {phase === "pick" && (
         <>
           <p
-            className={`mt-2 text-[14px] text-fg-dim ${hi ? "font-hindi" : ""}`}
+            className={`mt-2 text-[13.5px] text-[#616161] ${
+              hi ? "font-hindi" : ""
+            }`}
           >
             {hi
               ? "iQOO Office Kit के ज़रिए अपनी प्रोफ़ाइल सीधे अधिकारी के डेस्क पर भेजें।"
@@ -1998,18 +2009,18 @@ export function Share({ s }: { s: Store }) {
                 }}
                 className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-all cursor-pointer ${
                   lender === l.id
-                    ? "border-saffron/50 bg-saffron/8"
-                    : "border-hair bg-panel/60 hover:border-hair-strong"
+                    ? "border-[#17171c] bg-[#eeece7] shadow-xs"
+                    : "border-[#e5e7eb] bg-[#ffffff] hover:border-[#d9d9dd]"
                 }`}
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-panel-2 text-fg-dim">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffffff] border border-[#d9d9dd] text-[#17171c]">
                   <Icon.device size={18} />
                 </div>
                 <div className="flex-1">
-                  <div className="text-[15px] font-semibold text-fg">
+                  <div className="text-[15px] font-semibold text-[#17171c]">
                     {l.name}
                   </div>
-                  <div className="text-[12px] text-fg-faint">
+                  <div className="text-[12px] text-[#75758a]">
                     {hi ? "अधिकारी" : "Branch Officer"} · {l.officer} (
                     {l.branch})
                   </div>
@@ -2017,15 +2028,15 @@ export function Share({ s }: { s: Store }) {
                 <div
                   className={`h-4 w-4 rounded-full border-2 transition-colors ${
                     lender === l.id
-                      ? "border-saffron bg-saffron"
-                      : "border-hair-strong"
+                      ? "border-[#17171c] bg-[#17171c]"
+                      : "border-[#d9d9dd]"
                   }`}
                 />
               </button>
             ))}
           </div>
           <FooterBar>
-            <Button full onClick={beam}>
+            <Button full variant="primary" onClick={beam}>
               <Icon.send size={17} />{" "}
               {hi ? "प्रोफ़ाइल भेजें (Office Kit)" : "Beam profile via Office Kit"}
             </Button>
@@ -2046,7 +2057,7 @@ export function Share({ s }: { s: Store }) {
         <FooterBar>
           <div className="flex gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               className="flex-1"
               onClick={() => {
                 playTone("tap")
@@ -2057,6 +2068,7 @@ export function Share({ s }: { s: Store }) {
               {hi ? "फिर से भेजें" : "Beam again"}
             </Button>
             <Button
+              variant="primary"
               className="flex-1"
               onClick={() => {
                 playTone("tap")
@@ -2088,23 +2100,23 @@ function BeamScene({
       <div className="relative flex w-full items-center justify-between px-2">
         {/* Phone */}
         <div className="flex flex-col items-center gap-2">
-          <div className="flex h-16 w-10 items-center justify-center rounded-xl border border-hair-strong bg-panel shadow-md">
-            <Icon.badge size={16} className="text-saffron" />
+          <div className="flex h-16 w-10 items-center justify-center rounded-xl border border-[#d9d9dd] bg-[#ffffff] shadow-sm">
+            <Icon.badge size={16} className="text-[#17171c]" />
           </div>
-          <span className="font-mono text-[10px] text-fg-faint">
+          <span className="font-mono text-[10px] text-[#75758a]">
             {hi ? "आपका फ़ोन" : "iQOO 15"}
           </span>
         </div>
 
         {/* Animated Beam Track */}
-        <div className="relative mx-3 h-1 flex-1 rounded-full bg-hair overflow-hidden">
+        <div className="relative mx-3 h-1 flex-1 rounded-full bg-[#e5e7eb] overflow-hidden">
           {!landed ? (
             <div
-              className="h-full w-full bg-gradient-to-r from-transparent via-saffron to-verify"
+              className="h-full w-full bg-gradient-to-r from-transparent via-[#ff7759] to-[#00875a]"
               style={{ animation: "v-beam-flow 0.8s linear infinite" }}
             />
           ) : (
-            <div className="h-full w-full bg-verify" />
+            <div className="h-full w-full bg-[#00875a]" />
           )}
         </div>
 
@@ -2113,16 +2125,16 @@ function BeamScene({
           <div
             className={`flex h-12 w-16 items-center justify-center rounded-lg border transition-all ${
               landed
-                ? "border-verify bg-verify/15 shadow-[0_0_20px_rgba(79,209,161,0.3)]"
-                : "border-hair-strong bg-panel"
+                ? "border-[#00875a] bg-[#edfce9] shadow-xs"
+                : "border-[#d9d9dd] bg-[#ffffff]"
             }`}
           >
             <Icon.device
               size={20}
-              className={landed ? "text-verify" : "text-fg-faint"}
+              className={landed ? "text-[#00875a]" : "text-[#75758a]"}
             />
           </div>
-          <span className="font-mono text-[10px] text-fg-faint truncate max-w-[80px]">
+          <span className="font-mono text-[10px] text-[#75758a] truncate max-w-[80px]">
             {officer.name}
           </span>
         </div>
@@ -2131,18 +2143,18 @@ function BeamScene({
       <div className="mt-8 text-center w-full">
         {landed ? (
           <div className="animate-fade-up">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-verify text-ink shadow-[0_0_25px_rgba(79,209,161,0.5)]">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#edfce9] text-[#00875a] border border-[#c2eec0] shadow-sm">
               <Icon.check size={28} />
             </div>
             <div
-              className={`mt-3 text-lg font-bold text-fg ${
+              className={`mt-3 text-lg font-bold text-[#17171c] ${
                 hi ? "font-hindi" : "font-display"
               }`}
             >
               {hi ? "अधिकारी की स्क्रीन पर खुला" : "Delivered to Officer's Screen"}
             </div>
             <p
-              className={`mt-1 text-[13px] text-fg-dim ${
+              className={`mt-1 text-[13px] text-[#616161] ${
                 hi ? "font-hindi" : ""
               }`}
             >
@@ -2156,9 +2168,9 @@ function BeamScene({
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-saffron border-t-transparent" />
+            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#17171c] border-t-transparent" />
             <div
-              className={`text-[15px] font-medium text-fg ${
+              className={`text-[15px] font-medium text-[#17171c] ${
                 hi ? "font-hindi" : ""
               }`}
             >
@@ -2166,7 +2178,7 @@ function BeamScene({
                 ? "Office Kit से सुरक्षित रूप से भेजा जा रहा है…"
                 : "Beaming encrypted profile via Office Kit…"}
             </div>
-            <div className="font-mono text-[11px] text-fg-faint">
+            <div className="font-mono text-[11px] text-[#75758a]">
               Peer-to-peer Wi-Fi Direct · AES-256
             </div>
           </div>
@@ -2183,34 +2195,34 @@ export function DesktopPreview({
   activeWorker: typeof personas.anjali
 }) {
   return (
-    <div className="rounded-2xl border border-hair-strong bg-ink-2 p-4 text-left shadow-2xl">
-      <div className="flex items-center justify-between border-b border-hair pb-2.5">
+    <div className="rounded-2xl border border-white/10 bg-[#071829] p-4 text-left text-white shadow-2xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
         <div className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-          <span className="ml-2 font-mono text-[10px] text-fg-faint">
+          <span className="ml-2 font-mono text-[10px] text-white/60">
             visible.lender · Office Kit Station
           </span>
         </div>
-        <span className="rounded-full bg-verify/15 px-2 py-0.5 font-mono text-[9px] font-bold text-verify">
+        <span className="rounded-full bg-[#edfce9]/15 px-2 py-0.5 font-mono text-[9px] font-bold text-[#7fe4c1]">
           SYNCED LIVE
         </span>
       </div>
       <div className="mt-3 flex items-center justify-between">
         <div>
-          <div className="font-display text-[14px] font-bold text-fg">
+          <div className="font-display text-[14px] font-bold text-white">
             {activeWorker.name}
           </div>
-          <div className="text-[11px] text-fg-faint">
+          <div className="text-[11px] text-white/60">
             {activeWorker.city} · {activeWorker.idCode}
           </div>
         </div>
         <div className="text-right">
-          <div className="font-mono text-[12px] font-bold text-verify">
+          <div className="font-mono text-[12px] font-bold text-[#7fe4c1]">
             {inr(activeWorker.document)}/mo
           </div>
-          <div className="text-[9px] text-fg-faint">
+          <div className="text-[9px] text-white/60">
             {activeWorker.platforms.filter((p) => p.monthly > 0).length} Gig
             Platforms
           </div>
@@ -2220,17 +2232,17 @@ export function DesktopPreview({
         {activeWorker.ratings.map((r) => (
           <div
             key={r.key}
-            className="rounded-lg border border-hair bg-panel/50 p-2 text-center"
+            className="rounded-lg border border-white/10 bg-white/5 p-2 text-center"
           >
-            <div className="text-[8px] uppercase tracking-wide text-fg-faint">
+            <div className="text-[8px] uppercase tracking-wide text-white/60">
               {r.title.split(" ")[0]}
             </div>
-            <div className="font-mono text-[13px] font-bold text-fg">
+            <div className="font-mono text-[13px] font-bold text-white">
               {r.score}
             </div>
             <div
               className={`text-[8px] font-semibold ${
-                r.level === "STRONG" ? "text-verify" : "text-warn"
+                r.level === "STRONG" ? "text-[#7fe4c1]" : "text-[#ff9a3c]"
               }`}
             >
               {r.level}
@@ -2239,13 +2251,13 @@ export function DesktopPreview({
         ))}
       </div>
       <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[10px]">
-        <div className="rounded-lg bg-panel/60 p-2">
-          <span className="text-fg-faint">Consent Ref: </span>
-          <span className="font-mono text-fg font-semibold">CN-90D-A14</span>
+        <div className="rounded-lg bg-white/5 p-2 border border-white/5">
+          <span className="text-white/60">Consent Ref: </span>
+          <span className="font-mono text-white font-semibold">CN-90D-A14</span>
         </div>
-        <div className="rounded-lg bg-panel/60 p-2">
-          <span className="text-fg-faint">NPU Verification: </span>
-          <span className="font-mono text-verify font-semibold">
+        <div className="rounded-lg bg-white/5 p-2 border border-white/5">
+          <span className="text-white/60">NPU Verification: </span>
+          <span className="font-mono text-[#7fe4c1] font-semibold">
             PASSED (99.4%)
           </span>
         </div>
@@ -2268,23 +2280,23 @@ export function Privacy({ s }: { s: Store }) {
           playTone("tap")
           s.go("profile")
         }}
-        className="mb-3 flex items-center gap-1 text-[13px] text-fg-faint hover:text-fg transition-colors cursor-pointer"
+        className="mb-3 flex items-center gap-1 text-[13px] text-[#75758a] hover:text-[#17171c] transition-colors cursor-pointer"
       >
         <Icon.arrowLeft size={16} /> {hi ? "प्रोफ़ाइल" : "Profile"}
       </button>
       <Header
         hi={hi}
-        icon={<Icon.lock className="text-saffron" />}
+        icon={<Icon.lock className="text-[#17171c]" />}
         en="Privacy & consent"
         hindi="गोपनीयता और सहमति"
       />
 
       {/* Active Consent */}
-      <Card className="mt-5 p-5">
+      <Card className="mt-5 p-5 border border-[#e5e7eb] bg-[#ffffff] shadow-xs">
         <div className="flex items-center justify-between">
           <Eyebrow>{hi ? "सक्रिय सहमति" : "Active consent"}</Eyebrow>
           {s.consentActive ? (
-            <Pill tone="verify">{hi ? "सक्रिय" : "Active"}</Pill>
+            <Pill tone="pale-green">{hi ? "सक्रिय" : "Active"}</Pill>
           ) : (
             <Pill tone="warn">{hi ? "वापस ली गई" : "Revoked"}</Pill>
           )}

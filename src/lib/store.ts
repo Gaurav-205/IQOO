@@ -13,6 +13,7 @@ export interface Store {
   step: Step
   go: (s: Step) => void
   next: () => void
+  prev: () => void
 
   connected: string[] // platform ids
   connect: (id: string) => void

@@ -128,6 +128,18 @@ export default function App() {
     setIsLoggedIn(false)
   }
 
+  const STEP_TITLES: Record<Step, { en: string hi: string stepNum: number }> = {
+    welcome: { en: "Welcome", hi: "परिचय", stepNum: 1 },
+    consent: { en: "RBI Consent", hi: "सहमति", stepNum: 2 },
+    connect: { en: "Link Streams", hi: "प्लेटफ़ॉर्म लिंक", stepNum: 3 },
+    analysis: { en: "Intelligence", hi: "आय विश्लेषण", stepNum: 4 },
+    verify: { en: "ML OCR Verify", hi: "सत्यापन", stepNum: 5 },
+    profile: { en: "Credit Passport", hi: "क्रेडिट प्रोफ़ाइल", stepNum: 6 },
+    offline: { en: "Offline Vault", hi: "ऑफलाइन मोड", stepNum: 7 },
+    share: { en: "P2P Beam", hi: "वायरलेस शेयर", stepNum: 8 },
+    privacy: { en: "Zero-Cloud", hi: "गोपनीयता", stepNum: 9 },
+  }
+
   const store: Store = useMemo(
     () => ({
       user: currentUser,
@@ -150,6 +162,15 @@ export default function App() {
         stopSpeaking()
         const i = MAIN.indexOf(step)
         if (i >= 0 && i < MAIN.length - 1) setStep(MAIN[i + 1])
+      },
+      prev: () => {
+        stopSpeaking()
+        if (step === "offline" || step === "share" || step === "privacy") {
+          setStep("profile")
+        } else {
+          const i = MAIN.indexOf(step)
+          if (i > 0) setStep(MAIN[i - 1])
+        }
       },
       connected,
       connect: (id) => {
@@ -226,12 +247,7 @@ export default function App() {
 
   const handleBack = () => {
     playTone("tap")
-    stopSpeaking()
-    if (step === "offline" || step === "share" || step === "privacy") {
-      setStep("profile")
-    } else if (mainIdx > 0) {
-      setStep(MAIN[mainIdx - 1])
-    }
+    store.prev()
   }
 
   const screen = {
@@ -245,6 +261,8 @@ export default function App() {
     share: <Share s={store} />,
     privacy: <Privacy s={store} />,
   }[step]
+
+  const currentMeta = STEP_TITLES[step] || STEP_TITLES.welcome
 
   return (
     <div className="relative flex min-h-dvh w-full items-center justify-center bg-[#f0eee9] text-[#212121] p-0 md:py-6 overflow-x-hidden">
@@ -370,19 +388,21 @@ export default function App() {
 
             {/* Navigation Chrome Bar */}
             {showChrome && (
-              <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
-                <div className="flex items-center gap-2.5">
+              <div className="flex shrink-0 items-center justify-between px-4 py-2.5 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={handleBack}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d9dd] text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
+                    className="flex h-8 items-center gap-1 px-2.5 rounded-full border border-[#d9d9dd] text-[12px] font-semibold text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
                     aria-label="Go back"
                   >
-                    <Icon.arrowLeft size={16} />
+                    <Icon.arrowLeft size={14} />
+                    <span>Back</span>
                   </button>
-                  <div className="flex items-center gap-2">
-                    <VisibleMark size={20} />
-                    <span className="font-display text-[16px] font-bold tracking-tight text-[#17171c]">
-                      Visible
+                  <div className="flex items-center gap-1.5">
+                    <span className="rounded-full bg-[#f4f3ef] border border-[#d9d9dd] px-2 py-0.5 text-[11px] font-mono font-bold text-[#17171c]">
+                      {currentMeta.stepNum <= 6
+                        ? `Step ${currentMeta.stepNum}/6`
+                        : currentMeta.en}
                     </span>
                   </div>
                 </div>

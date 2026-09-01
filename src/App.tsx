@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Icon } from "./components/ui"
 import {
   Analysis,
@@ -12,6 +12,7 @@ import {
   Welcome,
 } from "./components/screens"
 import { Lang, personas, playTone, stopSpeaking } from "./lib/data"
+import { api } from "./lib/api"
 import type { Step, Store } from "./lib/store"
 
 const MAIN: Step[] = [
@@ -36,7 +37,6 @@ const ALL_STEPS: { id: Step label: string tag: string }[] = [
 ]
 
 export default function App() {
-  const [activePersonaId, setActivePersonaId] = useState<string>("anjali")
   const [lang, setLangRaw] = useState<Lang>("en")
   const [step, setStep] = useState<Step>("welcome")
   const [connected, setConnected] = useState<string[]>([
@@ -54,21 +54,21 @@ export default function App() {
   const [beamedLender, setBeamedLender] = useState<string | null>(null)
   const [showTourDrawer, setShowTourDrawer] = useState(false)
 
-  const handlePersonaSwitch = (pId: string) => {
-    playTone("tap")
-    setActivePersonaId(pId)
-    const targetWorker = personas[pId]
-    if (targetWorker) {
-      setConnected(
-        targetWorker.platforms.filter((p) => p.monthly > 0).map((p) => p.id),
-      )
-    }
-  }
+  // Fetch initial profile from backend on mount
+  useEffect(() => {
+    api.getProfile().then((data) => {
+      if (data?.profile) {
+        setConsentActive(data.profile.consentActive)
+        setDataDeleted(data.profile.dataDeleted)
+        setBeamedLender(data.profile.beamedLender)
+      }
+    })
+  }, [])
 
   const store: Store = useMemo(
     () => ({
-      personaId: activePersonaId,
-      setPersonaId: handlePersonaSwitch,
+      personaId: "anjali",
+      setPersonaId: () => {},
       lang,
       setLang: (l) => setLangRaw(l),
       step,
@@ -82,12 +82,21 @@ export default function App() {
         if (i >= 0 && i < MAIN.length - 1) setStep(MAIN[i + 1])
       },
       connected,
-      connect: (id) => setConnected((c) => (c.includes(id) ? c : [...c, id])),
+      connect: (id) => {
+        setConnected((c) => (c.includes(id) ? c : [...c, id]))
+        api.linkPlatform(id)
+      },
       disconnect: (id) => setConnected((c) => c.filter((x) => x !== id)),
       analysed,
-      setAnalysed,
+      setAnalysed: (val) => {
+        setAnalysed(val)
+        if (val) api.analyzeNpu()
+      },
       verified,
-      setVerified,
+      setVerified: (val) => {
+        setVerified(val)
+        if (val) api.verifyOcr()
+      },
       profileReady,
       setProfileReady,
       offline,
@@ -96,27 +105,35 @@ export default function App() {
       revokeConsent: () => {
         setConsentActive(false)
         setConnected([])
+        api.revokeConsent()
       },
       reactivateConsent: () => {
         setConsentActive(true)
         setConnected(["swiggy", "ola", "rapido"])
+        api.grantConsent()
       },
       dataDeleted,
-      deleteData: () => setDataDeleted(true),
+      deleteData: () => {
+        setDataDeleted(true)
+        api.wipeDeviceData()
+      },
       restoreData: () => {
         setDataDeleted(false)
         setConnected(["swiggy", "ola", "rapido"])
         setAnalysed(true)
         setVerified(true)
         setProfileReady(true)
+        api.restoreDemoData()
       },
       narrate,
       setNarrate,
       beamedLender,
-      setBeamedLender,
+      setBeamedLender: (lenderId) => {
+        setBeamedLender(lenderId)
+        if (lenderId) api.beamToLender(lenderId)
+      },
     }),
     [
-      activePersonaId,
       lang,
       step,
       connected,
@@ -162,43 +179,20 @@ export default function App() {
     <div className="relative flex min-h-dvh w-full justify-center bg-[#f7f6f3] text-[#212121] overflow-hidden">
       {/* Pure Mobile Viewport Container */}
       <div className="relative z-10 flex min-h-dvh h-dvh w-full max-w-md flex-col bg-[#ffffff] shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border-x border-[#e5e7eb]">
-        {/* Mobile Status Bar (Cohere 2026 Minimalist Precision) */}
+        {/* Mobile Status Bar (Authentic Mobile System Status) */}
         <header className="relative flex shrink-0 items-center justify-between px-5 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
           <span className="font-mono text-[12px] font-semibold text-[#17171c]">
             14:20
           </span>
 
-          {/* Persona selector badge in status bar */}
-          <div className="flex items-center gap-1.5 rounded-full bg-[#eeece7] border border-[#d9d9dd] px-2.5 py-0.5 shadow-xs">
-            <span className="text-[10px] font-mono text-[#75758a] uppercase tracking-wider">
-              Profile:
-            </span>
-            <select
-              value={activePersonaId}
-              onChange={(e) => handlePersonaSwitch(e.target.value)}
-              className="bg-transparent text-[11px] font-semibold text-[#17171c] outline-none cursor-pointer"
-              aria-label="Select Persona"
-            >
-              {Object.values(personas).map((p) => (
-                <option
-                  key={p.id}
-                  value={p.id}
-                  className="bg-[#ffffff] text-[#17171c]"
-                >
-                  {p.name.split(" ")[0]} ({p.city.split(",")[0]})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2 font-mono text-[11px]">
+          <div className="flex items-center gap-2.5 font-mono text-[11px]">
             {/* Quick Tour Jumper Pill */}
             <button
               onClick={() => {
                 playTone("tap")
                 setShowTourDrawer(!showTourDrawer)
               }}
-              className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2 py-0.5 text-[10px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
+              className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2.5 py-0.5 text-[10.5px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
               title="Quick Tour Navigator"
             >
               Tour{" "}
@@ -211,11 +205,12 @@ export default function App() {
             {offline ? (
               <span className="flex items-center gap-1 text-[#e28a00] font-semibold">
                 <Icon.wifiOff size={12} />
-                OFF
+                OFFLINE
               </span>
             ) : (
               <span className="text-[#00875a] font-semibold">5G</span>
             )}
+            <span className="text-[#75758a]">86%</span>
           </div>
         </header>
 

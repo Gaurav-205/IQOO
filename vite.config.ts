@@ -3,7 +3,82 @@ import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import path from "node:path"
 
+import { apiHandlers } from "./server/api"
 import siteConfiguration from "./.figma/make/site.json"
+
+function backendApiPlugin(): Plugin {
+  return {
+    name: "visible-backend-api",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (!req.url?.startsWith("/api/")) {
+          return next()
+        }
+        let body = ""
+        req.on("data", (chunk) => {
+          body += chunk
+        })
+        req.on("end", () => {
+          if (body) {
+            try {
+              ;(req as any).body = JSON.parse(body)
+            } catch {
+              ;(req as any).body = {}
+            }
+          }
+          const expressRes = Object.assign(res, {
+            json(data: any) {
+              res.setHeader("Content-Type", "application/json")
+              res.end(JSON.stringify(data))
+            },
+            status(code: number) {
+              res.statusCode = code
+              return this
+            },
+          })
+
+          const pathOnly = req.url!.split("?")[0]
+          if (req.method === "GET" && pathOnly === "/api/health") {
+            return apiHandlers.getHealth(req as any, expressRes as any)
+          }
+          if (req.method === "GET" && pathOnly === "/api/profile") {
+            return apiHandlers.getProfile(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/consent/grant") {
+            return apiHandlers.grantConsent(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/consent/revoke") {
+            return apiHandlers.revokeConsent(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/connect/link") {
+            return apiHandlers.linkPlatform(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/connect/verify-otp") {
+            return apiHandlers.verifyOtp(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/npu/analyze") {
+            return apiHandlers.analyzeIncome(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/ocr/verify") {
+            return apiHandlers.verifyOcr(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/share/beam") {
+            return apiHandlers.beamProfile(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/privacy/wipe") {
+            return apiHandlers.wipeData(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/privacy/restore") {
+            return apiHandlers.restoreData(req as any, expressRes as any)
+          }
+          res.statusCode = 404
+          res.setHeader("Content-Type", "application/json")
+          res.end(JSON.stringify({ error: "Endpoint not found" }))
+        })
+      })
+    },
+  }
+}
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -21,6 +96,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      backendApiPlugin(),
       figmaSiteConfiguration(siteConfiguration),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),

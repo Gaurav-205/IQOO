@@ -488,35 +488,6 @@ function LangToggle({
   )
 }
 
-function LangToggle({
-  lang,
-  onChange,
-}: {
-  lang: Lang
-  onChange: (l: Lang) => void
-}) {
-  return (
-    <div className="flex overflow-hidden rounded-full border border-[#d9d9dd] text-[11px] font-medium bg-[#ffffff]">
-      {(["en", "hi"] as Lang[]).map((l) => (
-        <button
-          key={l}
-          onClick={() => {
-            playTone("tap")
-            onChange(l)
-          }}
-          className={`px-2.5 py-1 transition-colors cursor-pointer ${
-            lang === l
-              ? "bg-[#17171c] text-[#ffffff] font-semibold"
-              : "text-[#616161] hover:text-[#17171c]"
-          } ${l === "hi" ? "font-hindi" : ""}`}
-        >
-          {l === "en" ? "EN" : "हिं"}
-        </button>
-      ))}
-    </div>
-  )
-}
-
 function VisibleMark({ size = 24 }: { size?: number }) {
   return (
     <svg

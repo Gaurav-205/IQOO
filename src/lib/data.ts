@@ -487,7 +487,10 @@ export const npuTelemetry = {
 }
 
 // i18n
-export const t: Record<string, { en: string hi: string }> = {
+export const t: Record<string, {
+  en: string
+  hi: string
+}> = {
   appTag: { en: "Credit-Readiness Profile", hi: "क्रेडिट-रेडीनेस प्रोफ़ाइल" },
   continue: { en: "Continue", hi: "आगे बढ़ें" },
   back: { en: "Back", hi: "वापस" },

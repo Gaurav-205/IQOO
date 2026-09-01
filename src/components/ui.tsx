@@ -1,7 +1,10 @@
 import { ReactNode } from "react"
 
 // ── Icons (Inline hairline stroke with geometric precision) ─────
-type IP = { className?: string size?: number }
+type IP = {
+  className?: string
+  size?: number
+}
 const base = (size = 20) => ({
   width: size,
   height: size,

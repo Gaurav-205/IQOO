@@ -5,10 +5,12 @@ import {
   history,
   inr,
   lenders,
+  loanOffers,
   platforms,
+  playTone,
   ratings,
-  speakHindi,
   speakText,
+  statementPresets,
   stopSpeaking,
   verification,
   worker,
@@ -40,7 +42,10 @@ export function Welcome({ s }: { s: Store }) {
   const [phase, setPhase] = useState(0) // 0 scattered → 1 converged
 
   useEffect(() => {
-    const t = setTimeout(() => setPhase(1), 900)
+    const t = setTimeout(() => {
+      setPhase(1)
+      playTone("tap")
+    }, 900)
     return () => clearTimeout(t)
   }, [])
 
@@ -146,11 +151,21 @@ export function Welcome({ s }: { s: Store }) {
             : "Visible turns your fragmented gig earnings across Swiggy, Ola & Rapido into one verifiable profile any lender understands."}
         </p>
 
-        <Button full onClick={s.next} variant="primary">
+        <Button
+          full
+          onClick={() => {
+            playTone("tap")
+            s.next()
+          }}
+          variant="primary"
+        >
           {hi ? "शुरू करें" : "Get started"} <Icon.chevron size={18} />
         </Button>
         <button
-          onClick={() => s.setLang(hi ? "en" : "hi")}
+          onClick={() => {
+            playTone("tap")
+            s.setLang(hi ? "en" : "hi")
+          }}
           className="w-full text-center text-[13px] text-fg-faint transition-colors hover:text-saffron cursor-pointer font-medium"
         >
           {hi ? "Switch to English" : "हिंदी में देखें (Hindi)"}
@@ -333,7 +348,10 @@ export function Consent({ s }: { s: Store }) {
         <input
           type="checkbox"
           checked={agreed}
-          onChange={(e) => setAgreed(e.target.checked)}
+          onChange={(e) => {
+            playTone("tap")
+            setAgreed(e.target.checked)
+          }}
           className="mt-0.5 h-5 w-5 shrink-0 rounded border-hair accent-[var(--color-saffron)] cursor-pointer"
         />
         <span
@@ -348,7 +366,14 @@ export function Consent({ s }: { s: Store }) {
       </label>
 
       <FooterBar>
-        <Button full disabled={!agreed} onClick={s.next}>
+        <Button
+          full
+          disabled={!agreed}
+          onClick={() => {
+            playTone("success")
+            s.next()
+          }}
+        >
           <Icon.check size={18} />{" "}
           {hi ? "सहमति दें और आगे बढ़ें" : "Give consent & continue"}
         </Button>
@@ -358,11 +383,14 @@ export function Consent({ s }: { s: Store }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 3 · CONNECT (Account Aggregator)
+// 3 · CONNECT (Account Aggregator + OTP Gateway)
 // ─────────────────────────────────────────────────────────────
 export function Connect({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const [pending, setPending] = useState<string | null>(null)
+  const [activePlatformModal, setActivePlatformModal] =
+    useState<Platform | null>(null)
+  const [otpCode, setOtpCode] = useState("8924")
+  const [otpVerifying, setOtpVerifying] = useState(false)
   const active = platforms.filter((p) => p.monthly > 0)
   const total = s.connected.reduce(
     (sum, id) => sum + (platforms.find((p) => p.id === id)?.monthly ?? 0),
@@ -370,22 +398,32 @@ export function Connect({ s }: { s: Store }) {
   )
   const allDone = active.every((p) => s.connected.includes(p.id))
 
-  const doConnect = async (id: string) => {
-    setPending(id)
-    await new Promise((r) => setTimeout(r, 650))
-    s.connect(id)
-    setPending(null)
+  const handleOpenModal = (p: Platform) => {
+    playTone("tap")
+    setActivePlatformModal(p)
+  }
+
+  const handleVerifyOtp = () => {
+    if (!activePlatformModal) return
+    setOtpVerifying(true)
+    playTone("scan")
+    setTimeout(() => {
+      s.connect(activePlatformModal.id)
+      setOtpVerifying(false)
+      setActivePlatformModal(null)
+      playTone("success")
+    }, 900)
   }
 
   const connectAll = async () => {
-    setPending("all")
+    playTone("scan")
     for (const p of active) {
       if (!s.connected.includes(p.id)) {
         await new Promise((r) => setTimeout(r, 250))
         s.connect(p.id)
       }
     }
-    setPending(null)
+    playTone("success")
   }
 
   return (
@@ -411,7 +449,6 @@ export function Connect({ s }: { s: Store }) {
           {!allDone && (
             <button
               onClick={connectAll}
-              disabled={pending !== null}
               className="text-[12px] font-bold text-saffron hover:text-saffron-soft cursor-pointer transition-colors"
             >
               {hi ? "सब जोड़ें" : "Link all"}
@@ -446,7 +483,6 @@ export function Connect({ s }: { s: Store }) {
       <div className="mt-4 space-y-2.5">
         {platforms.map((p) => {
           const done = s.connected.includes(p.id)
-          const isPending = pending === p.id || (pending === "all" && !done)
           const disabled = p.monthly === 0
           return (
             <div
@@ -488,17 +524,10 @@ export function Connect({ s }: { s: Store }) {
                 <span className="font-mono text-[11px] text-fg-faint">—</span>
               ) : (
                 <button
-                  onClick={() => doConnect(p.id)}
-                  disabled={isPending}
+                  onClick={() => handleOpenModal(p)}
                   className="rounded-xl border border-hair-strong px-3.5 py-2 text-[13px] font-medium text-fg transition-colors hover:border-saffron/60 hover:text-saffron cursor-pointer"
                 >
-                  {isPending ? (
-                    <span className="inline-block h-4 w-4 animate-[v-spin_0.7s_linear_infinite] rounded-full border-2 border-fg-faint border-t-transparent" />
-                  ) : hi ? (
-                    "जोड़ें"
-                  ) : (
-                    "Link"
-                  )}
+                  {hi ? "जोड़ें" : "Link"}
                 </button>
               )}
             </div>
@@ -507,11 +536,77 @@ export function Connect({ s }: { s: Store }) {
       </div>
 
       <FooterBar>
-        <Button full disabled={!allDone} onClick={s.next}>
+        <Button
+          full
+          disabled={!allDone}
+          onClick={() => {
+            playTone("tap")
+            s.next()
+          }}
+        >
           {hi ? "कमाई का विश्लेषण करें" : "Analyse my income"}{" "}
           <Icon.chevron size={18} />
         </Button>
       </FooterBar>
+
+      {/* Account Aggregator OTP Simulation Modal */}
+      {activePlatformModal && (
+        <div
+          className="absolute inset-0 z-30 flex items-end bg-black/70 backdrop-blur-xs p-4 animate-fade"
+          onClick={() => setActivePlatformModal(null)}
+        >
+          <Card className="w-full animate-fade-up p-5 border-saffron/40">
+            <div onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between border-b border-hair pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{activePlatformModal.glyph}</span>
+                  <span className="font-bold text-fg text-[16px]">
+                    {activePlatformModal.name} AA Gateway
+                  </span>
+                </div>
+                <Pill tone="saffron">RBI AA SECURE</Pill>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <div className="text-[13px] text-fg-dim">
+                  Authenticate Account Aggregator consent for {worker.phone} to
+                  link monthly earnings ({inr(activePlatformModal.monthly)}/mo).
+                </div>
+
+                <div className="rounded-2xl border border-hair bg-panel-2 p-3">
+                  <label className="font-mono text-[10px] text-fg-faint uppercase">
+                    Enter 4-Digit SMS OTP
+                  </label>
+                  <div className="mt-1 flex items-center justify-between">
+                    <input
+                      type="text"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      maxLength={4}
+                      className="bg-transparent font-mono text-xl font-bold tracking-widest text-saffron focus:outline-none w-32"
+                    />
+                    <span className="text-[11px] text-verify font-mono">
+                      OTP AUTO-FILLED
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-2.5">
+                <Button
+                  variant="soft"
+                  onClick={() => setActivePlatformModal(null)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleVerifyOtp} disabled={otpVerifying}>
+                  {otpVerifying ? "Authorizing…" : "Authorize Link"}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
     </ScreenScroll>
   )
 }
@@ -548,7 +643,10 @@ export function Analysis({ s }: { s: Store }) {
       if (p >= 100) {
         p = 100
         clearInterval(iv)
-        setTimeout(() => s.setAnalysed(true), 300)
+        setTimeout(() => {
+          s.setAnalysed(true)
+          playTone("success")
+        }, 300)
       }
       setProgress(p)
     }, 70)
@@ -651,7 +749,13 @@ export function Analysis({ s }: { s: Store }) {
       </div>
 
       <FooterBar>
-        <Button full onClick={s.next}>
+        <Button
+          full
+          onClick={() => {
+            playTone("tap")
+            s.next()
+          }}
+        >
           {hi ? "कमाई सत्यापित करें" : "Verify my income"}{" "}
           <Icon.camera size={18} />
         </Button>
@@ -703,7 +807,10 @@ function BarChart({ hi }: { hi: boolean }) {
           return (
             <button
               key={h.label}
-              onClick={() => setSelectedMonth(h.label)}
+              onClick={() => {
+                playTone("tap")
+                setSelectedMonth(h.label)
+              }}
               className="group flex flex-1 flex-col items-center justify-end gap-1.5 focus:outline-none cursor-pointer"
               style={{ height: "100%" }}
             >
@@ -730,7 +837,10 @@ function BarChart({ hi }: { hi: boolean }) {
         {history.map((h) => (
           <button
             key={h.label}
-            onClick={() => setSelectedMonth(h.label)}
+            onClick={() => {
+              playTone("tap")
+              setSelectedMonth(h.label)
+            }}
             className={`flex-1 text-center text-[11px] transition-colors cursor-pointer ${
               h.label === selectedMonth
                 ? "font-bold text-saffron"
@@ -774,15 +884,21 @@ function Stat({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 5 · VERIFY (camera + OCR)
+// 5 · VERIFY (camera + OCR statement selection)
 // ─────────────────────────────────────────────────────────────
 export function Verify({ s }: { s: Store }) {
   const hi = s.lang === "hi"
   const [stage, setStage] = useState<"intro" | "camera" | "ocr" | "done">(
     s.verified ? "done" : "intro",
   )
+  const [selectedStatement, setSelectedStatement] =
+    useState<string>("swiggy-sep")
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [camLive, setCamLive] = useState(false)
+
+  const activeStatement =
+    statementPresets.find((st) => st.id === selectedStatement) ??
+    statementPresets[0]
 
   useEffect(() => {
     if (stage !== "camera") return
@@ -801,10 +917,12 @@ export function Verify({ s }: { s: Store }) {
   }, [stage])
 
   const scan = () => {
+    playTone("scan")
     setStage("ocr")
     setTimeout(() => {
       setStage("done")
       s.setVerified(true)
+      playTone("success")
     }, 2400)
   }
 
@@ -822,8 +940,30 @@ export function Verify({ s }: { s: Store }) {
           : "Scan a gig payout statement. We cross-check it against your linked income."}
       </p>
 
+      {/* Preset Selector */}
+      <div className="mt-3 flex gap-2">
+        {statementPresets.map((st) => (
+          <button
+            key={st.id}
+            onClick={() => {
+              playTone("tap")
+              setSelectedStatement(st.id)
+            }}
+            className={`flex-1 rounded-xl border p-2 text-center text-[11px] transition-all cursor-pointer ${
+              selectedStatement === st.id
+                ? "border-saffron bg-saffron/15 text-fg font-bold"
+                : "border-hair bg-panel/50 text-fg-dim"
+            }`}
+          >
+            <div>
+              {st.glyph} {st.company.split(" ")[0]}
+            </div>
+          </button>
+        ))}
+      </div>
+
       {/* Viewport Frame */}
-      <div className="relative mt-5 aspect-[3/4] overflow-hidden rounded-3xl border border-hair-strong bg-black shadow-2xl">
+      <div className="relative mt-3 aspect-[3/4] overflow-hidden rounded-3xl border border-hair-strong bg-black shadow-2xl">
         {stage === "camera" && camLive ? (
           <video
             ref={videoRef}
@@ -833,7 +973,7 @@ export function Verify({ s }: { s: Store }) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <MockPayout hi={hi} scanning={stage === "ocr"} />
+          <MockPayout statement={activeStatement} scanning={stage === "ocr"} />
         )}
 
         {/* Scan Frame & Laser Line */}
@@ -902,7 +1042,13 @@ export function Verify({ s }: { s: Store }) {
 
       <FooterBar>
         {stage === "intro" && (
-          <Button full onClick={() => setStage("camera")}>
+          <Button
+            full
+            onClick={() => {
+              playTone("tap")
+              setStage("camera")
+            }}
+          >
             <Icon.camera size={18} /> {hi ? "कैमरा खोलें" : "Open camera"}
           </Button>
         )}
@@ -919,7 +1065,13 @@ export function Verify({ s }: { s: Store }) {
           </Button>
         )}
         {stage === "done" && (
-          <Button full onClick={s.next}>
+          <Button
+            full
+            onClick={() => {
+              playTone("tap")
+              s.next()
+            }}
+          >
             {hi ? "मेरी प्रोफ़ाइल बनाएं" : "Build my profile"}{" "}
             <Icon.chevron size={18} />
           </Button>
@@ -929,21 +1081,27 @@ export function Verify({ s }: { s: Store }) {
   )
 }
 
-function MockPayout({ hi, scanning }: { hi: boolean scanning: boolean }) {
+function MockPayout({
+  statement,
+  scanning,
+}: {
+  statement: typeof statementPresets[0]
+  scanning: boolean
+}) {
   const fields = [
-    ["Partner", worker.name],
-    ["Platform", "Swiggy — Delivery"],
-    ["Cycle", "Sep 2026"],
-    ["Orders", "212"],
-    ["Net payout", inr(29800)],
+    ["Partner", statement.partner],
+    ["Platform", statement.company],
+    ["Cycle", statement.cycle],
+    ["Activity", statement.orders],
+    ["Net payout", inr(statement.netPayout)],
   ]
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-[#0d1017] p-6">
       <div className="w-full rounded-2xl bg-[#f0f4f9] p-5 text-[#141820] shadow-2xl">
         <div className="flex items-center justify-between border-b border-black/10 pb-2.5">
           <div className="flex items-center gap-1.5 font-bold text-[14px]">
-            <span>🛵</span>
-            <span>Swiggy</span>
+            <span>{statement.glyph}</span>
+            <span>{statement.company.split(" ")[0]}</span>
           </div>
           <span className="rounded bg-black/5 px-2 py-0.5 font-mono text-[9px] font-bold text-black/60">
             PAYOUT STATEMENT
@@ -967,8 +1125,8 @@ function MockPayout({ hi, scanning }: { hi: boolean scanning: boolean }) {
           ))}
         </div>
         <div className="mt-3.5 border-t border-black/10 pt-2 flex items-center justify-between text-[10px] text-black/50 font-mono">
-          <span>TXN-SW-892401</span>
-          <span>UTR: 4921••••0129</span>
+          <span>{statement.utr}</span>
+          <span>{statement.date}</span>
         </div>
       </div>
     </div>
@@ -1032,13 +1190,15 @@ function CompareTable({ hi }: { hi: boolean }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 6 + 7 · PROFILE (hero) + EXPLAINABILITY
+// 6 + 7 · PROFILE (hero) + EXPLAINABILITY + LOAN CALCULATOR
 // ─────────────────────────────────────────────────────────────
 export function Profile({ s }: { s: Store }) {
   const hi = s.lang === "hi"
   const [building, setBuilding] = useState(!s.profileReady)
   const [open, setOpen] = useState<string | null>("consistency")
   const [speakingKey, setSpeakingKey] = useState<string | null>(null)
+  const [showLoanModal, setShowLoanModal] = useState(false)
+  const [showQrModal, setShowQrModal] = useState(false)
 
   useEffect(() => {
     if (!s.profileReady) {
@@ -1113,11 +1273,22 @@ export function Profile({ s }: { s: Store }) {
               : "In accordance with your privacy settings, cached financial records have been removed from this device."}
           </p>
           <div className="mt-6 flex flex-col gap-2.5 w-full max-w-[260px]">
-            <Button onClick={() => s.restoreData()}>
+            <Button
+              onClick={() => {
+                playTone("success")
+                s.restoreData()
+              }}
+            >
               <Icon.refresh size={16} />{" "}
               {hi ? "data पुनर्स्थापित करें" : "Restore Demo Data"}
             </Button>
-            <Button variant="ghost" onClick={() => s.go("privacy")}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                playTone("tap")
+                s.go("privacy")
+              }}
+            >
               {hi ? "Privacy सेटिंग्स" : "Privacy Settings"}
             </Button>
           </div>
@@ -1168,6 +1339,28 @@ export function Profile({ s }: { s: Store }) {
             ? "यह कोई credit score नहीं — यह इस बात का प्रमाण है कि आपकी कमाई भरोसेमंद है।"
             : "Not a CIBIL score — a phone-native proof of how steady and ready your gig earnings are."}
         </div>
+
+        {/* Action quick links */}
+        <div className="mt-4 flex gap-2 w-full">
+          <button
+            onClick={() => {
+              playTone("tap")
+              setShowLoanModal(true)
+            }}
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-saffron/40 bg-saffron/10 py-2.5 text-[12px] font-semibold text-saffron-soft hover:bg-saffron/15 cursor-pointer"
+          >
+            <Icon.spark size={14} /> {hi ? "लोन ऑफर देखें" : "View Loan Offers"}
+          </button>
+          <button
+            onClick={() => {
+              playTone("tap")
+              setShowQrModal(true)
+            }}
+            className="flex items-center justify-center gap-1.5 rounded-xl border border-hair bg-panel-2 px-3 py-2.5 text-[12px] font-semibold text-fg-dim hover:text-fg cursor-pointer"
+          >
+            <Icon.badge size={14} /> QR Pass
+          </button>
+        </div>
       </div>
 
       {/* Key Facts */}
@@ -1197,7 +1390,10 @@ export function Profile({ s }: { s: Store }) {
           return (
             <Card key={r.key} className="overflow-hidden transition-all">
               <button
-                onClick={() => setOpen(isOpen ? null : r.key)}
+                onClick={() => {
+                  playTone("tap")
+                  setOpen(isOpen ? null : r.key)
+                }}
                 className="flex w-full items-center gap-3 p-4 text-left cursor-pointer"
               >
                 <DimRing score={r.score} tone={levelTone(r.level)} />
@@ -1255,14 +1451,165 @@ export function Profile({ s }: { s: Store }) {
 
       <FooterBar>
         <div className="grid w-full grid-cols-2 gap-2.5">
-          <Button variant="ghost" onClick={() => s.go("offline")}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              playTone("tap")
+              s.go("offline")
+            }}
+          >
             <Icon.wifiOff size={17} /> {hi ? "ऑफ़लाइन" : "Offline"}
           </Button>
-          <Button onClick={() => s.go("share")}>
+          <Button
+            onClick={() => {
+              playTone("tap")
+              s.go("share")
+            }}
+          >
             <Icon.send size={17} /> {hi ? "साझा करें" : "Share"}
           </Button>
         </div>
       </FooterBar>
+
+      {/* Loan Offers Modal */}
+      {showLoanModal && (
+        <div
+          className="absolute inset-0 z-30 flex items-end bg-black/70 backdrop-blur-xs p-4 animate-fade"
+          onClick={() => setShowLoanModal(false)}
+        >
+          <Card className="w-full animate-fade-up p-5 max-h-[85%] overflow-y-auto">
+            <div onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between border-b border-hair pb-3">
+                <div>
+                  <div className="text-[11px] font-mono text-fg-faint uppercase">
+                    Pre-Approved Credit
+                  </div>
+                  <div className="font-bold text-fg text-[16px]">
+                    Instant Micro-Credit Offers
+                  </div>
+                </div>
+                <Pill tone="verify">READINESS: {readiness}%</Pill>
+              </div>
+
+              <div className="mt-3.5 space-y-3">
+                {loanOffers.map((offer) => (
+                  <div
+                    key={offer.id}
+                    className="rounded-2xl border border-hair bg-panel-2 p-3.5 space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-fg text-[14px]">
+                        {offer.title}
+                      </span>
+                      <Pill tone="coral">{offer.tag}</Pill>
+                    </div>
+                    <div className="text-[12px] text-fg-dim">
+                      {offer.purpose}
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 rounded-xl bg-ink p-2 text-center text-[11px]">
+                      <div>
+                        <div className="text-fg-faint text-[9px]">Limit</div>
+                        <div className="font-bold text-fg font-mono">
+                          {inr(offer.amount)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-fg-faint text-[9px]">EMI</div>
+                        <div className="font-bold text-saffron font-mono">
+                          {inr(offer.monthlyEmi)}/mo
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-fg-faint text-[9px]">Tenure</div>
+                        <div className="font-bold text-fg font-mono">
+                          {offer.tenureMonths} Mo
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      full
+                      className="!py-2 text-[12.5px]"
+                      onClick={() => {
+                        playTone("beam")
+                        setShowLoanModal(false)
+                        s.go("share")
+                      }}
+                    >
+                      Apply &amp; Share to {offer.lender.split(" ")[0]}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4">
+                <Button
+                  full
+                  variant="soft"
+                  onClick={() => setShowLoanModal(false)}
+                >
+                  Close Offers
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* QR Pass Modal */}
+      {showQrModal && (
+        <div
+          className="absolute inset-0 z-30 flex items-center justify-center bg-black/80 backdrop-blur-xs p-6 animate-fade"
+          onClick={() => setShowQrModal(false)}
+        >
+          <Card className="w-full max-w-[320px] animate-scale-in p-6 text-center">
+            <div onClick={(e) => e.stopPropagation()}>
+              <div className="font-mono text-[11px] text-fg-faint uppercase">
+                Verifiable Pass
+              </div>
+              <div className="font-display font-bold text-fg text-lg mt-0.5">
+                {worker.name}
+              </div>
+              <div className="text-[11px] text-fg-dim font-mono">
+                {worker.id}
+              </div>
+
+              {/* QR Pattern visual */}
+              <div className="my-5 mx-auto h-44 w-44 rounded-2xl bg-white p-3 shadow-2xl flex items-center justify-center">
+                <svg viewBox="0 0 100 100" className="h-full w-full">
+                  <rect width="100" height="100" fill="white" />
+                  <rect x="10" y="10" width="30" height="30" fill="black" />
+                  <rect x="15" y="15" width="20" height="20" fill="white" />
+                  <rect x="20" y="20" width="10" height="10" fill="black" />
+                  <rect x="60" y="10" width="30" height="30" fill="black" />
+                  <rect x="65" y="15" width="20" height="20" fill="white" />
+                  <rect x="70" y="20" width="10" height="10" fill="black" />
+                  <rect x="10" y="60" width="30" height="30" fill="black" />
+                  <rect x="15" y="65" width="20" height="20" fill="white" />
+                  <rect x="20" y="70" width="10" height="10" fill="black" />
+                  <rect x="45" y="15" width="8" height="8" fill="black" />
+                  <rect x="45" y="30" width="8" height="12" fill="black" />
+                  <rect x="60" y="45" width="12" height="8" fill="black" />
+                  <rect x="75" y="60" width="15" height="15" fill="black" />
+                  <rect x="45" y="60" width="8" height="25" fill="black" />
+                  <rect x="60" y="75" width="10" height="10" fill="black" />
+                </svg>
+              </div>
+
+              <div className="text-[11px] text-fg-dim">
+                Scan with any RBI AA Lender Scanner to verify ₹29,800/mo income.
+              </div>
+
+              <Button
+                full
+                className="mt-4"
+                onClick={() => setShowQrModal(false)}
+              >
+                Done
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </ScreenScroll>
   )
 }
@@ -1389,7 +1736,10 @@ export function Offline({ s }: { s: Store }) {
   return (
     <ScreenScroll>
       <button
-        onClick={() => s.go("profile")}
+        onClick={() => {
+          playTone("tap")
+          s.go("profile")
+        }}
         className="mb-3 flex items-center gap-1 text-[13px] text-fg-faint hover:text-fg transition-colors cursor-pointer"
       >
         <Icon.arrowLeft size={16} /> {hi ? "प्रोफ़ाइल" : "Profile"}
@@ -1431,7 +1781,10 @@ export function Offline({ s }: { s: Store }) {
           </div>
         </div>
         <button
-          onClick={() => s.setOffline(!s.offline)}
+          onClick={() => {
+            playTone("tap")
+            s.setOffline(!s.offline)
+          }}
           className={`relative h-7 w-12 rounded-full transition-colors cursor-pointer ${
             s.offline ? "bg-warn" : "bg-white/15"
           }`}
@@ -1490,7 +1843,14 @@ export function Offline({ s }: { s: Store }) {
       </Card>
 
       <FooterBar>
-        <Button full variant="ghost" onClick={() => s.go("profile")}>
+        <Button
+          full
+          variant="ghost"
+          onClick={() => {
+            playTone("tap")
+            s.go("profile")
+          }}
+        >
           {hi ? "प्रोफ़ाइल पर वापस" : "Back to profile"}
         </Button>
       </FooterBar>
@@ -1510,17 +1870,22 @@ export function Share({ s }: { s: Store }) {
   const chosen = lenders.find((l) => l.id === lender)!
 
   const beam = () => {
+    playTone("beam")
     setPhase("beaming")
     s.setBeamedLender(chosen.id)
     setTimeout(() => {
       setPhase("landed")
+      playTone("success")
     }, 2200)
   }
 
   return (
     <ScreenScroll>
       <button
-        onClick={() => s.go("profile")}
+        onClick={() => {
+          playTone("tap")
+          s.go("profile")
+        }}
         className="mb-3 flex items-center gap-1 text-[13px] text-fg-faint hover:text-fg transition-colors cursor-pointer"
       >
         <Icon.arrowLeft size={16} /> {hi ? "प्रोफ़ाइल" : "Profile"}
@@ -1545,7 +1910,10 @@ export function Share({ s }: { s: Store }) {
             {lenders.map((l) => (
               <button
                 key={l.id}
-                onClick={() => setLender(l.id)}
+                onClick={() => {
+                  playTone("tap")
+                  setLender(l.id)
+                }}
                 className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-all cursor-pointer ${
                   lender === l.id
                     ? "border-saffron/50 bg-saffron/8"
@@ -1560,7 +1928,8 @@ export function Share({ s }: { s: Store }) {
                     {l.name}
                   </div>
                   <div className="text-[12px] text-fg-faint">
-                    {hi ? "अधिकारी" : "Branch Officer"} · {l.officer}
+                    {hi ? "अधिकारी" : "Branch Officer"} · {l.officer} (
+                    {l.branch})
                   </div>
                 </div>
                 <div
@@ -1593,13 +1962,20 @@ export function Share({ s }: { s: Store }) {
               variant="ghost"
               className="flex-1"
               onClick={() => {
+                playTone("tap")
                 setPhase("pick")
                 s.setBeamedLender(null)
               }}
             >
               {hi ? "फिर से भेजें" : "Beam again"}
             </Button>
-            <Button className="flex-1" onClick={() => s.go("profile")}>
+            <Button
+              className="flex-1"
+              onClick={() => {
+                playTone("tap")
+                s.go("profile")
+              }}
+            >
               {hi ? "पूर्ण" : "Done"}
             </Button>
           </div>
@@ -1792,7 +2168,10 @@ export function Privacy({ s }: { s: Store }) {
   return (
     <ScreenScroll>
       <button
-        onClick={() => s.go("profile")}
+        onClick={() => {
+          playTone("tap")
+          s.go("profile")
+        }}
         className="mb-3 flex items-center gap-1 text-[13px] text-fg-faint hover:text-fg transition-colors cursor-pointer"
       >
         <Icon.arrowLeft size={16} /> {hi ? "प्रोफ़ाइल" : "Profile"}
@@ -1828,14 +2207,20 @@ export function Privacy({ s }: { s: Store }) {
         </div>
         {s.consentActive ? (
           <button
-            onClick={() => setConfirm("revoke")}
+            onClick={() => {
+              playTone("tap")
+              setConfirm("revoke")
+            }}
             className="mt-4 w-full rounded-xl border border-warn/30 py-2.5 text-[13px] font-semibold text-warn transition-colors hover:bg-warn/8 cursor-pointer"
           >
             {hi ? "सहमति वापस लें" : "Revoke consent"}
           </button>
         ) : (
           <button
-            onClick={() => s.reactivateConsent()}
+            onClick={() => {
+              playTone("success")
+              s.reactivateConsent()
+            }}
             className="mt-4 w-full rounded-xl border border-verify/30 py-2.5 text-[13px] font-semibold text-verify transition-colors hover:bg-verify/8 cursor-pointer"
           >
             {hi ? "सहमति फिर से सक्रिय करें" : "Re-activate Consent"}
@@ -1903,7 +2288,10 @@ export function Privacy({ s }: { s: Store }) {
               {hi ? "सारा local data मिटा दिया गया" : "Local data erased"}
             </div>
             <button
-              onClick={() => s.restoreData()}
+              onClick={() => {
+                playTone("success")
+                s.restoreData()
+              }}
               className="text-[12px] text-saffron underline hover:text-saffron-soft cursor-pointer font-medium"
             >
               {hi ? "पुनर्स्थापित करें" : "Restore"}
@@ -1911,7 +2299,10 @@ export function Privacy({ s }: { s: Store }) {
           </div>
         ) : (
           <button
-            onClick={() => setConfirm("delete")}
+            onClick={() => {
+              playTone("tap")
+              setConfirm("delete")
+            }}
             className="mt-3 w-full rounded-xl border border-warn/40 py-2.5 text-[13px] font-semibold text-warn transition-colors hover:bg-warn/8 cursor-pointer"
           >
             {hi ? "data मिटाएँ" : "Erase device data"}
@@ -1953,12 +2344,19 @@ export function Privacy({ s }: { s: Store }) {
                     : "All on-device cached financial data will be permanently wiped."}
               </p>
               <div className="mt-4 grid grid-cols-2 gap-2.5">
-                <Button variant="soft" onClick={() => setConfirm(null)}>
+                <Button
+                  variant="soft"
+                  onClick={() => {
+                    playTone("tap")
+                    setConfirm(null)
+                  }}
+                >
                   {hi ? "रहने दें" : "Cancel"}
                 </Button>
                 <Button
                   className="!bg-warn !text-ink font-bold"
                   onClick={() => {
+                    playTone("success")
                     if (confirm === "revoke") s.revokeConsent()
                     else s.deleteData()
                     setConfirm(null)

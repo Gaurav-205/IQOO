@@ -15,6 +15,7 @@ import {
   Lang,
   inr,
   lenders,
+  playTone,
   ratings,
   stopSpeaking,
   verification,
@@ -119,6 +120,7 @@ export default function App() {
     profileReady || step === "profile" || step === "share" || step === "offline"
 
   const handleBack = () => {
+    playTone("tap")
     stopSpeaking()
     if (step === "offline" || step === "share" || step === "privacy") {
       setStep("profile")
@@ -142,7 +144,7 @@ export default function App() {
   const currentLender = lenders.find((l) => l.id === beamedLender) ?? lenders[0]
 
   return (
-    <div className="grain relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-ink p-3 sm:p-6 lg:p-10">
+    <div className="grain relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-ink p-0 sm:p-6 lg:p-10">
       {/* Ambient background aura */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -159,7 +161,7 @@ export default function App() {
           <span className="font-display text-xl font-extrabold tracking-tight text-fg">
             Visible
           </span>
-          <span className="ml-2 rounded-full border border-saffron/30 bg-saffron/10 px-2 py-0.5 font-mono text-[10px] text-saffron">
+          <span className="ml-2 rounded-full border border-saffron/30 bg-saffron/10 px-2 py-0.5 font-mono text-[10px] text-saffron font-bold">
             iQOO 15 Edition
           </span>
         </div>
@@ -172,25 +174,22 @@ export default function App() {
       </div>
 
       {/* Main Workspace Layout (Phone + Optional Companion Desktop Station) */}
-      <div className="relative z-10 flex flex-col items-center justify-center gap-8 lg:flex-row lg:items-center">
+      <div className="relative z-10 flex w-full flex-col items-center justify-center gap-8 lg:flex-row lg:items-center">
         {/* ── PHONE CONTAINER ───────────────────────────── */}
-        <div className="flex flex-col items-center">
+        <div className="flex w-full flex-col items-center sm:w-auto">
           <div
-            className="relative flex flex-col overflow-hidden rounded-[2.8rem] border border-hair-strong bg-ink-2 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.95)]"
+            className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-ink-2 sm:h-[780px] sm:w-[390px] sm:max-h-[calc(100vh-2.5rem)] sm:rounded-[2.8rem] sm:border sm:border-hair-strong sm:shadow-[0_40px_120px_-30px_rgba(0,0,0,0.95)]"
             style={{
-              width: 390,
-              height: 780,
-              maxHeight: "calc(100vh - 2.5rem)",
               boxShadow:
                 "0 0 0 10px #06090f, 0 40px 120px -30px rgba(0,0,0,0.9)",
             }}
           >
             {/* Status bar */}
-            <div className="relative flex items-center justify-between px-6 pt-4 text-[12px] text-fg-dim select-none">
+            <div className="relative flex items-center justify-between px-6 pt-3 sm:pt-4 text-[12px] text-fg-dim select-none">
               <span className="font-mono text-[11px] font-medium">14:20</span>
               {/* Dynamic Island / Notch */}
-              <div className="absolute left-1/2 top-2.5 flex h-6 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-[#05070c] border border-hair/30">
-                <span className="h-2 w-2 rounded-full bg-verify/40" />
+              <div className="absolute left-1/2 top-2 sm:top-2.5 flex h-5 sm:h-6 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-[#05070c] border border-hair/30">
+                <span className="h-2 w-2 rounded-full bg-verify/40 animate-pulse" />
               </div>
               <div className="flex items-center gap-1.5 font-mono text-[10px]">
                 {offline ? (
@@ -233,7 +232,10 @@ export default function App() {
                   <LangToggle lang={lang} onChange={(l) => store.setLang(l)} />
                   {canOpenPrivacy && (
                     <button
-                      onClick={() => store.go("privacy")}
+                      onClick={() => {
+                        playTone("tap")
+                        store.go("privacy")
+                      }}
                       className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors cursor-pointer ${
                         step === "privacy"
                           ? "border-saffron bg-saffron/15 text-saffron"
@@ -259,6 +261,7 @@ export default function App() {
                       key={st}
                       onClick={() => {
                         if (isCompleted || isCurrent) {
+                          playTone("tap")
                           store.go(st)
                         }
                       }}
@@ -282,21 +285,24 @@ export default function App() {
             <main className="relative flex-1 overflow-hidden">{screen}</main>
           </div>
 
-          <div className="mt-3 flex items-center gap-2 text-[11px] text-fg-faint lg:hidden">
+          <div className="mt-3 flex items-center gap-2 text-[11px] text-fg-faint lg:hidden p-2">
             <button
-              onClick={() => setShowDesktopStation(!showDesktopStation)}
+              onClick={() => {
+                playTone("tap")
+                setShowDesktopStation(!showDesktopStation)
+              }}
               className="text-saffron underline hover:text-saffron-soft cursor-pointer font-medium"
             >
               {showDesktopStation
                 ? "Hide Loan Officer Desk"
-                : "View Loan Officer Desk"}
+                : "View Loan Officer Desk (Office Kit)"}
             </button>
           </div>
         </div>
 
         {/* ── DESKTOP COMPANION: LOAN OFFICER WORKSTATION (Office Kit) ─────────────── */}
         {showDesktopStation && (
-          <aside className="w-full max-w-[500px] lg:w-[460px] animate-fade-up">
+          <aside className="w-full max-w-[500px] px-3 sm:px-0 lg:w-[460px] animate-fade-up">
             <div className="rounded-3xl border border-hair-strong bg-panel/90 backdrop-blur-md p-5 shadow-2xl">
               {/* Laptop Header */}
               <div className="flex items-center justify-between border-b border-hair pb-3">
@@ -333,7 +339,7 @@ export default function App() {
                       {currentLender.name}
                     </div>
                     <div className="text-[12px] text-fg-dim">
-                      Officer: {currentLender.officer}
+                      Officer: {currentLender.officer} ({currentLender.branch})
                     </div>
                   </div>
                   <div className="text-right">
@@ -408,7 +414,7 @@ export default function App() {
                     <div className="flex items-center justify-between text-[11px] text-fg-faint pt-1">
                       <span>Consent Ref: CN-90D-A14</span>
                       <span className="text-verify font-mono">
-                        NPU Verified
+                        NPU Verified (99.4%)
                       </span>
                     </div>
 
@@ -419,12 +425,16 @@ export default function App() {
                           Micro-Credit
                         </div>
                         <div className="text-[10px] text-fg-dim mt-0.5">
-                          Disbursement packet ready at 1.1%/month
+                          Disbursement packet ready at 1.1%/month · Zero
+                          Collateral
                         </div>
                       </div>
                     ) : (
                       <button
-                        onClick={() => setOfficerApproved(true)}
+                        onClick={() => {
+                          playTone("success")
+                          setOfficerApproved(true)
+                        }}
                         className="w-full rounded-xl bg-verify px-4 py-2.5 font-display text-[13px] font-bold text-ink transition-all hover:brightness-105 active:scale-[0.98] cursor-pointer"
                       >
                         Approve ₹30,000 Micro-Credit Loan
@@ -445,6 +455,7 @@ export default function App() {
                     </p>
                     <button
                       onClick={() => {
+                        playTone("tap")
                         store.go("share")
                       }}
                       className="mt-4 text-[12px] font-medium text-saffron underline hover:text-saffron-soft cursor-pointer"
@@ -474,7 +485,10 @@ function LangToggle({
       {(["en", "hi"] as Lang[]).map((l) => (
         <button
           key={l}
-          onClick={() => onChange(l)}
+          onClick={() => {
+            playTone("tap")
+            onChange(l)
+          }}
           className={`px-2.5 py-1 transition-colors cursor-pointer ${
             lang === l
               ? "bg-saffron text-ink font-semibold"

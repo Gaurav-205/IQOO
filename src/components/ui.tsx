@@ -170,7 +170,7 @@ export const Icon = {
   ),
 }
 
-// ── Buttons & Components (Cohere 2026 Enterprise AI Specs) ─────
+// ── Canonical Cohere 2026 Component Tokens (from DESIGN.md) ─────
 export function Button({
   children,
   onClick,
@@ -181,30 +181,35 @@ export function Button({
 }: {
   children: ReactNode
   onClick?: () => void
-  variant?: "primary" | "coral" | "ghost" | "soft" | "emerald" | "outline"
+  variant?: "primary" | "secondary" | "outline" | "white" | "coral" | "emerald"
   disabled?: boolean
   full?: boolean
   className?: string
 }) {
   const styles = {
+    // Canonical button-primary: Near-black pill with white text
     primary:
-      "bg-saffron text-ink font-bold shadow-[0_10px_28px_-6px_rgba(255,154,60,0.45)] hover:brightness-105 active:scale-[0.98] border border-saffron/40",
-    coral:
-      "bg-coral text-white font-bold shadow-[0_10px_28px_-6px_rgba(255,119,89,0.45)] hover:brightness-105 active:scale-[0.98] border border-coral/40",
-    emerald:
-      "bg-verify text-ink font-bold shadow-[0_10px_28px_-6px_rgba(79,209,161,0.45)] hover:brightness-105 active:scale-[0.98] border border-verify/40",
+      "bg-[#17171c] text-[#ffffff] font-medium shadow-[0_2px_8px_rgba(0,0,0,0.12)] hover:bg-[#000000] active:scale-[0.98]",
+    // Canonical button-secondary: Text-only action link, rule-aligned
+    secondary:
+      "bg-transparent text-[#17171c] underline underline-offset-4 hover:text-[#1863dc] active:scale-[0.98]",
+    // Canonical button-pill-outline: Outlined pill control, 1px hairline border
     outline:
-      "bg-transparent border border-hair-strong text-fg hover:border-saffron hover:text-saffron active:scale-[0.98]",
-    ghost:
-      "bg-transparent text-fg-dim hover:text-fg hover:bg-white/5 active:scale-[0.98]",
-    soft: "bg-panel-2 text-fg border border-hair hover:border-hair-strong active:scale-[0.98]",
+      "bg-transparent border border-[#d9d9dd] text-[#17171c] hover:border-[#17171c] active:scale-[0.98]",
+    // White pill on dark bands (Command / North style)
+    white:
+      "bg-[#ffffff] text-[#17171c] font-medium shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-[#eeece7] active:scale-[0.98]",
+    coral:
+      "bg-[#ff7759] text-[#ffffff] font-medium shadow-[0_2px_8px_rgba(255,119,89,0.3)] hover:brightness-105 active:scale-[0.98]",
+    emerald:
+      "bg-[#003c33] text-[#ffffff] font-medium border border-white/20 hover:brightness-110 active:scale-[0.98]",
   }[variant]
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[14.5px] font-medium tracking-tight transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:pointer-events-none ${
+      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[14px] leading-[1.71] transition-all duration-200 cursor-pointer disabled:opacity-35 disabled:pointer-events-none ${
         full ? "w-full" : ""
       } ${styles} ${className}`}
     >
@@ -213,52 +218,60 @@ export function Button({
   )
 }
 
+// Canonical blog-filter-chip & taxonomy pills
 export function Pill({
   children,
-  tone = "dim",
+  tone = "stone",
 }: {
   children: ReactNode
-  tone?: "dim" | "verify" | "saffron" | "coral" | "sky" | "warn" | "deep-green" | "stone"
+  tone?: "stone" | "coral" | "pale-green" | "pale-blue" | "dark" | "white" | "deep-green"
 }) {
   const map = {
-    dim: "bg-white/5 text-fg-dim border-hair",
-    verify: "bg-verify/12 text-verify border-verify/30",
-    saffron: "bg-saffron/12 text-saffron-soft border-saffron/30",
-    coral: "bg-coral/15 text-coral-soft border-coral/35",
-    sky: "bg-sky/15 text-sky border-sky/30",
-    warn: "bg-warn/15 text-warn border-warn/30",
-    "deep-green": "bg-emerald-deep/40 text-verify border-verify/30",
-    stone: "bg-[#eeece7]/10 text-[#eeece7] border-white/10",
+    stone: "bg-[#eeece7] text-[#212121] border-[#d9d9dd]",
+    coral: "bg-[#ff7759]/10 text-[#ff7759] border-[#ff7759]/40",
+    "pale-green": "bg-[#edfce9] text-[#003c33] border-[#c2eec0]",
+    "pale-blue": "bg-[#f1f5ff] text-[#1863dc] border-[#d4e2ff]",
+    dark: "bg-[#17171c] text-[#ffffff] border-white/20",
+    white: "bg-[#ffffff] text-[#17171c] border-[#e5e7eb] shadow-xs",
+    "deep-green": "bg-[#003c33] text-[#edfce9] border-white/15",
   }[tone]
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] font-medium tracking-wide ${map}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] font-medium tracking-[0.28px] ${map}`}
     >
       {children}
     </span>
   )
 }
 
+// Canonical product-card, capability-card & agent-console-card
 export function Card({
   children,
   className = "",
-  variant = "default",
+  variant = "white",
 }: {
   children: ReactNode
   className?: string
-  variant?: "default" | "stone" | "deep-green" | "dark-navy"
+  variant?: "white" | "stone" | "dark" | "deep-green" | "dark-navy"
 }) {
   const bgStyles = {
-    default: "bg-panel/85 border-hair",
-    stone: "bg-panel-2 border-hair-strong",
-    "deep-green": "bg-emerald-deep/30 border-verify/20",
-    "dark-navy": "bg-[#071829]/80 border-sky/20",
+    // Canvas white card
+    white:
+      "bg-[#ffffff] border-[#e5e7eb] text-[#212121] shadow-[0_1px_3px_rgba(0,0,0,0.02)]",
+    // Soft stone product card
+    stone: "bg-[#eeece7] border-[#d9d9dd] text-[#212121]",
+    // Agent console card
+    dark: "bg-[#17171c] border-white/10 text-[#ffffff]",
+    // Deep enterprise green band
+    "deep-green": "bg-[#003c33] border-white/15 text-[#ffffff]",
+    // Dark navy band
+    "dark-navy": "bg-[#071829] border-white/15 text-[#ffffff]",
   }[variant]
 
   return (
     <div
-      className={`rounded-3xl border backdrop-blur-md transition-all duration-200 ${bgStyles} ${className}`}
+      className={`rounded-[22px] border transition-all duration-200 ${bgStyles} ${className}`}
     >
       {children}
     </div>

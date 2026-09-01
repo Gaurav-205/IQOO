@@ -11,38 +11,34 @@
   --font-hindi: 'Hind', 'Hanken Grotesk', sans-serif;
   --font-mono: 'DM Mono', monospace;
 
-  /* Base & Surfaces (Cohere 2026 Inspired Palette) */
-  --color-ink: #070a10;
-  --color-ink-2: #0e131d;
-  --color-panel: #131a26;
-  --color-panel-2: #192231;
+  /* Canonical Cohere 2026 Color System (from DESIGN.md) */
+  --color-canvas: #ffffff;
+  --color-canvas-stone: #f7f6f3;
+  --color-soft-stone: #eeece7;
+  --color-pale-green: #edfce9;
+  --color-pale-blue: #f1f5ff;
+  --color-card-border: #f2f2f2;
+  --color-border-light: #e5e7eb;
+  --color-hairline: #d9d9dd;
+
   --color-cohere-black: #000000;
   --color-primary-dark: #17171c;
+  --color-ink: #212121;
+  --color-body-muted: #616161;
+  --color-slate: #75758a;
+  --color-muted: #93939f;
+
   --color-deep-green: #003c33;
   --color-dark-navy: #071829;
-  --color-soft-stone: #eeece7;
-
-  /* Borders & Translucents */
-  --color-hair: rgba(255, 255, 255, 0.08);
-  --color-hair-strong: rgba(255, 255, 255, 0.16);
-  --color-border-subtle: rgba(255, 255, 255, 0.05);
-
-  /* Typography Colors */
-  --color-fg: #f4f6fa;
-  --color-fg-dim: #9aa7b8;
-  --color-fg-faint: #627084;
-
-  /* Accents & Brand Colors */
-  --color-saffron: #ff9a3c;
-  --color-saffron-soft: #ffb673;
+  --color-action-blue: #1863dc;
+  --color-focus-blue: #4c6ee6;
   --color-coral: #ff7759;
   --color-coral-soft: #ffad9b;
-  --color-verify: #4fd1a1;
-  --color-verify-soft: #7fe4c1;
-  --color-action-blue: #1863dc;
-  --color-sky: #6fa8ff;
-  --color-warn: #ffce6b;
-  --color-emerald-deep: #003c33;
+  --color-verify: #00875a;
+  --color-verify-soft: #edfce9;
+  --color-saffron: #ff9a3c;
+  --color-warn: #e28a00;
+  --color-error: #b30000;
 }
 
 html,
@@ -53,15 +49,15 @@ body,
 
 body {
   margin: 0;
-  background: var(--color-ink);
-  color: var(--color-fg);
+  background: var(--color-canvas-stone);
+  color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: rgba(255, 119, 89, 0.35);
-  color: #ffffff;
+  background: rgba(255, 119, 89, 0.25);
+  color: #17171c;
 }
 
 /* Hide scrollbars until scrolling */
@@ -76,7 +72,7 @@ body {
 @keyframes v-fade-up {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -94,7 +90,7 @@ body {
 @keyframes v-scale-in {
   from {
     opacity: 0;
-    transform: scale(0.94);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -103,7 +99,7 @@ body {
 }
 @keyframes v-pulse-ring {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.85);
     opacity: 0.7;
   }
   100% {
@@ -111,23 +107,10 @@ body {
     opacity: 0;
   }
 }
-@keyframes v-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes v-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
 @keyframes v-scan-laser {
   0% {
     top: 8%;
-    opacity: 0.2;
+    opacity: 0.3;
   }
   15% {
     opacity: 1;
@@ -136,40 +119,15 @@ body {
     opacity: 1;
   }
   100% {
-    top: 86%;
-    opacity: 0.2;
-  }
-}
-@keyframes v-beam-flow {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-@keyframes v-marquee-dot {
-  0%,
-  100% {
-    opacity: 0.25;
-  }
-  50% {
-    opacity: 1;
+    top: 88%;
+    opacity: 0.3;
   }
 }
 @keyframes v-breathe {
   0%,
   100% {
     transform: scale(1);
-    opacity: 0.85;
+    opacity: 0.9;
   }
   50% {
     transform: scale(1.04);
@@ -178,28 +136,39 @@ body {
 }
 
 .animate-fade-up {
-  animation: v-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: v-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .animate-fade {
-  animation: v-fade 0.5s ease both;
+  animation: v-fade 0.4s ease both;
 }
 .animate-scale-in {
-  animation: v-scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: v-scale-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.grain {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 3px 3px;
+.cohere-card-white {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
 }
 
-.cohere-card {
-  background: rgba(19, 26, 38, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.cohere-card-stone {
+  background: #eeece7;
+  border: 1px solid #d9d9dd;
 }
 
-.cohere-pill {
-  border-radius: 9999px;
-  letter-spacing: 0.02em;
+.cohere-card-dark {
+  background: #17171c;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cohere-card-green {
+  background: #003c33;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cohere-card-navy {
+  background: #071829;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }

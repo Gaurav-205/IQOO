@@ -21,8 +21,8 @@ const levelTone = (lvl: string) =>
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.24em] text-fg-faint">
-      <span className="h-1.5 w-1.5 rounded-full bg-saffron" />
+    <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.28px] text-[#75758a]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#ff7759]" />
       {children}
     </div>
   )
@@ -54,8 +54,8 @@ export function Welcome({ s }: { s: Store }) {
   const totalIncome = chips.reduce((a, b) => a + b.monthly, 0)
 
   return (
-    <div className="flex h-full flex-col justify-between p-7">
-      <div className="animate-fade-up pt-4">
+    <div className="flex h-full flex-col justify-between p-6 bg-[#ffffff]">
+      <div className="animate-fade-up pt-2">
         <Eyebrow>
           Visible · {hi ? "क्रेडिट-रेडीनेस" : "Credit-Readiness Engine"}
         </Eyebrow>
@@ -68,7 +68,7 @@ export function Welcome({ s }: { s: Store }) {
             className="absolute inset-0 rounded-full transition-all duration-700"
             style={{
               background:
-                "radial-gradient(circle, rgba(255,154,60,0.22), rgba(79,209,161,0.08) 50%, transparent 70%)",
+                "radial-gradient(circle, rgba(255,119,89,0.12), rgba(0,60,51,0.06) 50%, transparent 70%)",
               opacity: phase ? 1 : 0,
               animation: phase
                 ? "v-breathe 4s ease-in-out infinite"
@@ -79,7 +79,7 @@ export function Welcome({ s }: { s: Store }) {
           {chips.map((p, i) => (
             <div
               key={p.id}
-              className={`absolute left-1/2 top-1/2 flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-[13px] font-medium shadow-xl transition-all duration-700 backdrop-blur-md ${spread[i]?.col || "border-hair bg-panel"}`}
+              className={`absolute left-1/2 top-1/2 flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-[13px] font-medium shadow-sm transition-all duration-700 bg-[#eeece7] border-[#d9d9dd] text-[#17171c]`}
               style={{
                 transform: phase
                   ? "translate(-50%,-50%) scale(0.55)"
@@ -88,7 +88,7 @@ export function Welcome({ s }: { s: Store }) {
               }}
             >
               <span className="text-base">{p.glyph}</span>
-              <span className="font-mono text-fg font-semibold">
+              <span className="font-mono text-[#17171c] font-semibold">
                 {inr(p.monthly)}
               </span>
             </div>
@@ -101,15 +101,15 @@ export function Welcome({ s }: { s: Store }) {
               transform: `translate(-50%,-50%) scale(${phase ? 1 : 0.6})`,
             }}
           >
-            <div className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-saffron font-semibold">
+            <div className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-[#ff7759] font-semibold">
               <Icon.spark size={13} />{" "}
               {hi ? "एकीकृत मासिक आय" : "Unified Income"}
             </div>
-            <div className="font-display text-4xl font-extrabold text-fg tracking-tight">
+            <div className="font-display text-4xl font-extrabold text-[#17171c] tracking-tight">
               {inr(totalIncome || activeWorker.document)}
             </div>
-            <div className="mt-0.5 flex items-center gap-1 text-[12px] font-mono text-verify">
-              <span className="h-1.5 w-1.5 rounded-full bg-verify" />{" "}
+            <div className="mt-1 flex items-center gap-1.5 text-[12px] font-mono text-[#003c33] bg-[#edfce9] border border-[#c2eec0] rounded-full px-2.5 py-0.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00875a]" />{" "}
               {chips.length} {hi ? "प्लेटफ़ॉर्म" : "Platforms"}
             </div>
           </div>
@@ -117,11 +117,11 @@ export function Welcome({ s }: { s: Store }) {
       </div>
 
       <div
-        className="animate-fade-up space-y-4"
-        style={{ animationDelay: "0.2s" }}
+        className="animate-fade-up space-y-3.5"
+        style={{ animationDelay: "0.15s" }}
       >
         <h1
-          className={`text-[26px] font-bold leading-[1.18] text-fg ${
+          className={`text-[26px] font-bold leading-[1.14] tracking-tight text-[#17171c] ${
             hi ? "font-hindi" : "font-display"
           }`}
         >
@@ -129,18 +129,18 @@ export function Welcome({ s }: { s: Store }) {
             <>
               आपकी कमाई पहले से मौजूद है।
               <br />
-              <span className="text-saffron">बस अब तक बिखरी हुई थी।</span>
+              <span className="text-[#ff7759]">बस अब तक बिखरी हुई थी।</span>
             </>
           ) : (
             <>
               Your income already exists.
               <br />
-              <span className="text-saffron">It was just scattered.</span>
+              <span className="text-[#ff7759]">It was just scattered.</span>
             </>
           )}
         </h1>
         <p
-          className={`text-[14px] leading-relaxed text-fg-dim ${
+          className={`text-[13.5px] leading-relaxed text-[#616161] ${
             hi ? "font-hindi" : ""
           }`}
         >
@@ -164,7 +164,7 @@ export function Welcome({ s }: { s: Store }) {
             playTone("tap")
             s.setLang(hi ? "en" : "hi")
           }}
-          className="w-full text-center text-[13px] text-fg-faint transition-colors hover:text-saffron cursor-pointer font-medium"
+          className="w-full text-center text-[12.5px] text-[#75758a] transition-colors hover:text-[#17171c] underline underline-offset-4 cursor-pointer font-medium"
         >
           {hi ? "Switch to English" : "हिंदी में देखें (Hindi)"}
         </button>

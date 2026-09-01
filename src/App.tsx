@@ -140,37 +140,32 @@ export default function App() {
   }[step]
 
   return (
-    <div className="grain relative flex min-h-dvh w-full justify-center bg-ink text-fg overflow-hidden">
-      {/* Ambient background glow */}
-      <div
-        className="pointer-events-none fixed inset-0 opacity-40"
-        style={{
-          background:
-            "radial-gradient(55% 45% at 50% 10%, rgba(255,154,60,0.14), transparent 70%), radial-gradient(50% 50% at 50% 90%, rgba(79,209,161,0.10), transparent 70%)",
-        }}
-      />
-
-      {/* Pure Mobile App Viewport */}
-      <div className="relative z-10 flex min-h-dvh h-dvh w-full max-w-md flex-col bg-ink-2 shadow-2xl overflow-hidden border-x border-hair/30">
-        {/* Mobile Status Bar */}
-        <header className="relative flex shrink-0 items-center justify-between px-5 pt-3 pb-1 text-[12px] text-fg-dim select-none">
-          <span className="font-mono text-[12px] font-semibold text-fg">
+    <div className="relative flex min-h-dvh w-full justify-center bg-[#f7f6f3] text-[#212121] overflow-hidden">
+      {/* Pure Mobile Viewport Container */}
+      <div className="relative z-10 flex min-h-dvh h-dvh w-full max-w-md flex-col bg-[#ffffff] shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border-x border-[#e5e7eb]">
+        {/* Mobile Status Bar (Cohere 2026 Minimalist Precision) */}
+        <header className="relative flex shrink-0 items-center justify-between px-5 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
+          <span className="font-mono text-[12px] font-semibold text-[#17171c]">
             14:20
           </span>
 
           {/* Persona selector badge in status bar */}
-          <div className="flex items-center gap-1 rounded-full bg-panel-2 border border-hair px-2 py-0.5 shadow-xs">
-            <span className="text-[10px] font-mono text-fg-faint">
-              PROFILE:
+          <div className="flex items-center gap-1.5 rounded-full bg-[#eeece7] border border-[#d9d9dd] px-2.5 py-0.5 shadow-xs">
+            <span className="text-[10px] font-mono text-[#75758a] uppercase tracking-wider">
+              Profile:
             </span>
             <select
               value={activePersonaId}
               onChange={(e) => handlePersonaSwitch(e.target.value)}
-              className="bg-transparent text-[11px] font-bold text-saffron outline-none cursor-pointer"
+              className="bg-transparent text-[11px] font-semibold text-[#17171c] outline-none cursor-pointer"
               aria-label="Select Persona"
             >
               {Object.values(personas).map((p) => (
-                <option key={p.id} value={p.id} className="bg-ink text-fg">
+                <option
+                  key={p.id}
+                  value={p.id}
+                  className="bg-[#ffffff] text-[#17171c]"
+                >
                   {p.name.split(" ")[0]} ({p.city.split(",")[0]})
                 </option>
               ))}
@@ -179,31 +174,31 @@ export default function App() {
 
           <div className="flex items-center gap-1.5 font-mono text-[11px]">
             {offline ? (
-              <span className="flex items-center gap-1 text-warn font-semibold">
+              <span className="flex items-center gap-1 text-[#e28a00] font-semibold">
                 <Icon.wifiOff size={12} />
                 OFFLINE
               </span>
             ) : (
-              <span className="text-verify font-semibold">5G</span>
+              <span className="text-[#00875a] font-semibold">5G</span>
             )}
-            <span>86%</span>
+            <span className="text-[#75758a]">86%</span>
           </div>
         </header>
 
         {/* Navigation Chrome Bar */}
         {showChrome && (
-          <div className="flex shrink-0 items-center justify-between px-4 py-2.5 border-b border-hair/40 bg-ink-2/90 backdrop-blur-md">
-            <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={handleBack}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-hair text-fg-dim transition-colors hover:border-fg-dim hover:text-fg cursor-pointer"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d9dd] text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
                 aria-label="Go back"
               >
                 <Icon.arrowLeft size={16} />
               </button>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <VisibleMark size={20} />
-                <span className="font-display text-[15px] font-bold tracking-tight text-fg">
+                <span className="font-display text-[16px] font-bold tracking-tight text-[#17171c]">
                   Visible
                 </span>
               </div>
@@ -211,7 +206,7 @@ export default function App() {
 
             <div className="flex items-center gap-2">
               {offline && (
-                <span className="flex items-center gap-1 rounded-full bg-warn/15 px-2 py-0.5 font-mono text-[9px] font-bold text-warn">
+                <span className="flex items-center gap-1 rounded-full bg-[#fef3c7] border border-[#fde68a] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#b45309]">
                   <Icon.wifiOff size={10} /> OFFLINE
                 </span>
               )}
@@ -224,8 +219,8 @@ export default function App() {
                   }}
                   className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors cursor-pointer ${
                     step === "privacy"
-                      ? "border-saffron bg-saffron/15 text-saffron"
-                      : "border-hair text-fg-dim hover:border-saffron/50 hover:text-saffron"
+                      ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
+                      : "border-[#d9d9dd] text-[#616161] hover:border-[#17171c] hover:text-[#17171c]"
                   }`}
                   aria-label="Privacy Settings"
                 >
@@ -236,9 +231,9 @@ export default function App() {
           </div>
         )}
 
-        {/* Progress Rail */}
+        {/* Progress Rail (Cohere Near-Black Pill Track) */}
         {mainIdx >= 0 && step !== "welcome" && (
-          <div className="flex shrink-0 gap-1.5 px-5 pt-2 pb-1 bg-ink-2">
+          <div className="flex shrink-0 gap-1.5 px-5 pt-2.5 pb-1.5 bg-[#ffffff]">
             {MAIN.slice(1).map((st, i) => {
               const isCompleted = i <= mainIdx - 1
               const isCurrent = i === mainIdx - 1
@@ -252,13 +247,13 @@ export default function App() {
                     }
                   }}
                   disabled={!isCompleted && !isCurrent}
-                  className="h-1.5 flex-1 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-default"
+                  className="h-1 flex-1 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-default"
                   style={{
                     background: isCompleted
-                      ? "var(--color-saffron)"
+                      ? "#17171c"
                       : isCurrent
-                        ? "var(--color-saffron-soft)"
-                        : "rgba(255,255,255,0.08)",
+                        ? "#75758a"
+                        : "#e5e7eb",
                   }}
                   title={`Step: ${st}`}
                 />
@@ -267,16 +262,24 @@ export default function App() {
           </div>
         )}
 
-        {/* Active Mobile Screen Container */}
-        <main className="relative flex-1 overflow-hidden">{screen}</main>
+        {/* Active Mobile Screen Viewport */}
+        <main className="relative flex-1 overflow-hidden bg-[#ffffff] text-[#212121]">
+          {screen}
+        </main>
       </div>
     </div>
   )
 }
 
-function LangToggle({ lang, onChange }: { lang: Lang onChange: (l) => void }) {
+function LangToggle({
+  lang,
+  onChange,
+}: {
+  lang: Lang
+  onChange: (l: Lang) => void
+}) {
   return (
-    <div className="flex overflow-hidden rounded-full border border-hair text-[11px] font-medium">
+    <div className="flex overflow-hidden rounded-full border border-[#d9d9dd] text-[11px] font-medium bg-[#ffffff]">
       {(["en", "hi"] as Lang[]).map((l) => (
         <button
           key={l}
@@ -286,8 +289,8 @@ function LangToggle({ lang, onChange }: { lang: Lang onChange: (l) => void }) {
           }}
           className={`px-2.5 py-1 transition-colors cursor-pointer ${
             lang === l
-              ? "bg-saffron text-ink font-semibold"
-              : "text-fg-dim hover:text-fg"
+              ? "bg-[#17171c] text-[#ffffff] font-semibold"
+              : "text-[#616161] hover:text-[#17171c]"
           } ${l === "hi" ? "font-hindi" : ""}`}
         >
           {l === "en" ? "EN" : "हिं"}
@@ -297,7 +300,7 @@ function LangToggle({ lang, onChange }: { lang: Lang onChange: (l) => void }) {
   )
 }
 
-function VisibleMark({ size = 26 }: { size?: number }) {
+function VisibleMark({ size = 24 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -306,19 +309,13 @@ function VisibleMark({ size = 26 }: { size?: number }) {
       fill="none"
       className="shrink-0"
     >
-      <circle
-        cx="16"
-        cy="16"
-        r="14"
-        stroke="var(--color-hair-strong)"
-        strokeWidth="1.5"
-      />
+      <circle cx="16" cy="16" r="14" stroke="#17171c" strokeWidth="1.5" />
       <path
         d="M4 16c3-6 21-6 24 0-3 6-21 6-24 0z"
-        stroke="var(--color-saffron)"
-        strokeWidth="1.6"
+        stroke="#ff7759"
+        strokeWidth="1.8"
       />
-      <circle cx="16" cy="16" r="3.4" fill="var(--color-verify)" />
+      <circle cx="16" cy="16" r="3.4" fill="#003c33" />
     </svg>
   )
 }

@@ -15,6 +15,7 @@ import { AuthScreen } from "./components/AuthScreen"
 import { LiveSystemInspector } from "./components/LiveSystemInspector"
 import {
   createCustomPersona,
+  inr,
   Lang,
   Persona,
   personas,

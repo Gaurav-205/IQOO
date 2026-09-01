@@ -3,6 +3,9 @@ import type { Lang } from "./data"
 export type Step = "welcome" | "consent" | "connect" | "analysis" | "verify" | "profile" | "offline" | "share" | "privacy"
 
 export interface Store {
+  personaId: string
+  setPersonaId: (id: string) => void
+
   lang: Lang
   setLang: (l: Lang) => void
   step: Step

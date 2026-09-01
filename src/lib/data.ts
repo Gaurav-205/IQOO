@@ -78,6 +78,7 @@ export interface Persona {
   document: number
   readinessScore: number
   ratings: Rating[]
+  statement: StatementSample
 }
 
 export const personas: Record<string, Persona> = {
@@ -177,6 +178,17 @@ export const personas: Record<string, Persona> = {
           "आपके recurring payouts काफ़ी हद तक consistent हैं, बीच-बीच में settlement में थोड़ा अंतर आता है।",
       },
     ],
+    statement: {
+      id: "swiggy-sep",
+      company: "Swiggy Delivery Partner",
+      glyph: "🛵",
+      cycle: "Sep 2026 (Monthly)",
+      partner: "Anjali Verma",
+      orders: "212 completed orders",
+      netPayout: 29800,
+      utr: "SWG-49219401",
+      date: "30 Sep 2026",
+    },
   },
   ramesh: {
     id: "ramesh",
@@ -191,7 +203,7 @@ export const personas: Record<string, Persona> = {
     platforms: [
       {
         id: "swiggy",
-        name: "Uber",
+        name: "Uber Fleet",
         kind: "Cab Services",
         color: "#ffffff",
         glyph: "🚕",
@@ -200,7 +212,7 @@ export const personas: Record<string, Persona> = {
       },
       {
         id: "ola",
-        name: "Ola",
+        name: "Ola Prime",
         kind: "Ride-hailing",
         color: "#4fd1a1",
         glyph: "🚗",
@@ -209,10 +221,10 @@ export const personas: Record<string, Persona> = {
       },
       {
         id: "rapido",
-        name: "Rapido",
-        kind: "Bike taxi",
+        name: "Rapido Auto",
+        kind: "Auto Rickshaw",
         color: "#f5c518",
-        glyph: "🏍️",
+        glyph: "🛺",
         monthly: 0,
         txns: 0,
       },
@@ -271,6 +283,17 @@ export const personas: Record<string, Persona> = {
         reasonHi: "100% समय पर दैनिक बैंक जमा और शून्य विफलता।",
       },
     ],
+    statement: {
+      id: "ola-sep",
+      company: "Ola Fleet Partner",
+      glyph: "🚗",
+      cycle: "Sep 2026 (Weekly Settled)",
+      partner: "Ramesh Kumar",
+      orders: "120 trips completed",
+      netPayout: 42000,
+      utr: "OLA-98120344",
+      date: "30 Sep 2026",
+    },
   },
   pooja: {
     id: "pooja",
@@ -364,6 +387,17 @@ export const personas: Record<string, Persona> = {
         reasonHi: "भुगतान सामान्य 3-दिवसीय बैच चक्र में प्राप्त होते हैं।",
       },
     ],
+    statement: {
+      id: "urban-sep",
+      company: "Urban Company Partner",
+      glyph: "💅",
+      cycle: "Sep 2026 (Bi-Weekly)",
+      partner: "Pooja Sharma",
+      orders: "48 appointments",
+      netPayout: 22500,
+      utr: "UC-55194021",
+      date: "30 Sep 2026",
+    },
   },
 }
 
@@ -406,39 +440,9 @@ export const lenders = [
 ]
 
 export const statementPresets: StatementSample[] = [
-  {
-    id: "swiggy-sep",
-    company: "Swiggy Delivery Partner",
-    glyph: "🛵",
-    cycle: "Sep 2026 (Monthly)",
-    partner: "Anjali Verma",
-    orders: "212 completed orders",
-    netPayout: 29800,
-    utr: "SWG-49219401",
-    date: "30 Sep 2026",
-  },
-  {
-    id: "ola-sep",
-    company: "Ola Fleet Partner",
-    glyph: "🚗",
-    cycle: "Sep 2026 (Weekly Settled)",
-    partner: "Anjali Verma",
-    orders: "96 rides",
-    netPayout: 7200,
-    utr: "OLA-98120344",
-    date: "28 Sep 2026",
-  },
-  {
-    id: "rapido-sep",
-    company: "Rapido Captain Statement",
-    glyph: "🏍️",
-    cycle: "Sep 2026 (Bi-Weekly)",
-    partner: "Anjali Verma",
-    orders: "141 trips",
-    netPayout: 4800,
-    utr: "RPD-77291038",
-    date: "29 Sep 2026",
-  },
+  personas.anjali.statement,
+  personas.ramesh.statement,
+  personas.pooja.statement,
 ]
 
 export const loanOffers: LoanOffer[] = [
@@ -511,15 +515,32 @@ export function delay(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms))
 }
 
-// Synthesized Audio Feedback
-export function playTone(type: "tap" | "success" | "beam" | "scan") {
-  try {
-    const AudioContext =
+// Global AudioContext Singleton for smooth playback
+let sharedAudioCtx: AudioContext | null = null
+
+function getAudioContext(): AudioContext | null {
+  if (typeof window === "undefined") return null
+  if (!sharedAudioCtx) {
+    const AudioContextClass =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof window.AudioContext })
         .webkitAudioContext
-    if (!AudioContext) return
-    const ctx = new AudioContext()
+    if (AudioContextClass) {
+      sharedAudioCtx = new AudioContextClass()
+    }
+  }
+  if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
+    sharedAudioCtx.resume().catch(() => {})
+  }
+  return sharedAudioCtx
+}
+
+// Synthesized Audio Feedback
+export function playTone(type: "tap" | "success" | "beam" | "scan") {
+  try {
+    const ctx = getAudioContext()
+    if (!ctx) return
+
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.connect(gain)

@@ -1,19 +1,14 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, Card, Icon, Pill } from "./ui"
 import {
-  analysis,
-  history,
   inr,
   lenders,
   loanOffers,
-  platforms,
+  personas,
   playTone,
-  ratings,
   speakText,
   statementPresets,
   stopSpeaking,
-  verification,
-  worker,
 } from "../lib/data"
 import type { Store } from "../lib/store"
 
@@ -38,7 +33,8 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 // ─────────────────────────────────────────────────────────────
 export function Welcome({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const chips = platforms.slice(0, 3)
+  const activeWorker = personas[s.personaId] || personas.anjali
+  const chips = activeWorker.platforms.filter((p) => p.monthly > 0).slice(0, 3)
   const [phase, setPhase] = useState(0) // 0 scattered → 1 converged
 
   useEffect(() => {
@@ -54,6 +50,8 @@ export function Welcome({ s }: { s: Store }) {
     { x: 90, y: -12, r: 12, col: "border-[#4fd1a1]/40 bg-[#4fd1a1]/10" },
     { x: -50, y: 80, r: -8, col: "border-[#f5c518]/40 bg-[#f5c518]/10" },
   ]
+
+  const totalIncome = chips.reduce((a, b) => a + b.monthly, 0)
 
   return (
     <div className="flex h-full flex-col justify-between p-7">
@@ -81,11 +79,11 @@ export function Welcome({ s }: { s: Store }) {
           {chips.map((p, i) => (
             <div
               key={p.id}
-              className={`absolute left-1/2 top-1/2 flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-[13px] font-medium shadow-xl transition-all duration-700 backdrop-blur-md ${spread[i].col}`}
+              className={`absolute left-1/2 top-1/2 flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-[13px] font-medium shadow-xl transition-all duration-700 backdrop-blur-md ${spread[i]?.col || "border-hair bg-panel"}`}
               style={{
                 transform: phase
                   ? "translate(-50%,-50%) scale(0.55)"
-                  : `translate(calc(-50% + ${spread[i].x}px), calc(-50% + ${spread[i].y}px)) rotate(${spread[i].r}deg)`,
+                  : `translate(calc(-50% + ${spread[i]?.x || 0}px), calc(-50% + ${spread[i]?.y || 0}px)) rotate(${spread[i]?.r || 0}deg)`,
                 opacity: phase ? 0 : 1,
               }}
             >
@@ -108,11 +106,11 @@ export function Welcome({ s }: { s: Store }) {
               {hi ? "एकीकृत मासिक आय" : "Unified Income"}
             </div>
             <div className="font-display text-4xl font-extrabold text-fg tracking-tight">
-              {inr(30400)}
+              {inr(totalIncome || activeWorker.document)}
             </div>
             <div className="mt-0.5 flex items-center gap-1 text-[12px] font-mono text-verify">
-              <span className="h-1.5 w-1.5 rounded-full bg-verify" /> 3{" "}
-              {hi ? "प्लेटफ़ॉर्म" : "Platforms"}
+              <span className="h-1.5 w-1.5 rounded-full bg-verify" />{" "}
+              {chips.length} {hi ? "प्लेटफ़ॉर्म" : "Platforms"}
             </div>
           </div>
         </div>
@@ -148,7 +146,7 @@ export function Welcome({ s }: { s: Store }) {
         >
           {hi
             ? "Visible आपकी अलग-अलग platforms की कमाई को एक भरोसेमंद तस्वीर में बदलता है — जिसे कोई भी lender समझ सके। पर्ची की ज़रूरत नहीं।"
-            : "Visible turns your fragmented gig earnings across Swiggy, Ola & Rapido into one verifiable profile any lender understands."}
+            : "Visible turns your fragmented gig earnings across delivery and rides into one verifiable profile any lender understands."}
         </p>
 
         <Button
@@ -387,18 +385,21 @@ export function Consent({ s }: { s: Store }) {
 // ─────────────────────────────────────────────────────────────
 export function Connect({ s }: { s: Store }) {
   const hi = s.lang === "hi"
+  const activeWorker = personas[s.personaId] || personas.anjali
   const [activePlatformModal, setActivePlatformModal] =
-    useState<Platform | null>(null)
+    useState<typeof activeWorker.platforms[0] | null>(null)
   const [otpCode, setOtpCode] = useState("8924")
   const [otpVerifying, setOtpVerifying] = useState(false)
-  const active = platforms.filter((p) => p.monthly > 0)
+  const active = activeWorker.platforms.filter((p) => p.monthly > 0)
   const total = s.connected.reduce(
-    (sum, id) => sum + (platforms.find((p) => p.id === id)?.monthly ?? 0),
+    (sum, id) =>
+      sum + (activeWorker.platforms.find((p) => p.id === id)?.monthly ?? 0),
     0,
   )
-  const allDone = active.every((p) => s.connected.includes(p.id))
+  const allDone =
+    active.length > 0 && active.every((p) => s.connected.includes(p.id))
 
-  const handleOpenModal = (p: Platform) => {
+  const handleOpenModal = (p: typeof activeWorker.platforms[0]) => {
     playTone("tap")
     setActivePlatformModal(p)
   }
@@ -481,7 +482,7 @@ export function Connect({ s }: { s: Store }) {
       </div>
 
       <div className="mt-4 space-y-2.5">
-        {platforms.map((p) => {
+        {activeWorker.platforms.map((p) => {
           const done = s.connected.includes(p.id)
           const disabled = p.monthly === 0
           return (
@@ -569,8 +570,9 @@ export function Connect({ s }: { s: Store }) {
 
               <div className="mt-4 space-y-3">
                 <div className="text-[13px] text-fg-dim">
-                  Authenticate Account Aggregator consent for {worker.phone} to
-                  link monthly earnings ({inr(activePlatformModal.monthly)}/mo).
+                  Authenticate Account Aggregator consent for{" "}
+                  {activeWorker.phone} to link monthly earnings (
+                  {inr(activePlatformModal.monthly)}/mo).
                 </div>
 
                 <div className="rounded-2xl border border-hair bg-panel-2 p-3">
@@ -616,6 +618,7 @@ export function Connect({ s }: { s: Store }) {
 // ─────────────────────────────────────────────────────────────
 export function Analysis({ s }: { s: Store }) {
   const hi = s.lang === "hi"
+  const activeWorker = personas[s.personaId] || personas.anjali
   const [progress, setProgress] = useState(0)
   const done = s.analysed
   const steps = hi
@@ -695,6 +698,15 @@ export function Analysis({ s }: { s: Store }) {
     )
   }
 
+  const bestPt = activeWorker.history.reduce(
+    (max, cur) => (cur.amount > max.amount ? cur : max),
+    activeWorker.history[0],
+  )
+  const worstPt = activeWorker.history.reduce(
+    (min, cur) => (cur.amount < min.amount ? cur : min),
+    activeWorker.history[0],
+  )
+
   return (
     <ScreenScroll>
       <Header
@@ -712,39 +724,33 @@ export function Analysis({ s }: { s: Store }) {
         </Pill>
       </div>
 
-      <BarChart hi={hi} />
+      <BarChart hi={hi} historyData={activeWorker.history} />
 
       <div className="mt-4 grid grid-cols-2 gap-2.5">
         <Stat
           label={hi ? "औसत मासिक" : "Avg monthly"}
-          value={inr(analysis.avgMonthly)}
+          value={inr(activeWorker.avgMonthly)}
         />
-        <Stat
-          label={hi ? "रुझान" : "6-Mo Trend"}
-          value={analysis.trend}
-          tone="verify"
-        />
+        <Stat label={hi ? "रुझान" : "6-Mo Trend"} value="+7.4%" tone="verify" />
         <Stat
           label={hi ? "सबसे अच्छा" : "Best month"}
-          value={`${
-            hi ? analysis.bestMonth.labelHi : analysis.bestMonth.label
-          }`}
-          sub={inr(analysis.bestMonth.amount)}
+          value={`${hi ? bestPt.labelHi : bestPt.label}`}
+          sub={inr(bestPt.amount)}
         />
         <Stat
           label={hi ? "सबसे कम" : "Lowest month"}
-          value={`${
-            hi ? analysis.worstMonth.labelHi : analysis.worstMonth.label
-          }`}
-          sub={inr(analysis.worstMonth.amount)}
+          value={`${hi ? worstPt.labelHi : worstPt.label}`}
+          sub={inr(worstPt.amount)}
         />
         <Stat
           label={hi ? "platforms" : "Platforms"}
-          value={String(analysis.diversity)}
+          value={String(
+            activeWorker.platforms.filter((p) => p.monthly > 0).length,
+          )}
         />
         <Stat
           label={hi ? "विश्लेषित महीने" : "Months analysed"}
-          value={String(analysis.monthsAnalysed)}
+          value={String(activeWorker.history.length)}
         />
       </div>
 
@@ -764,7 +770,13 @@ export function Analysis({ s }: { s: Store }) {
   )
 }
 
-function BarChart({ hi }: { hi: boolean }) {
+function BarChart({
+  hi,
+  historyData,
+}: {
+  hi: boolean
+  historyData: typeof personas.anjali.history
+}) {
   const [shown, setShown] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<string | null>("Sep")
 
@@ -773,11 +785,11 @@ function BarChart({ hi }: { hi: boolean }) {
     return () => clearTimeout(t)
   }, [])
 
-  const max = Math.max(...history.map((h) => h.amount))
-  const best = Math.max(...history.map((h) => h.amount))
+  const max = Math.max(...historyData.map((h) => h.amount))
+  const best = Math.max(...historyData.map((h) => h.amount))
   const activePt =
-    history.find((h) => h.label === selectedMonth) ??
-    history[history.length - 1]
+    historyData.find((h) => h.label === selectedMonth) ??
+    historyData[historyData.length - 1]
 
   return (
     <Card className="mt-5 p-5">
@@ -800,7 +812,7 @@ function BarChart({ hi }: { hi: boolean }) {
         className="mt-4 flex items-end justify-between gap-2"
         style={{ height: 140 }}
       >
-        {history.map((h, i) => {
+        {historyData.map((h, i) => {
           const pct = (h.amount / max) * 100
           const isBest = h.amount === best
           const isSelected = h.label === selectedMonth
@@ -834,7 +846,7 @@ function BarChart({ hi }: { hi: boolean }) {
         })}
       </div>
       <div className="mt-2 flex justify-between">
-        {history.map((h) => (
+        {historyData.map((h) => (
           <button
             key={h.label}
             onClick={() => {
@@ -888,17 +900,19 @@ function Stat({
 // ─────────────────────────────────────────────────────────────
 export function Verify({ s }: { s: Store }) {
   const hi = s.lang === "hi"
+  const activeWorker = personas[s.personaId] || personas.anjali
   const [stage, setStage] = useState<"intro" | "camera" | "ocr" | "done">(
     s.verified ? "done" : "intro",
   )
-  const [selectedStatement, setSelectedStatement] =
-    useState<string>("swiggy-sep")
+  const [selectedStatement, setSelectedStatement] = useState<string>(
+    activeWorker.statement.id,
+  )
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [camLive, setCamLive] = useState(false)
 
   const activeStatement =
     statementPresets.find((st) => st.id === selectedStatement) ??
-    statementPresets[0]
+    activeWorker.statement
 
   useEffect(() => {
     if (stage !== "camera") return
@@ -1012,8 +1026,8 @@ export function Verify({ s }: { s: Store }) {
                 }`}
               >
                 {hi
-                  ? "Swiggy, Ola या Rapido की हालिया स्टेटमेंट"
-                  : "Recent statement from Swiggy, Ola, Rapido"}
+                  ? "Swiggy, Ola या Uber की हालिया स्टेटमेंट"
+                  : "Recent statement from Swiggy, Ola, Uber"}
               </p>
             </div>
           </div>
@@ -1038,7 +1052,7 @@ export function Verify({ s }: { s: Store }) {
         )}
       </div>
 
-      {stage === "done" && <CompareTable hi={hi} />}
+      {stage === "done" && <CompareTable hi={hi} activeWorker={activeWorker} />}
 
       <FooterBar>
         {stage === "intro" && (
@@ -1133,17 +1147,27 @@ function MockPayout({
   )
 }
 
-function CompareTable({ hi }: { hi: boolean }) {
+function CompareTable({
+  hi,
+  activeWorker,
+}: {
+  hi: boolean
+  activeWorker: typeof personas.anjali
+}) {
   const rows = [
     {
       k: hi ? "दावा की गई" : "Claimed",
-      v: verification.claimed,
+      v: activeWorker.claimed,
       tag: "Worker claim",
     },
-    { k: hi ? "AA से" : "AA-derived", v: verification.aa, tag: "Bank API" },
+    {
+      k: hi ? "AA से" : "AA-derived",
+      v: activeWorker.aa,
+      tag: "Bank API",
+    },
     {
       k: hi ? "दस्तावेज़ (OCR)" : "Document (OCR)",
-      v: verification.document,
+      v: activeWorker.document,
       tag: "Statement",
     },
   ] as const
@@ -1194,6 +1218,7 @@ function CompareTable({ hi }: { hi: boolean }) {
 // ─────────────────────────────────────────────────────────────
 export function Profile({ s }: { s: Store }) {
   const hi = s.lang === "hi"
+  const activeWorker = personas[s.personaId] || personas.anjali
   const [building, setBuilding] = useState(!s.profileReady)
   const [open, setOpen] = useState<string | null>("consistency")
   const [speakingKey, setSpeakingKey] = useState<string | null>(null)
@@ -1216,9 +1241,7 @@ export function Profile({ s }: { s: Store }) {
     }
   }, [])
 
-  const readiness = Math.round(
-    ratings.reduce((a, r) => a + r.score, 0) / ratings.length,
-  )
+  const readiness = activeWorker.readinessScore
 
   const handleSpeak = (key: string, text: string) => {
     if (speakingKey === key) {
@@ -1309,10 +1332,11 @@ export function Profile({ s }: { s: Store }) {
               hi ? "font-hindi" : "font-display"
             }`}
           >
-            {hi ? worker.nameHi : worker.name}
+            {hi ? activeWorker.nameHi : activeWorker.name}
           </div>
           <div className="text-[12px] text-fg-faint">
-            {hi ? worker.cityHi : worker.city} · {worker.id}
+            {hi ? activeWorker.cityHi : activeWorker.city} ·{" "}
+            {activeWorker.idCode}
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
@@ -1367,15 +1391,17 @@ export function Profile({ s }: { s: Store }) {
       <div className="mt-3 grid grid-cols-3 gap-2.5">
         <Stat
           label={hi ? "सत्यापित आय" : "Verified"}
-          value={inr(verification.document)}
+          value={inr(activeWorker.document)}
         />
         <Stat
           label={hi ? "platforms" : "Platforms"}
-          value={String(analysis.diversity)}
+          value={String(
+            activeWorker.platforms.filter((p) => p.monthly > 0).length,
+          )}
         />
         <Stat
           label={hi ? "महीने" : "Months"}
-          value={String(analysis.monthsAnalysed)}
+          value={String(activeWorker.history.length)}
         />
       </div>
 
@@ -1384,7 +1410,7 @@ export function Profile({ s }: { s: Store }) {
         <Eyebrow>
           {hi ? "आपकी प्रोफ़ाइल क्यों ऐसी है" : "Why your profile looks this way"}
         </Eyebrow>
-        {ratings.map((r) => {
+        {activeWorker.ratings.map((r) => {
           const isOpen = open === r.key
           const isSpeaking = speakingKey === r.key
           return (
@@ -1567,10 +1593,10 @@ export function Profile({ s }: { s: Store }) {
                 Verifiable Pass
               </div>
               <div className="font-display font-bold text-fg text-lg mt-0.5">
-                {worker.name}
+                {activeWorker.name}
               </div>
               <div className="text-[11px] text-fg-dim font-mono">
-                {worker.id}
+                {activeWorker.idCode}
               </div>
 
               {/* QR Pattern visual */}
@@ -1596,7 +1622,8 @@ export function Profile({ s }: { s: Store }) {
               </div>
 
               <div className="text-[11px] text-fg-dim">
-                Scan with any RBI AA Lender Scanner to verify ₹29,800/mo income.
+                Scan with any RBI AA Lender Scanner to verify{" "}
+                {inr(activeWorker.document)}/mo income.
               </div>
 
               <Button
@@ -1733,6 +1760,7 @@ function DimRing({
 // ─────────────────────────────────────────────────────────────
 export function Offline({ s }: { s: Store }) {
   const hi = s.lang === "hi"
+  const activeWorker = personas[s.personaId] || personas.anjali
   return (
     <ScreenScroll>
       <button
@@ -1822,7 +1850,7 @@ export function Offline({ s }: { s: Store }) {
               {hi ? "सत्यापित आय" : "Verified income"}
             </div>
             <div className="font-display text-2xl font-bold text-fg">
-              {inr(verification.document)}
+              {inr(activeWorker.document)}
             </div>
           </div>
           <div className="h-10 w-px bg-hair" />
@@ -1863,6 +1891,7 @@ export function Offline({ s }: { s: Store }) {
 // ─────────────────────────────────────────────────────────────
 export function Share({ s }: { s: Store }) {
   const hi = s.lang === "hi"
+  const activeWorker = personas[s.personaId] || personas.anjali
   const [lender, setLender] = useState(lenders[0].id)
   const [phase, setPhase] = useState<"pick" | "beaming" | "landed">(
     s.beamedLender ? "landed" : "pick",
@@ -1952,7 +1981,12 @@ export function Share({ s }: { s: Store }) {
       )}
 
       {phase !== "pick" && (
-        <BeamScene hi={hi} landed={phase === "landed"} officer={chosen} />
+        <BeamScene
+          hi={hi}
+          landed={phase === "landed"}
+          officer={chosen}
+          activeWorker={activeWorker}
+        />
       )}
 
       {phase === "landed" && (
@@ -1989,10 +2023,12 @@ function BeamScene({
   hi,
   landed,
   officer,
+  activeWorker,
 }: {
   hi: boolean
   landed: boolean
   officer: { name: string }
+  activeWorker: typeof personas.anjali
 }) {
   return (
     <div className="mt-6 flex flex-col items-center">
@@ -2062,7 +2098,7 @@ function BeamScene({
                 : "Preview of the companion workstation below."}
             </p>
             <div className="mt-5 scale-[0.96] origin-top">
-              <DesktopPreview />
+              <DesktopPreview activeWorker={activeWorker} />
             </div>
           </div>
         ) : (
@@ -2088,7 +2124,11 @@ function BeamScene({
 }
 
 // Compact desktop lender surface preview (rendered inside phone)
-export function DesktopPreview() {
+export function DesktopPreview({
+  activeWorker,
+}: {
+  activeWorker: typeof personas.anjali
+}) {
   return (
     <div className="rounded-2xl border border-hair-strong bg-ink-2 p-4 text-left shadow-2xl">
       <div className="flex items-center justify-between border-b border-hair pb-2.5">
@@ -2107,21 +2147,24 @@ export function DesktopPreview() {
       <div className="mt-3 flex items-center justify-between">
         <div>
           <div className="font-display text-[14px] font-bold text-fg">
-            {worker.name}
+            {activeWorker.name}
           </div>
           <div className="text-[11px] text-fg-faint">
-            {worker.city} · {worker.id}
+            {activeWorker.city} · {activeWorker.idCode}
           </div>
         </div>
         <div className="text-right">
           <div className="font-mono text-[12px] font-bold text-verify">
-            {inr(verification.document)}/mo
+            {inr(activeWorker.document)}/mo
           </div>
-          <div className="text-[9px] text-fg-faint">3 Gig Platforms</div>
+          <div className="text-[9px] text-fg-faint">
+            {activeWorker.platforms.filter((p) => p.monthly > 0).length} Gig
+            Platforms
+          </div>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-1.5">
-        {ratings.map((r) => (
+        {activeWorker.ratings.map((r) => (
           <div
             key={r.key}
             className="rounded-lg border border-hair bg-panel/50 p-2 text-center"

@@ -63,6 +63,8 @@ export default function App() {
 
   const store: Store = useMemo(
     () => ({
+      personaId: activePersonaId,
+      setPersonaId: handlePersonaSwitch,
       lang,
       setLang: (l) => setLangRaw(l),
       step,
@@ -110,6 +112,7 @@ export default function App() {
       setBeamedLender,
     }),
     [
+      activePersonaId,
       lang,
       step,
       connected,

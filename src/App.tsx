@@ -234,213 +234,234 @@ export default function App() {
   }[step]
 
   return (
-    <div className="relative flex min-h-dvh w-full justify-center bg-[#f7f6f3] text-[#212121] overflow-hidden">
+    <div className="relative flex min-h-dvh w-full items-center justify-center bg-[#eeece7] text-[#212121] p-0 md:py-8 overflow-x-hidden">
       {/* Real-World Production Live Telemetry Inspector */}
       <LiveSystemInspector
         isOpen={showInspector}
         onClose={() => setShowInspector(false)}
       />
 
-      {/* Pure Mobile Viewport Container */}
-      <div className="relative z-10 flex min-h-dvh h-dvh w-full max-w-md flex-col bg-[#ffffff] shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border-x border-[#e5e7eb]">
-        {/* Mobile Status Bar (Authentic Mobile System Status) */}
-        <header className="relative flex shrink-0 items-center justify-between px-4 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[12px] font-semibold text-[#17171c]">
-              14:20
-            </span>
-            {/* Real-World Production Live System Badge */}
-            <button
-              onClick={() => {
-                playTone("tap")
-                setShowInspector(true)
-              }}
-              className="flex items-center gap-1.5 rounded-full bg-[#edfce9] text-[#00875a] border border-[#bbf7d0] px-2 py-0.5 text-[9.5px] font-mono font-bold cursor-pointer hover:bg-[#dcfce7] transition-all shadow-xs"
-              title="Open Real-World Infrastructure Inspector"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00875a] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00875a]" />
-              </span>
-              <span>LIVE SYSTEM</span>
-            </button>
+      {/* Flagship Mobile Device Chassis Frame (Responsive on Desktop) */}
+      <div className="relative w-full max-w-none md:max-w-[408px] h-dvh md:h-[854px] md:max-h-[94vh] bg-[#121316] md:p-3 md:rounded-[48px] md:border-[3.5px] md:border-[#2a2b33] md:shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.18)] md:ring-1 md:ring-white/15 flex flex-col justify-center">
+        {/* Hardware Buttons on Device Chassis (Visible on desktop frame) */}
+        <div className="hidden md:block absolute -left-[5.5px] top-28 w-[3.5px] h-12 bg-[#2c2d35] rounded-l-sm" />
+        <div className="hidden md:block absolute -left-[5.5px] top-44 w-[3.5px] h-12 bg-[#2c2d35] rounded-l-sm" />
+        <div className="hidden md:block absolute -right-[5.5px] top-32 w-[3.5px] h-16 bg-[#ff7759] rounded-r-sm" />
+
+        {/* Top Earpiece Speaker Slit */}
+        <div className="hidden md:block absolute top-2 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#232429] rounded-full z-40" />
+
+        {/* Inner Phone Screen Display */}
+        <div className="relative z-10 flex h-full w-full flex-col bg-[#ffffff] md:rounded-[38px] overflow-hidden border-x border-[#e5e7eb] md:border-0 shadow-inner">
+          {/* Punch-hole Front Camera Lens */}
+          <div className="hidden md:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-40 h-3.5 w-3.5 rounded-full bg-[#050505] border border-[#232429] items-center justify-center pointer-events-none shadow-xs">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#0d1b2a]/90 ring-0.5 ring-blue-900/50" />
           </div>
 
-          <div className="flex items-center gap-1.5 font-mono text-[11px]">
-            {isLoggedIn && (
-              <>
-                {/* Account / Switch Button */}
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1 rounded-full bg-[#eeece7] text-[#17171c] border border-[#d9d9dd] px-2 py-0.5 text-[10px] font-bold cursor-pointer hover:bg-[#e5e7eb] transition-colors"
-                  title="Switch User / Sign Out"
-                >
-                  <Icon.user size={10} />{" "}
-                  {currentUser?.name?.split(" ")[0] || "User"}
-                </button>
-
-                {/* Quick Tour Jumper Pill */}
-                <button
-                  onClick={() => {
-                    playTone("tap")
-                    setShowTourDrawer(!showTourDrawer)
-                  }}
-                  className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2 py-0.5 text-[10px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
-                  title="Quick Tour Navigator"
-                >
-                  Tour{" "}
-                  <Icon.chevron
-                    size={10}
-                    className={showTourDrawer ? "rotate-180" : ""}
-                  />
-                </button>
-              </>
-            )}
-
-            {offline ? (
-              <span className="flex items-center gap-1 text-[#e28a00] font-semibold text-[10px]">
-                <Icon.wifiOff size={11} />
-                OFF
+          {/* Mobile Status Bar (Authentic Mobile System Status) */}
+          <header className="relative flex shrink-0 items-center justify-between px-4 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[12px] font-semibold text-[#17171c]">
+                14:20
               </span>
-            ) : (
-              <span className="text-[#00875a] font-semibold text-[10.5px]">
-                5G
-              </span>
-            )}
-            <span className="text-[#75758a] text-[10.5px]">86%</span>
-          </div>
-        </header>
+              {/* Real-World Production Live System Badge */}
+              <button
+                onClick={() => {
+                  playTone("tap")
+                  setShowInspector(true)
+                }}
+                className="flex items-center gap-1.5 rounded-full bg-[#edfce9] text-[#00875a] border border-[#bbf7d0] px-2 py-0.5 text-[9.5px] font-mono font-bold cursor-pointer hover:bg-[#dcfce7] transition-all shadow-xs"
+                title="Open Real-World Infrastructure Inspector"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00875a] opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00875a]" />
+                </span>
+                <span>LIVE SYSTEM</span>
+              </button>
+            </div>
 
-        {!isLoggedIn ? (
-          <AuthScreen lang={lang} onAuthenticated={handleUserAuthenticated} />
-        ) : (
-          <>
-            {/* Quick Tour Drawer Dropdown */}
-            {showTourDrawer && (
-              <div className="absolute inset-x-0 top-[45px] z-50 border-b border-[#e5e7eb] bg-[#ffffff]/98 p-4 shadow-xl backdrop-blur-md animate-fade-up">
-                <div className="flex items-center justify-between pb-2 border-b border-[#f2f2f2]">
-                  <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#17171c]">
-                    Quick Screen Navigator
-                  </span>
+            <div className="flex items-center gap-1.5 font-mono text-[11px]">
+              {isLoggedIn && (
+                <>
+                  {/* Account / Switch Button */}
                   <button
-                    onClick={() => setShowTourDrawer(false)}
-                    className="text-[12px] font-bold text-[#75758a] hover:text-[#17171c] cursor-pointer"
+                    onClick={handleLogout}
+                    className="flex items-center gap-1 rounded-full bg-[#eeece7] text-[#17171c] border border-[#d9d9dd] px-2 py-0.5 text-[10px] font-bold cursor-pointer hover:bg-[#e5e7eb] transition-colors"
+                    title="Switch User / Sign Out"
                   >
-                    ✕
+                    <Icon.user size={10} />{" "}
+                    {currentUser?.name?.split(" ")[0] || "User"}
                   </button>
-                </div>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {ALL_STEPS.map((s) => (
+
+                  {/* Quick Tour Jumper Pill */}
+                  <button
+                    onClick={() => {
+                      playTone("tap")
+                      setShowTourDrawer(!showTourDrawer)
+                    }}
+                    className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2 py-0.5 text-[10px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
+                    title="Quick Tour Navigator"
+                  >
+                    Tour{" "}
+                    <Icon.chevron
+                      size={10}
+                      className={showTourDrawer ? "rotate-180" : ""}
+                    />
+                  </button>
+                </>
+              )}
+
+              {offline ? (
+                <span className="flex items-center gap-1 text-[#e28a00] font-semibold text-[10px]">
+                  <Icon.wifiOff size={11} />
+                  OFF
+                </span>
+              ) : (
+                <span className="text-[#00875a] font-semibold text-[10.5px]">
+                  5G
+                </span>
+              )}
+              <span className="text-[#75758a] text-[10.5px]">86%</span>
+            </div>
+          </header>
+
+          {!isLoggedIn ? (
+            <AuthScreen lang={lang} onAuthenticated={handleUserAuthenticated} />
+          ) : (
+            <>
+              {/* Quick Tour Drawer Dropdown */}
+              {showTourDrawer && (
+                <div className="absolute inset-x-0 top-[45px] z-50 border-b border-[#e5e7eb] bg-[#ffffff]/98 p-4 shadow-xl backdrop-blur-md animate-fade-up">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#f2f2f2]">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#17171c]">
+                      Quick Screen Navigator
+                    </span>
                     <button
-                      key={s.id}
-                      onClick={() => {
-                        playTone("tap")
-                        store.go(s.id)
-                        setShowTourDrawer(false)
-                      }}
-                      className={`flex flex-col items-start rounded-xl border p-2 text-left transition-all cursor-pointer ${
-                        step === s.id
-                          ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
-                          : "border-[#e5e7eb] bg-[#f7f6f3] text-[#17171c] hover:border-[#d9d9dd]"
-                      }`}
+                      onClick={() => setShowTourDrawer(false)}
+                      className="text-[12px] font-bold text-[#75758a] hover:text-[#17171c] cursor-pointer"
                     >
-                      <span className="text-[11.5px] font-bold">{s.label}</span>
-                      <span
-                        className={`font-mono text-[9px] ${
-                          step === s.id ? "text-white/70" : "text-[#75758a]"
+                      ✕
+                    </button>
+                  </div>
+                  <div className="mt-3 grid grid-cols-3 gap-2">
+                    {ALL_STEPS.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => {
+                          playTone("tap")
+                          store.go(s.id)
+                          setShowTourDrawer(false)
+                        }}
+                        className={`flex flex-col items-start rounded-xl border p-2 text-left transition-all cursor-pointer ${
+                          step === s.id
+                            ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
+                            : "border-[#e5e7eb] bg-[#f7f6f3] text-[#17171c] hover:border-[#d9d9dd]"
                         }`}
                       >
-                        {s.tag}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Navigation Chrome Bar */}
-            {showChrome && (
-              <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
-                <div className="flex items-center gap-2.5">
-                  <button
-                    onClick={handleBack}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d9dd] text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
-                    aria-label="Go back"
-                  >
-                    <Icon.arrowLeft size={16} />
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <VisibleMark size={20} />
-                    <span className="font-display text-[16px] font-bold tracking-tight text-[#17171c]">
-                      Visible
-                    </span>
+                        <span className="text-[11.5px] font-bold">
+                          {s.label}
+                        </span>
+                        <span
+                          className={`font-mono text-[9px] ${
+                            step === s.id ? "text-white/70" : "text-[#75758a]"
+                          }`}
+                        >
+                          {s.tag}
+                        </span>
+                      </button>
+                    ))}
                   </div>
                 </div>
+              )}
 
-                <div className="flex items-center gap-2">
-                  {offline && (
-                    <span className="flex items-center gap-1 rounded-full bg-[#fef3c7] border border-[#fde68a] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#b45309]">
-                      <Icon.wifiOff size={10} /> OFFLINE
-                    </span>
-                  )}
-                  <LangToggle lang={lang} onChange={(l) => store.setLang(l)} />
-                  {canOpenPrivacy && (
+              {/* Navigation Chrome Bar */}
+              {showChrome && (
+                <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
+                  <div className="flex items-center gap-2.5">
                     <button
-                      onClick={() => {
-                        playTone("tap")
-                        store.go("privacy")
-                      }}
-                      className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors cursor-pointer ${
-                        step === "privacy"
-                          ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
-                          : "border-[#d9d9dd] text-[#616161] hover:border-[#17171c] hover:text-[#17171c]"
-                      }`}
-                      aria-label="Privacy Settings"
+                      onClick={handleBack}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d9dd] text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
+                      aria-label="Go back"
                     >
-                      <Icon.lock size={14} />
+                      <Icon.arrowLeft size={16} />
                     </button>
-                  )}
-                </div>
-              </div>
-            )}
+                    <div className="flex items-center gap-2">
+                      <VisibleMark size={20} />
+                      <span className="font-display text-[16px] font-bold tracking-tight text-[#17171c]">
+                        Visible
+                      </span>
+                    </div>
+                  </div>
 
-            {/* Progress Rail (Cohere Near-Black Pill Track) */}
-            {mainIdx >= 0 && step !== "welcome" && (
-              <div className="flex shrink-0 gap-1.5 px-5 pt-2.5 pb-1.5 bg-[#ffffff]">
-                {MAIN.slice(1).map((st, i) => {
-                  const isCompleted = i <= mainIdx - 1
-                  const isCurrent = i === mainIdx - 1
-                  return (
-                    <button
-                      key={st}
-                      onClick={() => {
-                        if (isCompleted || isCurrent) {
-                          playTone("tap")
-                          store.go(st)
-                        }
-                      }}
-                      disabled={!isCompleted && !isCurrent}
-                      className="h-1 flex-1 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-default"
-                      style={{
-                        background: isCompleted
-                          ? "#17171c"
-                          : isCurrent
-                            ? "#75758a"
-                            : "#e5e7eb",
-                      }}
-                      title={`Step: ${st}`}
+                  <div className="flex items-center gap-2">
+                    {offline && (
+                      <span className="flex items-center gap-1 rounded-full bg-[#fef3c7] border border-[#fde68a] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#b45309]">
+                        <Icon.wifiOff size={10} /> OFFLINE
+                      </span>
+                    )}
+                    <LangToggle
+                      lang={lang}
+                      onChange={(l) => store.setLang(l)}
                     />
-                  )
-                })}
-              </div>
-            )}
+                    {canOpenPrivacy && (
+                      <button
+                        onClick={() => {
+                          playTone("tap")
+                          store.go("privacy")
+                        }}
+                        className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors cursor-pointer ${
+                          step === "privacy"
+                            ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
+                            : "border-[#d9d9dd] text-[#616161] hover:border-[#17171c] hover:text-[#17171c]"
+                        }`}
+                        aria-label="Privacy Settings"
+                      >
+                        <Icon.lock size={14} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
 
-            {/* Active Mobile Screen Viewport */}
-            <main className="relative flex-1 overflow-hidden bg-[#ffffff] text-[#212121]">
-              {screen}
-            </main>
-          </>
-        )}
+              {/* Progress Rail (Cohere Near-Black Pill Track) */}
+              {mainIdx >= 0 && step !== "welcome" && (
+                <div className="flex shrink-0 gap-1.5 px-5 pt-2.5 pb-1.5 bg-[#ffffff]">
+                  {MAIN.slice(1).map((st, i) => {
+                    const isCompleted = i <= mainIdx - 1
+                    const isCurrent = i === mainIdx - 1
+                    return (
+                      <button
+                        key={st}
+                        onClick={() => {
+                          if (isCompleted || isCurrent) {
+                            playTone("tap")
+                            store.go(st)
+                          }
+                        }}
+                        disabled={!isCompleted && !isCurrent}
+                        className="h-1 flex-1 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-default"
+                        style={{
+                          background: isCompleted
+                            ? "#17171c"
+                            : isCurrent
+                              ? "#75758a"
+                              : "#e5e7eb",
+                        }}
+                        title={`Step: ${st}`}
+                      />
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Active Mobile Screen Viewport */}
+              <main className="relative flex-1 overflow-hidden bg-[#ffffff] text-[#212121]">
+                {screen}
+              </main>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )

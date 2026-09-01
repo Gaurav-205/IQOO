@@ -51,7 +51,7 @@ export default function App() {
   const [narrate, setNarrate] = useState(false)
   const [beamedLender, setBeamedLender] = useState<string | null>(null)
   const [officerApproved, setOfficerApproved] = useState(false)
-  const [showDesktopStation, setShowDesktopStation] = useState(true)
+  const [showDesktopStation, setShowDesktopStation] = useState(false)
   const [showAnnouncement, setShowAnnouncement] = useState(true)
   const [stationTab, setStationTab] = useState<"dossier" | "npu">("dossier")
 
@@ -308,17 +308,24 @@ export default function App() {
             <main className="relative flex-1 overflow-hidden">{screen}</main>
           </div>
 
-          <div className="mt-3 flex items-center gap-2 text-[11px] text-fg-faint lg:hidden p-2">
+          <div className="mt-4 flex items-center justify-center p-2">
             <button
               onClick={() => {
                 playTone("tap")
                 setShowDesktopStation(!showDesktopStation)
               }}
-              className="text-saffron underline hover:text-saffron-soft cursor-pointer font-medium"
+              className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-mono transition-all cursor-pointer shadow-xs ${
+                showDesktopStation
+                  ? "border-saffron/40 bg-saffron/10 text-saffron hover:bg-saffron/20"
+                  : "border-hair-strong bg-panel-2/80 text-fg-dim hover:border-fg-dim hover:text-fg"
+              }`}
             >
-              {showDesktopStation
-                ? "Hide Loan Officer Desk"
-                : "View Loan Officer Desk (Office Kit)"}
+              <Icon.device size={13} />
+              <span>
+                {showDesktopStation
+                  ? "Hide Loan Officer Desk"
+                  : "Open Loan Officer Desk (iQOO Office Kit)"}
+              </span>
             </button>
           </div>
         </div>
@@ -331,7 +338,12 @@ export default function App() {
               <div className="flex items-center justify-between border-b border-hair pb-3">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1.5">
-                    <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+                    <button
+                      onClick={() => setShowDesktopStation(false)}
+                      className="h-3 w-3 rounded-full bg-[#ff5f56] hover:opacity-80 cursor-pointer"
+                      title="Close window"
+                      aria-label="Close window"
+                    />
                     <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
                     <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
                   </div>
@@ -348,6 +360,14 @@ export default function App() {
                   ) : (
                     <Pill tone="dim">AWAITING BEAM</Pill>
                   )}
+                  <button
+                    onClick={() => setShowDesktopStation(false)}
+                    className="ml-1 flex h-5 w-5 items-center justify-center rounded-full text-fg-faint hover:text-fg hover:bg-panel-2 text-[11px] cursor-pointer"
+                    title="Close"
+                    aria-label="Close Lender Desk"
+                  >
+                    ✕
+                  </button>
                 </div>
               </div>
 

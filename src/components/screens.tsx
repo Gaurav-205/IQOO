@@ -34,94 +34,82 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 export function Welcome({ s }: { s: Store }) {
   const hi = s.lang === "hi"
   const activeWorker = personas[s.personaId] || personas.anjali
-  const chips = activeWorker.platforms.filter((p) => p.monthly > 0).slice(0, 3)
-  const [phase, setPhase] = useState(0) // 0 scattered → 1 converged
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      setPhase(1)
-      playTone("tap")
-    }, 900)
-    return () => clearTimeout(t)
-  }, [])
-
-  const spread = [
-    { x: -84, y: -34, r: -14, col: "border-[#fc8019]/40 bg-[#fc8019]/10" },
-    { x: 90, y: -12, r: 12, col: "border-[#4fd1a1]/40 bg-[#4fd1a1]/10" },
-    { x: -50, y: 80, r: -8, col: "border-[#f5c518]/40 bg-[#f5c518]/10" },
-  ]
-
+  const chips = activeWorker.platforms.filter((p) => p.monthly > 0)
   const totalIncome = chips.reduce((a, b) => a + b.monthly, 0)
 
   return (
-    <div className="flex h-full flex-col justify-between p-6 bg-[#ffffff]">
-      <div className="animate-fade-up pt-2">
+    <ScreenScroll>
+      {/* Top Brand & Trust Header */}
+      <div className="flex items-center justify-between pb-3 border-b border-[#f2f2f2]">
         <Eyebrow>
           Visible · {hi ? "क्रेडिट-रेडीनेस" : "Credit-Readiness Engine"}
         </Eyebrow>
+        <Pill tone="pale-green">
+          <Icon.cpu size={11} /> 100% NPU
+        </Pill>
       </div>
 
-      <div className="relative flex flex-1 items-center justify-center">
-        {/* Converging Income Orb */}
-        <div className="relative h-60 w-60">
-          <div
-            className="absolute inset-0 rounded-full transition-all duration-700"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(255,119,89,0.12), rgba(0,60,51,0.06) 50%, transparent 70%)",
-              opacity: phase ? 1 : 0,
-              animation: phase
-                ? "v-breathe 4s ease-in-out infinite"
-                : undefined,
-            }}
-          />
+      {/* Hero Visual: Enterprise Credit Intelligence Console Card */}
+      <div className="mt-4 overflow-hidden rounded-[24px] border border-white/10 bg-[#17171c] p-5 text-[#ffffff] shadow-xl animate-fade-up">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[#ff7759]">
+            <Icon.spark size={13} />
+            <span>{hi ? "एकीकृत मासिक आय" : "Unified Income Dossier"}</span>
+          </div>
+          <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[10px] text-white/80">
+            {activeWorker.idCode}
+          </span>
+        </div>
 
-          {chips.map((p, i) => (
+        {/* Primary Unified Amount Display */}
+        <div className="my-4">
+          <div className="font-display text-4xl font-extrabold text-[#ffffff] tracking-tight">
+            {inr(totalIncome || activeWorker.document)}
+          </div>
+          <div className="mt-1 flex items-center gap-2 text-[12px] text-white/70">
+            <span className="flex h-2 w-2 rounded-full bg-[#00875a] animate-pulse" />
+            <span className="font-medium">
+              {chips.length} {hi ? "प्लेटफ़ॉर्म एकीकृत" : "Platforms Unified"}
+            </span>
+            <span className="text-white/40">·</span>
+            <span className="font-mono text-[#7fe4c1]">99.4% Confidence</span>
+          </div>
+        </div>
+
+        {/* Live Platform Breakdown Tiles */}
+        <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-3 text-[11px]">
+          {chips.slice(0, 3).map((p) => (
             <div
               key={p.id}
-              className={`absolute left-1/2 top-1/2 flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-[13px] font-medium shadow-sm transition-all duration-700 bg-[#eeece7] border-[#d9d9dd] text-[#17171c]`}
-              style={{
-                transform: phase
-                  ? "translate(-50%,-50%) scale(0.55)"
-                  : `translate(calc(-50% + ${spread[i]?.x || 0}px), calc(-50% + ${spread[i]?.y || 0}px)) rotate(${spread[i]?.r || 0}deg)`,
-                opacity: phase ? 0 : 1,
-              }}
+              className="rounded-xl border border-white/10 bg-white/5 p-2"
             >
-              <span className="text-base">{p.glyph}</span>
-              <span className="font-mono text-[#17171c] font-semibold">
+              <div className="flex items-center gap-1 text-[12px]">
+                <span>{p.glyph}</span>
+                <span className="font-semibold truncate text-white/90">
+                  {p.name}
+                </span>
+              </div>
+              <div className="mt-1 font-mono text-[12px] font-bold text-[#ff9a3c]">
                 {inr(p.monthly)}
-              </span>
+              </div>
             </div>
           ))}
+        </div>
 
-          <div
-            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-all duration-700"
-            style={{
-              opacity: phase ? 1 : 0,
-              transform: `translate(-50%,-50%) scale(${phase ? 1 : 0.6})`,
-            }}
-          >
-            <div className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-[#ff7759] font-semibold">
-              <Icon.spark size={13} />{" "}
-              {hi ? "एकीकृत मासिक आय" : "Unified Income"}
-            </div>
-            <div className="font-display text-4xl font-extrabold text-[#17171c] tracking-tight">
-              {inr(totalIncome || activeWorker.document)}
-            </div>
-            <div className="mt-1 flex items-center gap-1.5 text-[12px] font-mono text-[#003c33] bg-[#edfce9] border border-[#c2eec0] rounded-full px-2.5 py-0.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00875a]" />{" "}
-              {chips.length} {hi ? "प्लेटफ़ॉर्म" : "Platforms"}
-            </div>
-          </div>
+        {/* NPU On-Device Seal Footer */}
+        <div className="mt-3.5 flex items-center justify-between border-t border-white/10 pt-3 text-[10.5px] font-mono text-white/60">
+          <span className="flex items-center gap-1">
+            <Icon.shield size={12} className="text-[#00875a]" /> Zero Cloud
+            Storage
+          </span>
+          <span className="text-[#7fe4c1]">Qualcomm Hexagon NPU</span>
         </div>
       </div>
 
-      <div
-        className="animate-fade-up space-y-3.5"
-        style={{ animationDelay: "0.15s" }}
-      >
+      {/* Editorial Typographic Narrative */}
+      <div className="mt-5 space-y-2.5">
         <h1
-          className={`text-[26px] font-bold leading-[1.14] tracking-tight text-[#17171c] ${
+          className={`text-[25px] font-bold leading-[1.15] tracking-tight text-[#17171c] ${
             hi ? "font-hindi" : "font-display"
           }`}
         >
@@ -145,10 +133,58 @@ export function Welcome({ s }: { s: Store }) {
           }`}
         >
           {hi
-            ? "Visible आपकी अलग-अलग platforms की कमाई को एक भरोसेमंद तस्वीर में बदलता है — जिसे कोई भी lender समझ सके। पर्ची की ज़रूरत नहीं।"
-            : "Visible turns your fragmented gig earnings across delivery and rides into one verifiable profile any lender understands."}
+            ? "Visible आपकी अलग-अलग platforms (Swiggy, Ola, Rapido, Zomato) की कमाई को एक भरोसेमंद, बैंक-स्वीकृत प्रोफ़ाइल में बदलता है। बिना किसी कागज़ी कार्रवाई के।"
+            : "Visible turns fragmented earnings across delivery and ride apps into a verifiable, RBI-compliant credit profile any microfinance lender understands."}
         </p>
+      </div>
 
+      {/* Three Pillar Value Cards */}
+      <div className="mt-4 space-y-2">
+        {[
+          {
+            icon: Icon.database,
+            title: hi ? "बिना बैंक के चक्कर" : "Zero Bank Paperwork",
+            desc: hi
+              ? "Account Aggregator से सीधे कमाई प्रमाणित होती है।"
+              : "Direct statement ingestion via RBI Account Aggregator.",
+          },
+          {
+            icon: Icon.cpu,
+            title: hi ? "100% निजी व सुरक्षित" : "100% Private On-Device AI",
+            desc: hi
+              ? "आपका raw data फ़ोन से बाहर कभी नहीं जाता।"
+              : "Neural processing happens strictly on your Qualcomm NPU chip.",
+          },
+          {
+            icon: Icon.send,
+            title: hi ? "सीधा लोन अफ़सर को शेयर" : "Instant Wireless Beam",
+            desc: hi
+              ? "लेंडर के डेस्क पर बिना इंटरनेट वायरलेस शेयर करें।"
+              : "Beam tamper-proof dossier to branch desks via Wi-Fi Direct.",
+          },
+        ].map((item, idx) => {
+          const I = item.icon
+          return (
+            <div
+              key={idx}
+              className="flex items-center gap-3 rounded-2xl border border-[#e5e7eb] bg-[#f7f6f3] p-3 text-left shadow-2xs"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ffffff] border border-[#d9d9dd] text-[#17171c]">
+                <I size={16} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[13px] font-semibold text-[#17171c]">
+                  {item.title}
+                </div>
+                <div className="text-[11.5px] text-[#616161]">{item.desc}</div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Action Footer */}
+      <div className="mt-6 space-y-2.5 pb-6">
         <Button
           full
           onClick={() => {
@@ -169,7 +205,7 @@ export function Welcome({ s }: { s: Store }) {
           {hi ? "Switch to English" : "हिंदी में देखें (Hindi)"}
         </button>
       </div>
-    </div>
+    </ScreenScroll>
   )
 }
 
@@ -1021,13 +1057,13 @@ export function Verify({ s }: { s: Store }) {
         )}
 
         {stage === "intro" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-ink/80 p-6 text-center backdrop-blur-xs">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-saffron/15 text-saffron border border-saffron/30">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3.5 bg-[#ffffff]/90 p-6 text-center backdrop-blur-xs">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#eeece7] text-[#17171c] border border-[#d9d9dd] shadow-xs">
               <Icon.camera size={32} />
             </div>
             <div>
               <div
-                className={`text-[16px] font-bold text-fg ${
+                className={`text-[16px] font-bold text-[#17171c] ${
                   hi ? "font-hindi" : ""
                 }`}
               >
@@ -1036,7 +1072,7 @@ export function Verify({ s }: { s: Store }) {
                   : "Scan digital or paper statement"}
               </div>
               <p
-                className={`mt-1 text-[13px] text-fg-dim ${
+                className={`mt-1 text-[13px] text-[#616161] ${
                   hi ? "font-hindi" : ""
                 }`}
               >
@@ -1049,19 +1085,19 @@ export function Verify({ s }: { s: Store }) {
         )}
 
         {stage === "done" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-ink/85 backdrop-blur-sm animate-fade">
-            <div className="flex h-20 w-20 animate-scale-in items-center justify-center rounded-full bg-verify text-ink shadow-[0_0_30px_rgba(79,209,161,0.5)]">
-              <Icon.check size={40} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#ffffff]/95 backdrop-blur-sm animate-fade">
+            <div className="flex h-16 w-16 animate-scale-in items-center justify-center rounded-full bg-[#edfce9] text-[#00875a] border border-[#c2eec0] shadow-sm">
+              <Icon.check size={36} />
             </div>
             <div
-              className={`text-xl font-extrabold text-verify ${
+              className={`text-xl font-extrabold text-[#17171c] ${
                 hi ? "font-hindi" : "font-display"
               }`}
             >
               {hi ? "कमाई सत्यापित" : "Income Verified"}
             </div>
-            <div className="text-[12px] font-mono text-fg-dim">
-              ML Kit OCR · 99.4% match
+            <div className="text-[12px] font-mono text-[#00875a] bg-[#edfce9] border border-[#c2eec0] rounded-full px-3 py-0.5">
+              Qualcomm NPU OCR · 99.4% match
             </div>
           </div>
         )}
@@ -1073,6 +1109,7 @@ export function Verify({ s }: { s: Store }) {
         {stage === "intro" && (
           <Button
             full
+            variant="primary"
             onClick={() => {
               playTone("tap")
               setStage("camera")
@@ -1082,20 +1119,21 @@ export function Verify({ s }: { s: Store }) {
           </Button>
         )}
         {stage === "camera" && (
-          <Button full onClick={scan}>
+          <Button full variant="primary" onClick={scan}>
             <Icon.spark size={18} />{" "}
             {hi ? "स्कैन व OCR करें" : "Scan & Extract OCR"}
           </Button>
         )}
         {stage === "ocr" && (
-          <Button full disabled>
-            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-ink border-t-transparent mr-1" />
+          <Button full variant="primary" disabled>
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-[#ffffff] border-t-transparent mr-1" />
             {hi ? "पढ़ रहे हैं…" : "Extracting OCR fields…"}
           </Button>
         )}
         {stage === "done" && (
           <Button
             full
+            variant="primary"
             onClick={() => {
               playTone("tap")
               s.next()

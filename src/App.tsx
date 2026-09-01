@@ -53,7 +53,12 @@ export default function App() {
     } catch {}
     return personas.anjali
   })
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("visible_is_logged_in") === "true"
+    } catch {}
+    return false
+  })
   const [lang, setLangRaw] = useState<Lang>("en")
   const [step, setStep] = useState<Step>("welcome")
   const [connected, setConnected] = useState<string[]>(() =>
@@ -98,6 +103,7 @@ export default function App() {
     setCurrentUser(fullPersona)
     try {
       localStorage.setItem("visible_active_user", JSON.stringify(fullPersona))
+      localStorage.setItem("visible_is_logged_in", "true")
     } catch {}
     setIsLoggedIn(true)
     setStep("welcome")
@@ -110,6 +116,7 @@ export default function App() {
     playTone("tap")
     api.logout()
     try {
+      localStorage.removeItem("visible_is_logged_in")
       localStorage.removeItem("visible_active_user")
     } catch {}
     setIsLoggedIn(false)

@@ -13,7 +13,14 @@ import {
 } from "./components/screens"
 import { AuthScreen } from "./components/AuthScreen"
 import { LiveSystemInspector } from "./components/LiveSystemInspector"
-import { Lang, personas, playTone, stopSpeaking } from "./lib/data"
+import {
+  createCustomPersona,
+  Lang,
+  Persona,
+  personas,
+  playTone,
+  stopSpeaking,
+} from "./lib/data"
 import { api } from "./lib/api"
 import type { Step, Store } from "./lib/store"
 
@@ -39,15 +46,19 @@ const ALL_STEPS: { id: Step label: string tag: string }[] = [
 ]
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState<any>(personas.anjali)
+  const [currentUser, setCurrentUser] = useState<Persona>(() => {
+    try {
+      const cached = localStorage.getItem("visible_active_user")
+      if (cached) return JSON.parse(cached)
+    } catch {}
+    return personas.anjali
+  })
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true)
   const [lang, setLangRaw] = useState<Lang>("en")
   const [step, setStep] = useState<Step>("welcome")
-  const [connected, setConnected] = useState<string[]>([
-    "swiggy",
-    "ola",
-    "rapido",
-  ])
+  const [connected, setConnected] = useState<string[]>(() =>
+    currentUser.platforms.filter((p) => p.monthly > 0).map((p) => p.id),
+  )
   const [analysed, setAnalysed] = useState(false)
   const [verified, setVerified] = useState(false)
   const [profileReady, setProfileReady] = useState(false)
@@ -63,39 +74,57 @@ export default function App() {
   useEffect(() => {
     api.getProfile().then((data) => {
       if (data?.profile) {
-        setCurrentUser(data.profile)
         setConsentActive(data.profile.consentActive)
         setDataDeleted(data.profile.dataDeleted)
         setBeamedLender(data.profile.beamedLender)
-        if (data.profile.platforms) {
-          setConnected(
-            data.profile.platforms
-              .filter((p: any) => p.connected)
-              .map((p: any) => p.id),
-          )
-        }
       }
     })
   }, [])
 
   const handleUserAuthenticated = (user: any) => {
-    setCurrentUser(user)
+    let fullPersona: Persona
+    if (user.id in personas) {
+      fullPersona = personas[user.id]
+    } else if (user.platforms && user.history) {
+      fullPersona = (user as Persona)
+    } else {
+      fullPersona = createCustomPersona({
+        name: user.name || "Gig Courier",
+        phone: user.phone || "+91 98000 00000",
+        city: user.city || "Pune, Maharashtra",
+        role: user.role || "Delivery Courier",
+      })
+    }
+    setCurrentUser(fullPersona)
+    try {
+      localStorage.setItem("visible_active_user", JSON.stringify(fullPersona))
+    } catch {}
     setIsLoggedIn(true)
     setStep("welcome")
-    const pId = user.id in personas ? user.id : "anjali"
-    const target = personas[pId] || personas.anjali
-    setConnected(target.platforms.filter((p) => p.monthly > 0).map((p) => p.id))
+    setConnected(
+      fullPersona.platforms.filter((p) => p.monthly > 0).map((p) => p.id),
+    )
   }
 
   const handleLogout = () => {
     playTone("tap")
     api.logout()
+    try {
+      localStorage.removeItem("visible_active_user")
+    } catch {}
     setIsLoggedIn(false)
   }
 
   const store: Store = useMemo(
     () => ({
-      personaId: currentUser?.id in personas ? currentUser.id : "anjali",
+      user: currentUser,
+      setUser: (p: Persona) => {
+        setCurrentUser(p)
+        try {
+          localStorage.setItem("visible_active_user", JSON.stringify(p))
+        } catch {}
+      },
+      personaId: currentUser.id,
       setPersonaId: () => {},
       lang,
       setLang: (l) => setLangRaw(l),

@@ -33,7 +33,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 // ─────────────────────────────────────────────────────────────
 export function Welcome({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const activeWorker = personas[s.personaId] || personas.anjali
+  const activeWorker = s.user || personas[s.personaId] || personas.anjali
   const chips = activeWorker.platforms.filter((p) => p.monthly > 0)
   const totalIncome = chips.reduce((a, b) => a + b.monthly, 0)
 
@@ -427,7 +427,7 @@ export function Consent({ s }: { s: Store }) {
 // ─────────────────────────────────────────────────────────────
 export function Connect({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const activeWorker = personas[s.personaId] || personas.anjali
+  const activeWorker = s.user || personas[s.personaId] || personas.anjali
   const [activePlatformModal, setActivePlatformModal] =
     useState<typeof activeWorker.platforms[0] | null>(null)
   const [otpCode, setOtpCode] = useState("8924")
@@ -661,7 +661,7 @@ export function Connect({ s }: { s: Store }) {
 // ─────────────────────────────────────────────────────────────
 export function Analysis({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const activeWorker = personas[s.personaId] || personas.anjali
+  const activeWorker = s.user || personas[s.personaId] || personas.anjali
   const [progress, setProgress] = useState(0)
   const done = s.analysed
   const steps = hi
@@ -988,7 +988,7 @@ function Stat({
 // ─────────────────────────────────────────────────────────────
 export function Verify({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const activeWorker = personas[s.personaId] || personas.anjali
+  const activeWorker = s.user || personas[s.personaId] || personas.anjali
   const [stage, setStage] = useState<"intro" | "camera" | "ocr" | "done">(
     s.verified ? "done" : "intro",
   )
@@ -1308,7 +1308,7 @@ function CompareTable({
 // ─────────────────────────────────────────────────────────────
 export function Profile({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const activeWorker = personas[s.personaId] || personas.anjali
+  const activeWorker = s.user || personas[s.personaId] || personas.anjali
   const [building, setBuilding] = useState(!s.profileReady)
   const [open, setOpen] = useState<string | null>("consistency")
   const [speakingKey, setSpeakingKey] = useState<string | null>(null)
@@ -1990,7 +1990,7 @@ export function Offline({ s }: { s: Store }) {
 // ─────────────────────────────────────────────────────────────
 export function Share({ s }: { s: Store }) {
   const hi = s.lang === "hi"
-  const activeWorker = personas[s.personaId] || personas.anjali
+  const activeWorker = s.user || personas[s.personaId] || personas.anjali
   const [lender, setLender] = useState(lenders[0].id)
   const [phase, setPhase] = useState<"pick" | "beaming" | "landed">(
     s.beamedLender ? "landed" : "pick",

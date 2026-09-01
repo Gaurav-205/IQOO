@@ -81,6 +81,238 @@ export interface Persona {
   statement: StatementSample
 }
 
+export function createCustomPersona(data: {
+  name: string
+  phone: string
+  city?: string
+  role?: string
+}): Persona {
+  const cityShort = data.city ? data.city.substring(0, 3).toUpperCase() : "PUN"
+  const code =
+    "VIS-" +
+    Math.random().toString(36).substring(2, 6).toUpperCase() +
+    "-" +
+    cityShort
+  const role = data.role || "Delivery & Transit Courier"
+
+  let platforms: Platform[] = [
+    {
+      id: "swiggy",
+      name: "Swiggy",
+      kind: "Food delivery",
+      color: "#fc8019",
+      glyph: "🛵",
+      monthly: 18400,
+      txns: 212,
+    },
+    {
+      id: "ola",
+      name: "Ola",
+      kind: "Ride-hailing",
+      color: "#4fd1a1",
+      glyph: "🚗",
+      monthly: 7200,
+      txns: 96,
+    },
+    {
+      id: "rapido",
+      name: "Rapido",
+      kind: "Bike taxi",
+      color: "#f5c518",
+      glyph: "🏍️",
+      monthly: 4800,
+      txns: 141,
+    },
+    {
+      id: "urban",
+      name: "Urban Company",
+      kind: "Home services",
+      color: "#6fa8ff",
+      glyph: "🔧",
+      monthly: 0,
+      txns: 0,
+    },
+  ]
+
+  if (
+    role.toLowerCase().includes("cab") ||
+    role.toLowerCase().includes("driver")
+  ) {
+    platforms = [
+      {
+        id: "swiggy",
+        name: "Uber Fleet",
+        kind: "Cab Services",
+        color: "#ffffff",
+        glyph: "🚕",
+        monthly: 25400,
+        txns: 180,
+      },
+      {
+        id: "ola",
+        name: "Ola Prime",
+        kind: "Ride-hailing",
+        color: "#4fd1a1",
+        glyph: "🚗",
+        monthly: 16600,
+        txns: 120,
+      },
+      {
+        id: "rapido",
+        name: "Rapido Auto",
+        kind: "Auto Rickshaw",
+        color: "#f5c518",
+        glyph: "🛺",
+        monthly: 0,
+        txns: 0,
+      },
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 0,
+        txns: 0,
+      },
+    ]
+  } else if (
+    role.toLowerCase().includes("home") ||
+    role.toLowerCase().includes("care") ||
+    role.toLowerCase().includes("service")
+  ) {
+    platforms = [
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 24500,
+        txns: 84,
+      },
+      {
+        id: "swiggy",
+        name: "Swiggy Instamart",
+        kind: "Grocery delivery",
+        color: "#fc8019",
+        glyph: "🛍️",
+        monthly: 6200,
+        txns: 42,
+      },
+      {
+        id: "ola",
+        name: "Ola",
+        kind: "Ride-hailing",
+        color: "#4fd1a1",
+        glyph: "🚗",
+        monthly: 0,
+        txns: 0,
+      },
+      {
+        id: "rapido",
+        name: "Rapido",
+        kind: "Bike taxi",
+        color: "#f5c518",
+        glyph: "🏍️",
+        monthly: 0,
+        txns: 0,
+      },
+    ]
+  }
+
+  const activePlats = platforms.filter((p) => p.monthly > 0)
+  const currentTotal = activePlats.reduce((a, b) => a + b.monthly, 0) || 28000
+  const history: MonthPoint[] = [
+    {
+      label: "Apr",
+      labelHi: "अप्रैल",
+      amount: Math.round(currentTotal * 0.88),
+    },
+    { label: "May", labelHi: "मई", amount: Math.round(currentTotal * 0.82) },
+    { label: "Jun", labelHi: "जून", amount: Math.round(currentTotal * 0.98) },
+    {
+      label: "Jul",
+      labelHi: "जुलाई",
+      amount: Math.round(currentTotal * 0.9),
+    },
+    {
+      label: "Aug",
+      labelHi: "अगस्त",
+      amount: Math.round(currentTotal * 0.78),
+    },
+    { label: "Sep", labelHi: "सितंबर", amount: currentTotal },
+  ]
+  const avg = Math.round(
+    history.reduce((a, b) => a + b.amount, 0) / history.length,
+  )
+
+  return {
+    id: "usr-" + Date.now().toString(36),
+    name: data.name,
+    nameHi: data.name,
+    city: data.city || "Pune, Maharashtra",
+    cityHi: data.city || "पुणे, महाराष्ट्र",
+    phone: data.phone,
+    idCode: code,
+    role: role,
+    roleHi: role,
+    platforms,
+    history,
+    avgMonthly: avg,
+    claimed: currentTotal,
+    aa: Math.round(currentTotal * 0.99),
+    document: currentTotal,
+    readinessScore:
+      activePlats.length >= 3 ? 82 : activePlats.length === 2 ? 78 : 72,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "STRONG",
+        score: 84,
+        reason: `Your earnings across ${
+          data.city || "your city"
+        } showed steady growth over the last 6 months.`,
+        reasonHi: "पिछले 6 महीने में आपकी कमाई निरंतर और स्थिर रही है।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: activePlats.length >= 2 ? "STRONG" : "MODERATE",
+        score: activePlats.length >= 3 ? 85 : 74,
+        reason: `Income distributed across ${activePlats.length} platforms provides revenue resilience.`,
+        reasonHi: "अलग-अलग प्लेटफ़ॉर्म से कमाई आय सुरक्षा को मजबूत करती है।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "STRONG",
+        score: 78,
+        reason:
+          "Recurring direct bank settlements verified with zero transaction disputes.",
+        reasonHi: "नियमित बैंक भुगतान सत्यापित और सुरक्षित हैं।",
+      },
+    ],
+    statement: {
+      id: "live-stmt-" + Date.now(),
+      company: activePlats[0]?.name
+        ? `${activePlats[0].name} Partner Settlement`
+        : "Delivery Partner",
+      glyph: activePlats[0]?.glyph || "🛵",
+      cycle: "Sep 2026 (Monthly)",
+      partner: data.name,
+      orders: `${activePlats[0]?.txns || 180} verified trips/orders`,
+      netPayout: currentTotal,
+      utr: "VIS-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
+      date: "30 Sep 2026",
+    },
+  }
+}
+
 export const personas: Record<string, Persona> = {
   anjali: {
     id: "anjali",

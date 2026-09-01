@@ -1,8 +1,10 @@
-import type { Lang } from "./data"
+import type { Lang, Persona } from "./data"
 
 export type Step = "welcome" | "consent" | "connect" | "analysis" | "verify" | "profile" | "offline" | "share" | "privacy"
 
 export interface Store {
+  user: Persona
+  setUser: (p: Persona) => void
   personaId: string
   setPersonaId: (id: string) => void
 

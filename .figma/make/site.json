@@ -1,0 +1,10 @@
+{
+  "description": "This web application empowers users to creatively enhance and present content, allowing for limitless expression and improved communication of ideas.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

@@ -49,7 +49,12 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<Persona>(() => {
     try {
       const cached = localStorage.getItem("visible_active_user")
-      if (cached) return JSON.parse(cached)
+      if (cached) {
+        const parsed = JSON.parse(cached)
+        if (parsed && Array.isArray(parsed.platforms) && parsed.name) {
+          return parsed
+        }
+      }
     } catch {}
     return personas.anjali
   })
@@ -477,11 +482,14 @@ function DesktopCompanionPanel({
   onSwitchPersona: (id: string) => void
 }) {
   const [sanctioned, setSanctioned] = useState(false)
-  const connectedPlats = currentUser.platforms.filter((p) =>
-    store.connected.includes(p.id),
+  const worker = currentUser?.platforms ? currentUser : personas.anjali
+  const connectedPlats = (worker.platforms || []).filter((p) =>
+    (store.connected || []).includes(p.id),
   )
   const total =
-    connectedPlats.reduce((a, b) => a + b.monthly, 0) || currentUser.document
+    connectedPlats.reduce((a, b) => a + (b.monthly || 0), 0) ||
+    worker.document ||
+    30400
 
   const handleSanction = () => {
     playTone("success")
@@ -490,7 +498,7 @@ function DesktopCompanionPanel({
   }
 
   return (
-    <aside className="hidden xl:flex flex-col w-[500px] h-[92vh] max-h-[900px] rounded-[32px] bg-[#14171f] text-white p-6 border border-white/10 shadow-2xl overflow-y-auto space-y-4 shrink-0 animate-fade">
+    <aside className="hidden xl:flex flex-col w-[480px] h-[92vh] max-h-[900px] rounded-[32px] bg-[#14171f] text-white p-6 border border-white/10 shadow-2xl overflow-y-auto space-y-4 shrink-0 animate-fade">
       {/* Station Header */}
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div>
@@ -512,14 +520,15 @@ function DesktopCompanionPanel({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white font-bold text-sm">
-              {currentUser.name.charAt(0)}
+              {(worker.name || "U").charAt(0)}
             </div>
             <div>
               <div className="text-[13px] font-bold text-white">
-                {currentUser.name}
+                {worker.name || "Gig Worker"}
               </div>
               <div className="text-[11px] text-white/60 font-mono">
-                {currentUser.idCode} · {currentUser.city.split(",")[0]}
+                {worker.idCode || "VIS-2K9F"} ·{" "}
+                {(worker.city || "Pune").split(",")[0]}
               </div>
             </div>
           </div>
@@ -546,7 +555,7 @@ function DesktopCompanionPanel({
               Credit Readiness Score
             </div>
             <div className="text-lg font-bold text-[#ff9a3c] font-display mt-0.5">
-              {currentUser.readinessScore}/100
+              {worker.readinessScore || 78}/100
             </div>
             <div className="text-[10px] text-white/60 font-mono mt-0.5">
               Low Default Risk
@@ -562,19 +571,19 @@ function DesktopCompanionPanel({
           <div className="flex justify-between text-white/80">
             <span>• Worker Declared:</span>
             <span className="text-white font-semibold">
-              {inr(currentUser.claimed)}
+              {inr(worker.claimed || total)}
             </span>
           </div>
           <div className="flex justify-between text-white/80">
             <span>• Bank AA Stream:</span>
             <span className="text-[#4fd1a1] font-semibold">
-              {inr(currentUser.aa)}
+              {inr(worker.aa || total)}
             </span>
           </div>
           <div className="flex justify-between text-white/80">
             <span>• OCR Statement:</span>
             <span className="text-[#4fd1a1] font-semibold">
-              {inr(currentUser.document)}
+              {inr(worker.document || total)}
             </span>
           </div>
         </div>
@@ -645,7 +654,7 @@ function DesktopCompanionPanel({
                 onSwitchPersona(p.id)
               }}
               className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
-                currentUser.id === p.id
+                worker.id === p.id
                   ? "bg-white/15 border-[#ff7759] text-white font-bold"
                   : "bg-white/5 border-white/5 text-white/70 hover:bg-white/10"
               }`}

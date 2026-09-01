@@ -52,10 +52,15 @@ class ErrorBoundary extends Component<Props, State> {
             securely cached.
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              try {
+                localStorage.clear()
+              } catch {}
+              window.location.reload()
+            }}
             className="mt-5 rounded-full bg-[#17171c] text-[#ffffff] px-6 py-2.5 text-[13px] font-semibold hover:bg-black transition-colors cursor-pointer"
           >
-            Reload Application
+            Reset & Reload Application
           </button>
         </div>
       )

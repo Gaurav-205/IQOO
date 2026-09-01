@@ -449,7 +449,219 @@ export default function App() {
           </>
         )}
       </div>
+
+      {/* Desktop Executive Companion Station (Fills Widescreen Space Seamlessly) */}
+      <DesktopCompanionPanel
+        store={store}
+        currentUser={currentUser}
+        step={step}
+        onSwitchPersona={(pId) => {
+          if (pId in personas) {
+            handleUserAuthenticated(personas[pId])
+          }
+        }}
+      />
     </div>
+  )
+}
+
+function DesktopCompanionPanel({
+  store,
+  currentUser,
+  step,
+  onSwitchPersona,
+}: {
+  store: Store
+  currentUser: Persona
+  step: Step
+  onSwitchPersona: (id: string) => void
+}) {
+  const [sanctioned, setSanctioned] = useState(false)
+  const connectedPlats = currentUser.platforms.filter((p) =>
+    store.connected.includes(p.id),
+  )
+  const total =
+    connectedPlats.reduce((a, b) => a + b.monthly, 0) || currentUser.document
+
+  const handleSanction = () => {
+    playTone("success")
+    setSanctioned(true)
+    setTimeout(() => setSanctioned(false), 5000)
+  }
+
+  return (
+    <aside className="hidden xl:flex flex-col w-[500px] h-[92vh] max-h-[900px] rounded-[32px] bg-[#14171f] text-white p-6 border border-white/10 shadow-2xl overflow-y-auto space-y-4 shrink-0 animate-fade">
+      {/* Station Header */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-[#ff9a3c]">
+            <span className="h-2 w-2 rounded-full bg-[#00875a] animate-ping" />
+            <span>Companion Workstation</span>
+          </div>
+          <h2 className="text-base font-bold text-white font-display mt-0.5">
+            Lender Underwriting Live Console
+          </h2>
+        </div>
+        <Pill tone="pale-green">
+          <Icon.shield size={11} /> Bank Portal
+        </Pill>
+      </div>
+
+      {/* Live Ingested Profile Dossier */}
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white font-bold text-sm">
+              {currentUser.name.charAt(0)}
+            </div>
+            <div>
+              <div className="text-[13px] font-bold text-white">
+                {currentUser.name}
+              </div>
+              <div className="text-[11px] text-white/60 font-mono">
+                {currentUser.idCode} · {currentUser.city.split(",")[0]}
+              </div>
+            </div>
+          </div>
+          <span className="rounded-full bg-[#00875a]/20 border border-[#00875a]/40 text-[#4fd1a1] px-2.5 py-0.5 text-[10px] font-mono font-semibold">
+            VERIFIED PASSPORT
+          </span>
+        </div>
+
+        {/* Financial Aggregation Metrics */}
+        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
+          <div className="rounded-xl bg-black/30 p-2.5 border border-white/5">
+            <div className="text-[10px] font-mono text-white/50 uppercase">
+              Unified Monthly Income
+            </div>
+            <div className="text-lg font-bold text-white font-display mt-0.5">
+              {inr(total)}
+            </div>
+            <div className="text-[10px] text-[#4fd1a1] font-mono mt-0.5">
+              ✓ {connectedPlats.length} streams verified
+            </div>
+          </div>
+          <div className="rounded-xl bg-black/30 p-2.5 border border-white/5">
+            <div className="text-[10px] font-mono text-white/50 uppercase">
+              Credit Readiness Score
+            </div>
+            <div className="text-lg font-bold text-[#ff9a3c] font-display mt-0.5">
+              {currentUser.readinessScore}/100
+            </div>
+            <div className="text-[10px] text-white/60 font-mono mt-0.5">
+              Low Default Risk
+            </div>
+          </div>
+        </div>
+
+        {/* 3-Source Reconciliation Status */}
+        <div className="rounded-xl bg-black/20 p-2.5 border border-white/5 space-y-1.5 text-[11px] font-mono">
+          <div className="text-white/50 uppercase text-[9.5px]">
+            Triangulated Consistency
+          </div>
+          <div className="flex justify-between text-white/80">
+            <span>• Worker Declared:</span>
+            <span className="text-white font-semibold">
+              {inr(currentUser.claimed)}
+            </span>
+          </div>
+          <div className="flex justify-between text-white/80">
+            <span>• Bank AA Stream:</span>
+            <span className="text-[#4fd1a1] font-semibold">
+              {inr(currentUser.aa)}
+            </span>
+          </div>
+          <div className="flex justify-between text-white/80">
+            <span>• OCR Statement:</span>
+            <span className="text-[#4fd1a1] font-semibold">
+              {inr(currentUser.document)}
+            </span>
+          </div>
+        </div>
+
+        {/* 1-Click Loan Sanction Action */}
+        <button
+          onClick={handleSanction}
+          className={`w-full py-2.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer shadow-md ${
+            sanctioned
+              ? "bg-[#00875a] text-white"
+              : "bg-[#ff7759] text-white hover:bg-[#ff6240]"
+          }`}
+        >
+          {sanctioned
+            ? "✓ Instant Loan Sanctioned (₹1,50,000 @ 11.2% p.a.)"
+            : "Issue Instant Pre-Approved Sanction Letter"}
+        </button>
+      </div>
+
+      {/* Live System & Hardware Telemetry */}
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-2.5">
+        <div className="flex items-center justify-between text-[11px] font-mono text-white/70">
+          <span className="flex items-center gap-1.5">
+            <Icon.cpu size={13} className="text-[#4fd1a1]" /> Qualcomm NPU INT8
+          </span>
+          <span className="text-[#4fd1a1] font-semibold">12.4ms · ACTIVE</span>
+        </div>
+        <div className="flex items-center justify-between text-[11px] font-mono text-white/70">
+          <span className="flex items-center gap-1.5">
+            <Icon.database size={13} className="text-[#6fa8ff]" /> Neon
+            PostgreSQL
+          </span>
+          <span className="text-[#6fa8ff] font-semibold">CONNECTED</span>
+        </div>
+        <div className="flex items-center justify-between text-[11px] font-mono text-white/70">
+          <span className="flex items-center gap-1.5">
+            <Icon.send size={13} className="text-[#ff9a3c]" /> P2P Wi-Fi Direct
+          </span>
+          <span className="text-white/60 font-semibold">AES-256 MESH</span>
+        </div>
+      </div>
+
+      {/* Evaluator Quick Persona Switcher */}
+      <div className="border-t border-white/10 pt-3">
+        <div className="text-[10.5px] font-mono text-white/50 uppercase mb-2">
+          Switch Demo Persona
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { id: "anjali", name: "Anjali", role: "🛵 Pune", amount: "₹30.4k" },
+            {
+              id: "ramesh",
+              name: "Ramesh",
+              role: "🚕 Delhi",
+              amount: "₹42.0k",
+            },
+            {
+              id: "sunita",
+              name: "Sunita",
+              role: "🔧 Mumbai",
+              amount: "₹24.5k",
+            },
+          ].map((p) => (
+            <button
+              key={p.id}
+              onClick={() => {
+                playTone("tap")
+                onSwitchPersona(p.id)
+              }}
+              className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
+                currentUser.id === p.id
+                  ? "bg-white/15 border-[#ff7759] text-white font-bold"
+                  : "bg-white/5 border-white/5 text-white/70 hover:bg-white/10"
+              }`}
+            >
+              <div className="text-[11.5px] font-semibold truncate">
+                {p.name}
+              </div>
+              <div className="text-[9.5px] text-white/50">{p.role}</div>
+              <div className="text-[10.5px] font-mono text-[#ff9a3c] mt-0.5">
+                {p.amount}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </aside>
   )
 }
 

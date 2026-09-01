@@ -258,11 +258,15 @@ export function Consent({ s }: { s: Store }) {
     <ScreenScroll>
       <Header
         hi={hi}
-        icon={<Icon.shield className="text-saffron" />}
+        icon={<Icon.shield className="text-[#17171c]" />}
         en="Your consent, your control"
         hindi="आपकी सहमति, आपका नियंत्रण"
       />
-      <p className={`mt-2 text-[14px] text-fg-dim ${hi ? "font-hindi" : ""}`}>
+      <p
+        className={`mt-2 text-[13.5px] text-[#616161] ${
+          hi ? "font-hindi" : ""
+        }`}
+      >
         {hi
           ? "share करने से पहले जानिए कि क्या access होगा और क्यों।"
           : "Transparent consent framework under RBI Account Aggregator guidelines."}
@@ -273,12 +277,12 @@ export function Consent({ s }: { s: Store }) {
         onClick={toggleNarration}
         className={`mt-4 flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all cursor-pointer ${
           speaking
-            ? "border-saffron bg-saffron/15 text-saffron"
-            : "border-saffron/30 bg-saffron/10 text-saffron-soft hover:bg-saffron/15"
+            ? "border-[#ff7759] bg-[#ff7759]/10 text-[#ff7759]"
+            : "border-[#d9d9dd] bg-[#eeece7] text-[#17171c] hover:bg-[#e5e7eb]"
         }`}
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-saffron/20 text-saffron">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffffff] border border-[#d9d9dd] text-[#ff7759]">
             <Icon.volume size={16} />
           </div>
           <span
@@ -295,9 +299,9 @@ export function Consent({ s }: { s: Store }) {
         </div>
         {speaking && (
           <span className="flex gap-1">
-            <span className="h-3.5 w-1 animate-pulse rounded-full bg-saffron" />
-            <span className="h-3.5 w-1 animate-pulse rounded-full bg-saffron delay-100" />
-            <span className="h-3.5 w-1 animate-pulse rounded-full bg-saffron delay-200" />
+            <span className="h-3.5 w-1 animate-pulse rounded-full bg-[#ff7759]" />
+            <span className="h-3.5 w-1 animate-pulse rounded-full bg-[#ff7759] delay-100" />
+            <span className="h-3.5 w-1 animate-pulse rounded-full bg-[#ff7759] delay-200" />
           </span>
         )}
       </button>
@@ -307,29 +311,30 @@ export function Consent({ s }: { s: Store }) {
           const [title, body] = hi ? it.hi : it.en
           const I = it.icon
           return (
-            <Card key={i} className="animate-fade-up p-4">
+            <Card
+              key={i}
+              className="animate-fade-up p-4 border border-[#e5e7eb] bg-[#ffffff] shadow-xs"
+            >
               <div
                 className="flex gap-3.5"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-panel-2 text-saffron">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#eeece7] border border-[#d9d9dd] text-[#17171c]">
                   <I size={18} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <div
-                      className={`text-[14.5px] font-semibold text-fg ${
+                      className={`text-[14.5px] font-semibold text-[#17171c] ${
                         hi ? "font-hindi" : ""
                       }`}
                     >
                       {title}
                     </div>
-                    <span className="rounded-full bg-white/6 px-2 py-0.5 font-mono text-[9.5px] text-fg-dim">
-                      {it.tag}
-                    </span>
+                    <Pill tone="coral">{it.tag}</Pill>
                   </div>
                   <div
-                    className={`mt-0.5 text-[12.5px] leading-relaxed text-fg-dim ${
+                    className={`mt-1 text-[13px] leading-relaxed text-[#616161] ${
                       hi ? "font-hindi" : ""
                     }`}
                   >
@@ -342,7 +347,7 @@ export function Consent({ s }: { s: Store }) {
         })}
       </div>
 
-      <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-hair bg-panel/60 p-4 transition-colors hover:border-hair-strong">
+      <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-[#d9d9dd] bg-[#eeece7] p-4 transition-colors hover:border-[#17171c]">
         <input
           type="checkbox"
           checked={agreed}
@@ -350,10 +355,10 @@ export function Consent({ s }: { s: Store }) {
             playTone("tap")
             setAgreed(e.target.checked)
           }}
-          className="mt-0.5 h-5 w-5 shrink-0 rounded border-hair accent-[var(--color-saffron)] cursor-pointer"
+          className="mt-0.5 h-5 w-5 shrink-0 rounded border-[#d9d9dd] accent-[#17171c] cursor-pointer"
         />
         <span
-          className={`text-[12.5px] leading-relaxed text-fg-dim select-none ${
+          className={`text-[12.5px] leading-relaxed text-[#212121] select-none ${
             hi ? "font-hindi" : ""
           }`}
         >
@@ -367,6 +372,7 @@ export function Consent({ s }: { s: Store }) {
         <Button
           full
           disabled={!agreed}
+          variant="primary"
           onClick={() => {
             playTone("success")
             s.next()
@@ -442,7 +448,7 @@ export function Connect({ s }: { s: Store }) {
       </p>
 
       {/* Running Unified Total */}
-      <div className="mt-5 overflow-hidden rounded-3xl border border-hair-strong bg-gradient-to-b from-panel-2 via-panel to-ink p-5 shadow-lg">
+      <div className="mt-5 overflow-hidden rounded-3xl border border-[#d9d9dd] bg-[#eeece7] p-5 shadow-xs">
         <div className="flex items-center justify-between">
           <Eyebrow>
             {hi ? "इस महीने की एकीकृत कमाई" : "Unified income this month"}
@@ -450,17 +456,17 @@ export function Connect({ s }: { s: Store }) {
           {!allDone && (
             <button
               onClick={connectAll}
-              className="text-[12px] font-bold text-saffron hover:text-saffron-soft cursor-pointer transition-colors"
+              className="text-[12px] font-bold text-[#17171c] hover:text-[#ff7759] underline underline-offset-4 cursor-pointer transition-colors"
             >
               {hi ? "सब जोड़ें" : "Link all"}
             </button>
           )}
         </div>
         <div className="mt-2 flex items-end gap-2">
-          <span className="font-display text-4xl font-extrabold tabular-nums text-fg tracking-tight">
+          <span className="font-display text-4xl font-extrabold tabular-nums text-[#17171c] tracking-tight">
             {inr(total)}
           </span>
-          <span className="mb-1 font-mono text-[11px] text-fg-faint">
+          <span className="mb-1 font-mono text-[11px] text-[#75758a]">
             {s.connected.length}/{active.length} {hi ? "जुड़े" : "linked"}
           </span>
         </div>
@@ -472,7 +478,7 @@ export function Connect({ s }: { s: Store }) {
                 key={p.id}
                 className="h-2 rounded-full transition-all duration-500"
                 style={{
-                  background: isConn ? p.color : "rgba(255,255,255,0.08)",
+                  background: isConn ? p.color : "#d9d9dd",
                   flexGrow: isConn ? p.monthly : 1,
                 }}
               />
@@ -490,26 +496,26 @@ export function Connect({ s }: { s: Store }) {
               key={p.id}
               className={`flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all ${
                 done
-                  ? "border-verify/35 bg-verify/7 shadow-xs"
-                  : "border-hair bg-panel/65"
+                  ? "border-[#c2eec0] bg-[#edfce9]/60 shadow-xs"
+                  : "border-[#e5e7eb] bg-[#ffffff] shadow-xs"
               }`}
             >
               <div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl shadow-inner border border-white/5"
-                style={{ background: `${p.color}25` }}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl shadow-inner border border-black/5"
+                style={{ background: `${p.color}20` }}
               >
                 {p.glyph}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[15px] font-semibold text-fg">
+                  <span className="text-[15px] font-semibold text-[#17171c]">
                     {p.name}
                   </span>
                   {done && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-verify animate-pulse" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#00875a] animate-pulse" />
                   )}
                 </div>
-                <div className="text-[12px] text-fg-faint">
+                <div className="text-[12px] text-[#616161]">
                   {disabled
                     ? hi
                       ? "कोई कमाई नहीं मिली"
@@ -518,15 +524,15 @@ export function Connect({ s }: { s: Store }) {
                 </div>
               </div>
               {done ? (
-                <Pill tone="verify">
+                <Pill tone="pale-green">
                   <Icon.check size={13} /> {hi ? "जुड़ा" : "Linked"}
                 </Pill>
               ) : disabled ? (
-                <span className="font-mono text-[11px] text-fg-faint">—</span>
+                <span className="font-mono text-[11px] text-[#75758a]">—</span>
               ) : (
                 <button
                   onClick={() => handleOpenModal(p)}
-                  className="rounded-xl border border-hair-strong px-3.5 py-2 text-[13px] font-medium text-fg transition-colors hover:border-saffron/60 hover:text-saffron cursor-pointer"
+                  className="rounded-full border border-[#d9d9dd] bg-[#ffffff] px-3.5 py-1.5 text-[12.5px] font-medium text-[#17171c] transition-colors hover:border-[#17171c] cursor-pointer"
                 >
                   {hi ? "जोड़ें" : "Link"}
                 </button>
@@ -540,6 +546,7 @@ export function Connect({ s }: { s: Store }) {
         <Button
           full
           disabled={!allDone}
+          variant="primary"
           onClick={() => {
             playTone("tap")
             s.next()
@@ -553,30 +560,30 @@ export function Connect({ s }: { s: Store }) {
       {/* Account Aggregator OTP Simulation Modal */}
       {activePlatformModal && (
         <div
-          className="absolute inset-0 z-30 flex items-end bg-black/70 backdrop-blur-xs p-4 animate-fade"
+          className="absolute inset-0 z-30 flex items-end bg-black/50 backdrop-blur-xs p-4 animate-fade"
           onClick={() => setActivePlatformModal(null)}
         >
-          <Card className="w-full animate-fade-up p-5 border-saffron/40">
+          <Card className="w-full animate-fade-up p-5 border-[#e5e7eb] bg-[#ffffff] shadow-2xl">
             <div onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between border-b border-hair pb-3">
+              <div className="flex items-center justify-between border-b border-[#f2f2f2] pb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{activePlatformModal.glyph}</span>
-                  <span className="font-bold text-fg text-[16px]">
+                  <span className="font-bold text-[#17171c] text-[16px]">
                     {activePlatformModal.name} AA Gateway
                   </span>
                 </div>
-                <Pill tone="saffron">RBI AA SECURE</Pill>
+                <Pill tone="coral">RBI AA SECURE</Pill>
               </div>
 
               <div className="mt-4 space-y-3">
-                <div className="text-[13px] text-fg-dim">
+                <div className="text-[13px] text-[#616161]">
                   Authenticate Account Aggregator consent for{" "}
                   {activeWorker.phone} to link monthly earnings (
                   {inr(activePlatformModal.monthly)}/mo).
                 </div>
 
-                <div className="rounded-2xl border border-hair bg-panel-2 p-3">
-                  <label className="font-mono text-[10px] text-fg-faint uppercase">
+                <div className="rounded-2xl border border-[#d9d9dd] bg-[#eeece7] p-3">
+                  <label className="font-mono text-[10px] text-[#75758a] uppercase tracking-wider">
                     Enter 4-Digit SMS OTP
                   </label>
                   <div className="mt-1 flex items-center justify-between">
@@ -2463,11 +2470,11 @@ function Header({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-hair bg-panel-2">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#d9d9dd] bg-[#eeece7] text-[#17171c]">
         {icon}
       </div>
       <h2
-        className={`text-[22px] font-bold leading-tight text-fg ${
+        className={`text-[20px] font-bold leading-tight text-[#17171c] ${
           hi ? "font-hindi" : "font-display"
         }`}
       >
@@ -2479,7 +2486,7 @@ function Header({
 
 export function FooterBar({ children }: { children: React.ReactNode }) {
   return (
-    <div className="absolute inset-x-0 bottom-0 border-t border-hair bg-ink/90 p-5 backdrop-blur-md">
+    <div className="absolute inset-x-0 bottom-0 border-t border-[#e5e7eb] bg-[#ffffff]/95 p-4 backdrop-blur-md">
       {children}
     </div>
   )

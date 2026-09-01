@@ -23,6 +23,18 @@ const MAIN: Step[] = [
   "profile",
 ]
 
+const ALL_STEPS: { id: Step label: string tag: string }[] = [
+  { id: "welcome", label: "1. Welcome", tag: "Hero" },
+  { id: "consent", label: "2. Consent", tag: "RBI AA" },
+  { id: "connect", label: "3. Connect", tag: "Streams" },
+  { id: "analysis", label: "4. Analysis", tag: "NPU AI" },
+  { id: "verify", label: "5. Verify", tag: "ML OCR" },
+  { id: "profile", label: "6. Profile", tag: "Dossier" },
+  { id: "offline", label: "7. Offline", tag: "Airplane" },
+  { id: "share", label: "8. Share", tag: "P2P Beam" },
+  { id: "privacy", label: "9. Privacy", tag: "Zero-Cloud" },
+]
+
 export default function App() {
   const [activePersonaId, setActivePersonaId] = useState<string>("anjali")
   const [lang, setLangRaw] = useState<Lang>("en")
@@ -40,6 +52,7 @@ export default function App() {
   const [dataDeleted, setDataDeleted] = useState(false)
   const [narrate, setNarrate] = useState(false)
   const [beamedLender, setBeamedLender] = useState<string | null>(null)
+  const [showTourDrawer, setShowTourDrawer] = useState(false)
 
   const handlePersonaSwitch = (pId: string) => {
     playTone("tap")
@@ -178,18 +191,76 @@ export default function App() {
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5 font-mono text-[11px]">
+          <div className="flex items-center gap-2 font-mono text-[11px]">
+            {/* Quick Tour Jumper Pill */}
+            <button
+              onClick={() => {
+                playTone("tap")
+                setShowTourDrawer(!showTourDrawer)
+              }}
+              className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2 py-0.5 text-[10px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
+              title="Quick Tour Navigator"
+            >
+              Tour{" "}
+              <Icon.chevron
+                size={10}
+                className={showTourDrawer ? "rotate-180" : ""}
+              />
+            </button>
+
             {offline ? (
               <span className="flex items-center gap-1 text-[#e28a00] font-semibold">
                 <Icon.wifiOff size={12} />
-                OFFLINE
+                OFF
               </span>
             ) : (
               <span className="text-[#00875a] font-semibold">5G</span>
             )}
-            <span className="text-[#75758a]">86%</span>
           </div>
         </header>
+
+        {/* Quick Tour Drawer Dropdown */}
+        {showTourDrawer && (
+          <div className="absolute inset-x-0 top-[45px] z-50 border-b border-[#e5e7eb] bg-[#ffffff]/98 p-4 shadow-xl backdrop-blur-md animate-fade-up">
+            <div className="flex items-center justify-between pb-2 border-b border-[#f2f2f2]">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#17171c]">
+                Quick Screen Navigator
+              </span>
+              <button
+                onClick={() => setShowTourDrawer(false)}
+                className="text-[12px] font-bold text-[#75758a] hover:text-[#17171c] cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {ALL_STEPS.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    playTone("tap")
+                    store.go(s.id)
+                    setShowTourDrawer(false)
+                  }}
+                  className={`flex flex-col items-start rounded-xl border p-2 text-left transition-all cursor-pointer ${
+                    step === s.id
+                      ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
+                      : "border-[#e5e7eb] bg-[#f7f6f3] text-[#17171c] hover:border-[#d9d9dd]"
+                  }`}
+                >
+                  <span className="text-[11.5px] font-bold">{s.label}</span>
+                  <span
+                    className={`font-mono text-[9px] ${
+                      step === s.id ? "text-white/70" : "text-[#75758a]"
+                    }`}
+                  >
+                    {s.tag}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Navigation Chrome Bar */}
         {showChrome && (

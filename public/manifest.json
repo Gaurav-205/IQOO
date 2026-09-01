@@ -2,14 +2,14 @@
   "name": "Visible — On-Device Credit-Readiness Engine",
   "short_name": "Visible",
   "description": "Phone-native on-device credit-readiness and verifiable income passport for gig workers.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#17171c",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "./icon.svg",
       "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"

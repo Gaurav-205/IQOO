@@ -17,6 +17,12 @@ const base = (size = 20) => ({
 })
 
 export const Icon = {
+  user: (p: IP) => (
+    <svg {...base(p.size)} className={p.className}>
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  ),
   shield: (p: IP) => (
     <svg {...base(p.size)} className={p.className}>
       <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />

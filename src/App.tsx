@@ -11,6 +11,7 @@ import {
   Verify,
   Welcome,
 } from "./components/screens"
+import { AuthScreen } from "./components/AuthScreen"
 import { Lang, personas, playTone, stopSpeaking } from "./lib/data"
 import { api } from "./lib/api"
 import type { Step, Store } from "./lib/store"
@@ -37,6 +38,8 @@ const ALL_STEPS: { id: Step label: string tag: string }[] = [
 ]
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState<any>(personas.anjali)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true)
   const [lang, setLangRaw] = useState<Lang>("en")
   const [step, setStep] = useState<Step>("welcome")
   const [connected, setConnected] = useState<string[]>([
@@ -54,20 +57,43 @@ export default function App() {
   const [beamedLender, setBeamedLender] = useState<string | null>(null)
   const [showTourDrawer, setShowTourDrawer] = useState(false)
 
-  // Fetch initial profile from backend on mount
+  // Sync profile from backend on mount
   useEffect(() => {
     api.getProfile().then((data) => {
       if (data?.profile) {
+        setCurrentUser(data.profile)
         setConsentActive(data.profile.consentActive)
         setDataDeleted(data.profile.dataDeleted)
         setBeamedLender(data.profile.beamedLender)
+        if (data.profile.platforms) {
+          setConnected(
+            data.profile.platforms
+              .filter((p: any) => p.connected)
+              .map((p: any) => p.id),
+          )
+        }
       }
     })
   }, [])
 
+  const handleUserAuthenticated = (user: any) => {
+    setCurrentUser(user)
+    setIsLoggedIn(true)
+    setStep("welcome")
+    const pId = user.id in personas ? user.id : "anjali"
+    const target = personas[pId] || personas.anjali
+    setConnected(target.platforms.filter((p) => p.monthly > 0).map((p) => p.id))
+  }
+
+  const handleLogout = () => {
+    playTone("tap")
+    api.logout()
+    setIsLoggedIn(false)
+  }
+
   const store: Store = useMemo(
     () => ({
-      personaId: "anjali",
+      personaId: currentUser?.id in personas ? currentUser.id : "anjali",
       setPersonaId: () => {},
       lang,
       setLang: (l) => setLangRaw(l),
@@ -134,6 +160,7 @@ export default function App() {
       },
     }),
     [
+      currentUser,
       lang,
       step,
       connected,
@@ -185,22 +212,36 @@ export default function App() {
             14:20
           </span>
 
-          <div className="flex items-center gap-2.5 font-mono text-[11px]">
-            {/* Quick Tour Jumper Pill */}
-            <button
-              onClick={() => {
-                playTone("tap")
-                setShowTourDrawer(!showTourDrawer)
-              }}
-              className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2.5 py-0.5 text-[10.5px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
-              title="Quick Tour Navigator"
-            >
-              Tour{" "}
-              <Icon.chevron
-                size={10}
-                className={showTourDrawer ? "rotate-180" : ""}
-              />
-            </button>
+          <div className="flex items-center gap-2 font-mono text-[11px]">
+            {isLoggedIn && (
+              <>
+                {/* Account / Switch Button */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1 rounded-full bg-[#eeece7] text-[#17171c] border border-[#d9d9dd] px-2 py-0.5 text-[10px] font-bold cursor-pointer hover:bg-[#e5e7eb] transition-colors"
+                  title="Switch User / Sign Out"
+                >
+                  <Icon.user size={10} />{" "}
+                  {currentUser?.name?.split(" ")[0] || "User"}
+                </button>
+
+                {/* Quick Tour Jumper Pill */}
+                <button
+                  onClick={() => {
+                    playTone("tap")
+                    setShowTourDrawer(!showTourDrawer)
+                  }}
+                  className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2.5 py-0.5 text-[10.5px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
+                  title="Quick Tour Navigator"
+                >
+                  Tour{" "}
+                  <Icon.chevron
+                    size={10}
+                    className={showTourDrawer ? "rotate-180" : ""}
+                  />
+                </button>
+              </>
+            )}
 
             {offline ? (
               <span className="flex items-center gap-1 text-[#e28a00] font-semibold">
@@ -214,130 +255,136 @@ export default function App() {
           </div>
         </header>
 
-        {/* Quick Tour Drawer Dropdown */}
-        {showTourDrawer && (
-          <div className="absolute inset-x-0 top-[45px] z-50 border-b border-[#e5e7eb] bg-[#ffffff]/98 p-4 shadow-xl backdrop-blur-md animate-fade-up">
-            <div className="flex items-center justify-between pb-2 border-b border-[#f2f2f2]">
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#17171c]">
-                Quick Screen Navigator
-              </span>
-              <button
-                onClick={() => setShowTourDrawer(false)}
-                className="text-[12px] font-bold text-[#75758a] hover:text-[#17171c] cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              {ALL_STEPS.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    playTone("tap")
-                    store.go(s.id)
-                    setShowTourDrawer(false)
-                  }}
-                  className={`flex flex-col items-start rounded-xl border p-2 text-left transition-all cursor-pointer ${
-                    step === s.id
-                      ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
-                      : "border-[#e5e7eb] bg-[#f7f6f3] text-[#17171c] hover:border-[#d9d9dd]"
-                  }`}
-                >
-                  <span className="text-[11.5px] font-bold">{s.label}</span>
-                  <span
-                    className={`font-mono text-[9px] ${
-                      step === s.id ? "text-white/70" : "text-[#75758a]"
-                    }`}
-                  >
-                    {s.tag}
+        {!isLoggedIn ? (
+          <AuthScreen lang={lang} onAuthenticated={handleUserAuthenticated} />
+        ) : (
+          <>
+            {/* Quick Tour Drawer Dropdown */}
+            {showTourDrawer && (
+              <div className="absolute inset-x-0 top-[45px] z-50 border-b border-[#e5e7eb] bg-[#ffffff]/98 p-4 shadow-xl backdrop-blur-md animate-fade-up">
+                <div className="flex items-center justify-between pb-2 border-b border-[#f2f2f2]">
+                  <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#17171c]">
+                    Quick Screen Navigator
                   </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Navigation Chrome Bar */}
-        {showChrome && (
-          <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={handleBack}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d9dd] text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
-                aria-label="Go back"
-              >
-                <Icon.arrowLeft size={16} />
-              </button>
-              <div className="flex items-center gap-2">
-                <VisibleMark size={20} />
-                <span className="font-display text-[16px] font-bold tracking-tight text-[#17171c]">
-                  Visible
-                </span>
+                  <button
+                    onClick={() => setShowTourDrawer(false)}
+                    className="text-[12px] font-bold text-[#75758a] hover:text-[#17171c] cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  {ALL_STEPS.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => {
+                        playTone("tap")
+                        store.go(s.id)
+                        setShowTourDrawer(false)
+                      }}
+                      className={`flex flex-col items-start rounded-xl border p-2 text-left transition-all cursor-pointer ${
+                        step === s.id
+                          ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
+                          : "border-[#e5e7eb] bg-[#f7f6f3] text-[#17171c] hover:border-[#d9d9dd]"
+                      }`}
+                    >
+                      <span className="text-[11.5px] font-bold">{s.label}</span>
+                      <span
+                        className={`font-mono text-[9px] ${
+                          step === s.id ? "text-white/70" : "text-[#75758a]"
+                        }`}
+                      >
+                        {s.tag}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex items-center gap-2">
-              {offline && (
-                <span className="flex items-center gap-1 rounded-full bg-[#fef3c7] border border-[#fde68a] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#b45309]">
-                  <Icon.wifiOff size={10} /> OFFLINE
-                </span>
-              )}
-              <LangToggle lang={lang} onChange={(l) => store.setLang(l)} />
-              {canOpenPrivacy && (
-                <button
-                  onClick={() => {
-                    playTone("tap")
-                    store.go("privacy")
-                  }}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors cursor-pointer ${
-                    step === "privacy"
-                      ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
-                      : "border-[#d9d9dd] text-[#616161] hover:border-[#17171c] hover:text-[#17171c]"
-                  }`}
-                  aria-label="Privacy Settings"
-                >
-                  <Icon.lock size={14} />
-                </button>
-              )}
-            </div>
-          </div>
+            {/* Navigation Chrome Bar */}
+            {showChrome && (
+              <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]/95 backdrop-blur-md">
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={handleBack}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d9dd] text-[#616161] transition-colors hover:border-[#17171c] hover:text-[#17171c] cursor-pointer"
+                    aria-label="Go back"
+                  >
+                    <Icon.arrowLeft size={16} />
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <VisibleMark size={20} />
+                    <span className="font-display text-[16px] font-bold tracking-tight text-[#17171c]">
+                      Visible
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {offline && (
+                    <span className="flex items-center gap-1 rounded-full bg-[#fef3c7] border border-[#fde68a] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#b45309]">
+                      <Icon.wifiOff size={10} /> OFFLINE
+                    </span>
+                  )}
+                  <LangToggle lang={lang} onChange={(l) => store.setLang(l)} />
+                  {canOpenPrivacy && (
+                    <button
+                      onClick={() => {
+                        playTone("tap")
+                        store.go("privacy")
+                      }}
+                      className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors cursor-pointer ${
+                        step === "privacy"
+                          ? "border-[#17171c] bg-[#17171c] text-[#ffffff]"
+                          : "border-[#d9d9dd] text-[#616161] hover:border-[#17171c] hover:text-[#17171c]"
+                      }`}
+                      aria-label="Privacy Settings"
+                    >
+                      <Icon.lock size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Progress Rail (Cohere Near-Black Pill Track) */}
+            {mainIdx >= 0 && step !== "welcome" && (
+              <div className="flex shrink-0 gap-1.5 px-5 pt-2.5 pb-1.5 bg-[#ffffff]">
+                {MAIN.slice(1).map((st, i) => {
+                  const isCompleted = i <= mainIdx - 1
+                  const isCurrent = i === mainIdx - 1
+                  return (
+                    <button
+                      key={st}
+                      onClick={() => {
+                        if (isCompleted || isCurrent) {
+                          playTone("tap")
+                          store.go(st)
+                        }
+                      }}
+                      disabled={!isCompleted && !isCurrent}
+                      className="h-1 flex-1 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-default"
+                      style={{
+                        background: isCompleted
+                          ? "#17171c"
+                          : isCurrent
+                            ? "#75758a"
+                            : "#e5e7eb",
+                      }}
+                      title={`Step: ${st}`}
+                    />
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Active Mobile Screen Viewport */}
+            <main className="relative flex-1 overflow-hidden bg-[#ffffff] text-[#212121]">
+              {screen}
+            </main>
+          </>
         )}
-
-        {/* Progress Rail (Cohere Near-Black Pill Track) */}
-        {mainIdx >= 0 && step !== "welcome" && (
-          <div className="flex shrink-0 gap-1.5 px-5 pt-2.5 pb-1.5 bg-[#ffffff]">
-            {MAIN.slice(1).map((st, i) => {
-              const isCompleted = i <= mainIdx - 1
-              const isCurrent = i === mainIdx - 1
-              return (
-                <button
-                  key={st}
-                  onClick={() => {
-                    if (isCompleted || isCurrent) {
-                      playTone("tap")
-                      store.go(st)
-                    }
-                  }}
-                  disabled={!isCompleted && !isCurrent}
-                  className="h-1 flex-1 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-default"
-                  style={{
-                    background: isCompleted
-                      ? "#17171c"
-                      : isCurrent
-                        ? "#75758a"
-                        : "#e5e7eb",
-                  }}
-                  title={`Step: ${st}`}
-                />
-              )
-            })}
-          </div>
-        )}
-
-        {/* Active Mobile Screen Viewport */}
-        <main className="relative flex-1 overflow-hidden bg-[#ffffff] text-[#212121]">
-          {screen}
-        </main>
       </div>
     </div>
   )

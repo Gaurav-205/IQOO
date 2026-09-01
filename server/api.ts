@@ -45,115 +45,289 @@ export interface WorkerProfile {
   beamedLender: string | null
 }
 
-const INITIAL_PROFILE: WorkerProfile = {
-  id: "anjali",
-  name: "Anjali Verma",
-  nameHi: "अंजली वर्मा",
-  city: "Pune, Maharashtra",
-  cityHi: "पुणे, महाराष्ट्र",
-  phone: "+91 98•• ••• 214",
-  idCode: "VIS-2K9F-A14",
-  role: "Delivery & Transit Courier",
-  roleHi: "डिलीवरी व ट्रांजिट कूरियर",
-  platforms: [
-    {
-      id: "swiggy",
-      name: "Swiggy",
-      kind: "Food delivery",
-      color: "#fc8019",
-      glyph: "🛵",
-      monthly: 18400,
-      txns: 212,
-      connected: true,
-    },
-    {
-      id: "ola",
-      name: "Ola",
-      kind: "Ride-hailing",
-      color: "#4fd1a1",
-      glyph: "🚗",
-      monthly: 7200,
-      txns: 96,
-      connected: true,
-    },
-    {
-      id: "rapido",
-      name: "Rapido",
-      kind: "Bike taxi",
-      color: "#f5c518",
-      glyph: "🏍️",
-      monthly: 4800,
-      txns: 141,
-      connected: true,
-    },
-    {
-      id: "urban",
-      name: "Urban Company",
-      kind: "Home services",
-      color: "#6fa8ff",
-      glyph: "🔧",
-      monthly: 0,
-      txns: 0,
-      connected: false,
-    },
-  ],
-  history: [
-    { label: "Apr", labelHi: "अप्रैल", amount: 26800 },
-    { label: "May", labelHi: "मई", amount: 24100 },
-    { label: "Jun", labelHi: "जून", amount: 29800 },
-    { label: "Jul", labelHi: "जुलाई", amount: 27300 },
-    { label: "Aug", labelHi: "अगस्त", amount: 22900 },
-    { label: "Sep", labelHi: "सितंबर", amount: 30400 },
-  ],
-  avgMonthly: 26883,
-  claimed: 30000,
-  aa: 29700,
-  document: 29800,
-  readinessScore: 78,
-  ratings: [
-    {
-      key: "consistency",
-      title: "Income Consistency",
-      titleHi: "आय की निरंतरता",
-      level: "STRONG",
-      score: 82,
-      reason:
-        "Your income stayed relatively stable across the last 6 months, with no month falling sharply below average.",
-      reasonHi:
-        "पिछले 6 महीने में आपकी income relatively stable रही — कोई भी महीना औसत से बहुत नीचे नहीं गया।",
-    },
-    {
-      key: "diversity",
-      title: "Platform Diversity",
-      titleHi: "प्लेटफ़ॉर्म विविधता",
-      level: "STRONG",
-      score: 78,
-      reason:
-        "Your income arrives from 3 different platforms, so a slow week on one does not stop your earnings.",
-      reasonHi:
-        "आपकी income 3 platforms से आ रही है, इसलिए एक जगह काम कम हो तो भी कमाई रुकती नहीं।",
-    },
-    {
-      key: "reliability",
-      title: "Payment Reliability",
-      titleHi: "भुगतान विश्वसनीयता",
-      level: "MODERATE",
-      score: 74,
-      reason:
-        "Your recurring payouts show consistent behaviour, with occasional minor gaps between settlement cycles.",
-      reasonHi:
-        "आपके recurring payouts काफ़ी हद तक consistent हैं, बीच-बीच में settlement में थोड़ा अंतर आता है।",
-    },
-  ],
-  consentActive: true,
-  consentRef: "CN-90D-A14",
-  consentExpiry: "30 Nov 2026 (90 days)",
-  dataDeleted: false,
-  beamedLender: null,
+const TEST_PERSONAS: Record<string, WorkerProfile> = {
+  anjali: {
+    id: "anjali",
+    name: "Anjali Verma",
+    nameHi: "अंजली वर्मा",
+    city: "Pune, Maharashtra",
+    cityHi: "पुणे, महाराष्ट्र",
+    phone: "+91 98765 43210",
+    idCode: "VIS-2K9F-A14",
+    role: "Delivery & Transit Courier",
+    roleHi: "डिलीवरी व ट्रांजिट कूरियर",
+    platforms: [
+      {
+        id: "swiggy",
+        name: "Swiggy",
+        kind: "Food delivery",
+        color: "#fc8019",
+        glyph: "🛵",
+        monthly: 18400,
+        txns: 212,
+        connected: true,
+      },
+      {
+        id: "ola",
+        name: "Ola",
+        kind: "Ride-hailing",
+        color: "#4fd1a1",
+        glyph: "🚗",
+        monthly: 7200,
+        txns: 96,
+        connected: true,
+      },
+      {
+        id: "rapido",
+        name: "Rapido",
+        kind: "Bike taxi",
+        color: "#f5c518",
+        glyph: "🏍️",
+        monthly: 4800,
+        txns: 141,
+        connected: true,
+      },
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 0,
+        txns: 0,
+        connected: false,
+      },
+    ],
+    history: [
+      { label: "Apr", labelHi: "अप्रैल", amount: 26800 },
+      { label: "May", labelHi: "मई", amount: 24100 },
+      { label: "Jun", labelHi: "जून", amount: 29800 },
+      { label: "Jul", labelHi: "जुलाई", amount: 27300 },
+      { label: "Aug", labelHi: "अगस्त", amount: 22900 },
+      { label: "Sep", labelHi: "सितंबर", amount: 30400 },
+    ],
+    avgMonthly: 26883,
+    claimed: 30000,
+    aa: 29700,
+    document: 29800,
+    readinessScore: 78,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "STRONG",
+        score: 82,
+        reason:
+          "Your income stayed relatively stable across the last 6 months, with no month falling sharply below average.",
+        reasonHi:
+          "पिछले 6 महीने में आपकी income relatively stable रही — कोई भी महीना औसत से बहुत नीचे नहीं गया।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: "STRONG",
+        score: 78,
+        reason:
+          "Your income arrives from 3 different platforms, so a slow week on one does not stop your earnings.",
+        reasonHi:
+          "आपकी income 3 platforms से आ रही है, इसलिए एक जगह काम कम हो तो भी कमाई रुकती नहीं।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "MODERATE",
+        score: 74,
+        reason:
+          "Your recurring payouts show consistent behaviour, with occasional minor gaps between settlement cycles.",
+        reasonHi:
+          "आपके recurring payouts काफ़ी हद तक consistent हैं, बीच-बीच में settlement में थोड़ा अंतर आता है।",
+      },
+    ],
+    consentActive: true,
+    consentRef: "CN-90D-A14",
+    consentExpiry: "30 Nov 2026 (90 days)",
+    dataDeleted: false,
+    beamedLender: null,
+  },
+  ramesh: {
+    id: "ramesh",
+    name: "Ramesh Kumar",
+    nameHi: "रमेश कुमार",
+    city: "New Delhi, NCR",
+    cityHi: "नई दिल्ली, एनसीआर",
+    phone: "+91 98111 22334",
+    idCode: "VIS-88R2-D11",
+    role: "Full-Time Fleet Captain",
+    roleHi: "फुल-टाइम फ्लीट कैप्टन",
+    platforms: [
+      {
+        id: "swiggy",
+        name: "Uber Fleet",
+        kind: "Cab Services",
+        color: "#ffffff",
+        glyph: "🚕",
+        monthly: 25400,
+        txns: 180,
+        connected: true,
+      },
+      {
+        id: "ola",
+        name: "Ola Prime",
+        kind: "Ride-hailing",
+        color: "#4fd1a1",
+        glyph: "🚗",
+        monthly: 16600,
+        txns: 120,
+        connected: true,
+      },
+      {
+        id: "rapido",
+        name: "Rapido Auto",
+        kind: "Auto Rickshaw",
+        color: "#f5c518",
+        glyph: "🛺",
+        monthly: 0,
+        txns: 0,
+        connected: false,
+      },
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 0,
+        txns: 0,
+        connected: false,
+      },
+    ],
+    history: [
+      { label: "Apr", labelHi: "अप्रैल", amount: 38400 },
+      { label: "May", labelHi: "मई", amount: 41200 },
+      { label: "Jun", labelHi: "जून", amount: 39500 },
+      { label: "Jul", labelHi: "जुलाई", amount: 43100 },
+      { label: "Aug", labelHi: "अगस्त", amount: 40800 },
+      { label: "Sep", labelHi: "सितंबर", amount: 42000 },
+    ],
+    avgMonthly: 40833,
+    claimed: 42000,
+    aa: 41800,
+    document: 42000,
+    readinessScore: 86,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "STRONG",
+        score: 91,
+        reason:
+          "High stability across 6 continuous months with high trip completion rates.",
+        reasonHi: "पिछले 6 महीनों में उच्च निरंतरता और स्थिरता।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: "STRONG",
+        score: 84,
+        reason: "Balanced dual-platform driving income between Uber and Ola.",
+        reasonHi: "Uber और Ola दोनों से संतुलित कमाई।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "STRONG",
+        score: 83,
+        reason: "Zero settlement delays over the past two financial quarters.",
+        reasonHi: "पिछले दो तिमाहियों में बिना किसी देरी के समय पर भुगतान।",
+      },
+    ],
+    consentActive: true,
+    consentRef: "CN-90D-R88",
+    consentExpiry: "30 Nov 2026 (90 days)",
+    dataDeleted: false,
+    beamedLender: null,
+  },
+  sunita: {
+    id: "sunita",
+    name: "Sunita Devi",
+    nameHi: "सुनीता देवी",
+    city: "Mumbai, Maharashtra",
+    cityHi: "मुंबई, महाराष्ट्र",
+    phone: "+91 99223 34455",
+    idCode: "VIS-33S9-M02",
+    role: "Home Care Specialist",
+    roleHi: "होम केयर विशेषज्ञ",
+    platforms: [
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home Services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 24500,
+        txns: 84,
+        connected: true,
+      },
+    ],
+    history: [
+      { label: "Apr", labelHi: "अप्रैल", amount: 22000 },
+      { label: "May", labelHi: "मई", amount: 23500 },
+      { label: "Jun", labelHi: "जून", amount: 25000 },
+      { label: "Jul", labelHi: "जुलाई", amount: 24000 },
+      { label: "Aug", labelHi: "अगस्त", amount: 26000 },
+      { label: "Sep", labelHi: "सितंबर", amount: 24500 },
+    ],
+    avgMonthly: 24166,
+    claimed: 25000,
+    aa: 24500,
+    document: 24500,
+    readinessScore: 76,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "STRONG",
+        score: 80,
+        reason: "Consistent monthly bookings in high-demand residential zones.",
+        reasonHi: "उच्च मांग वाले आवासीय क्षेत्रों में नियमित बुकिंग।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: "MODERATE",
+        score: 68,
+        reason: "Single platform reliance on Urban Company.",
+        reasonHi: "Urban Company पर एकल प्लेटफ़ॉर्म निर्भरता।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "STRONG",
+        score: 80,
+        reason: "Direct weekly bank account disbursements.",
+        reasonHi: "साप्ताहिक सीधा बैंक खाता वितरण।",
+      },
+    ],
+    consentActive: true,
+    consentRef: "CN-90D-S33",
+    consentExpiry: "30 Nov 2026 (90 days)",
+    dataDeleted: false,
+    beamedLender: null,
+  },
 }
 
-// In-Memory fallback cache
-let currentProfile: WorkerProfile = JSON.parse(JSON.stringify(INITIAL_PROFILE))
+// Active session state
+let currentProfile: WorkerProfile = JSON.parse(JSON.stringify(TEST_PERSONAS.anjali))
+let isAuthenticated = true
 
 export const apiHandlers = {
   // GET /api/health
@@ -174,12 +348,101 @@ export const apiHandlers = {
     })
   },
 
+  // GET /api/auth/me
+  getMe(_req: Request, res: Response) {
+    res.json({
+      success: true,
+      isAuthenticated,
+      user: isAuthenticated ? currentProfile : null,
+    })
+  },
+
+  // POST /api/auth/demo-login
+  demoLogin(req: Request, res: Response) {
+    const { personaId = "anjali" } = req.body || {}
+    const selected = TEST_PERSONAS[personaId] || TEST_PERSONAS.anjali
+    currentProfile = JSON.parse(JSON.stringify(selected))
+    isAuthenticated = true
+    res.json({
+      success: true,
+      isAuthenticated: true,
+      user: currentProfile,
+      token: `demo-jwt-${Date.now()}`,
+      message: `Logged in as test user ${currentProfile.name}`,
+    })
+  },
+
+  // POST /api/auth/signin
+  signin(req: Request, res: Response) {
+    const { phone = "", otp = "8924" } = req.body || {}
+    if (!phone) {
+      return res.status(400).json({ success: false, error: "Phone number required" })
+    }
+    // Authenticate and link to active profile
+    currentProfile.phone = phone
+    isAuthenticated = true
+    res.json({
+      success: true,
+      isAuthenticated: true,
+      user: currentProfile,
+      token: `auth-jwt-${Date.now()}`,
+      message: "Authentication successful",
+    })
+  },
+
+  // POST /api/auth/signup
+  async signup(req: Request, res: Response) {
+    const { name, phone, city, role } = req.body || {}
+    if (!name || !phone) {
+      return res.status(400).json({ success: false, error: "Name and phone required" })
+    }
+    const newId = `usr-${Date.now().toString(36)}`
+    currentProfile = {
+      ...TEST_PERSONAS.anjali,
+      id: newId,
+      name,
+      nameHi: name,
+      city: city || "Pune, Maharashtra",
+      cityHi: city || "पुणे, महाराष्ट्र",
+      phone,
+      idCode: `VIS-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+      role: role || "Delivery Courier",
+      roleHi: role || "डिलीवरी कूरियर",
+    }
+    isAuthenticated = true
+    try {
+      await query(
+        "INSERT INTO workers (id, name, name_hi, city, phone, id_code, role, readiness_score) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (id) DO NOTHING",
+        [newId, name, name, city || "Pune", phone, currentProfile.idCode, role || "Courier", 78],
+      )
+    } catch (e) {
+      console.warn("[DB] Error inserting signup worker", e)
+    }
+    res.json({
+      success: true,
+      isAuthenticated: true,
+      user: currentProfile,
+      token: `auth-jwt-${Date.now()}`,
+      message: "Account created successfully",
+    })
+  },
+
+  // POST /api/auth/logout
+  logout(_req: Request, res: Response) {
+    isAuthenticated = false
+    res.json({
+      success: true,
+      isAuthenticated: false,
+      message: "Logged out successfully",
+    })
+  },
+
   // GET /api/profile
   async getProfile(_req: Request, res: Response) {
     try {
       const dbPlatforms = await query(
         "SELECT id, name, kind, color, glyph, monthly_earnings as monthly, txns_count as txns, connected FROM platforms WHERE worker_id = $1",
-        ["anjali"],
+        [currentProfile.id],
       )
       if (dbPlatforms && dbPlatforms.length > 0) {
         currentProfile.platforms = dbPlatforms
@@ -189,6 +452,7 @@ export const apiHandlers = {
     }
     res.json({
       success: true,
+      isAuthenticated,
       profile: currentProfile,
     })
   },
@@ -200,7 +464,7 @@ export const apiHandlers = {
     try {
       await query(
         "INSERT INTO consent_records (worker_id, consent_ref, status, expires_at) VALUES ($1, $2, $3, $4)",
-        ["anjali", currentProfile.consentRef, "ACTIVE", "30 Nov 2026 (90 days)"],
+        [currentProfile.id, currentProfile.consentRef, "ACTIVE", "30 Nov 2026 (90 days)"],
       )
     } catch (e) {
       console.warn("[DB] Error inserting consent record", e)
@@ -219,11 +483,11 @@ export const apiHandlers = {
     try {
       await query(
         "UPDATE consent_records SET status = 'REVOKED' WHERE worker_id = $1",
-        ["anjali"],
+        [currentProfile.id],
       )
       await query(
         "UPDATE platforms SET connected = false WHERE worker_id = $1",
-        ["anjali"],
+        [currentProfile.id],
       )
     } catch (e) {
       console.warn("[DB] Error revoking consent", e)
@@ -243,7 +507,7 @@ export const apiHandlers = {
       try {
         await query(
           "UPDATE platforms SET connected = true WHERE id = $1 AND worker_id = $2",
-          [platformId, "anjali"],
+          [platformId, currentProfile.id],
         )
       } catch (e) {
         console.warn("[DB] Error linking platform", e)
@@ -264,7 +528,7 @@ export const apiHandlers = {
         try {
           await query(
             "UPDATE platforms SET connected = true WHERE id = $1 AND worker_id = $2",
-            [platformId, "anjali"],
+            [platformId, currentProfile.id],
           )
         } catch (e) {
           console.warn("[DB] Error updating platform connection", e)
@@ -331,11 +595,11 @@ export const apiHandlers = {
     try {
       await query(
         "UPDATE platforms SET connected = false WHERE worker_id = $1",
-        ["anjali"],
+        [currentProfile.id],
       )
       await query(
         "UPDATE consent_records SET status = 'WIPED' WHERE worker_id = $1",
-        ["anjali"],
+        [currentProfile.id],
       )
     } catch (e) {
       console.warn("[DB] Error wiping data", e)
@@ -348,7 +612,7 @@ export const apiHandlers = {
 
   // POST /api/privacy/restore
   async restoreData(_req: Request, res: Response) {
-    currentProfile = JSON.parse(JSON.stringify(INITIAL_PROFILE))
+    currentProfile = JSON.parse(JSON.stringify(TEST_PERSONAS.anjali))
     try {
       await query(
         "UPDATE platforms SET connected = true WHERE worker_id = $1 AND monthly_earnings > 0",

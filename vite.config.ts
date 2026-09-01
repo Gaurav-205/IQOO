@@ -41,6 +41,21 @@ function backendApiPlugin(): Plugin {
           if (req.method === "GET" && pathOnly === "/api/health") {
             return apiHandlers.getHealth(req as any, expressRes as any)
           }
+          if (req.method === "GET" && pathOnly === "/api/auth/me") {
+            return apiHandlers.getMe(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/auth/signin") {
+            return apiHandlers.signin(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/auth/signup") {
+            return apiHandlers.signup(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/auth/demo-login") {
+            return apiHandlers.demoLogin(req as any, expressRes as any)
+          }
+          if (req.method === "POST" && pathOnly === "/api/auth/logout") {
+            return apiHandlers.logout(req as any, expressRes as any)
+          }
           if (req.method === "GET" && pathOnly === "/api/profile") {
             return apiHandlers.getProfile(req as any, expressRes as any)
           }

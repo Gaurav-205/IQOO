@@ -96,7 +96,7 @@ With **zero cloud data retention**, built-in **ML Kit camera OCR triangulation**
 │   ├── lib/
 │   │   ├── data.ts              # Mock data, preset statements, loans & audio synth
 │   │   └── store.ts             # Global application state & navigation router
-│   ├── App.tsx                  # Main shell & dual phone + Office Kit desktop station
+│   ├── App.tsx                  # Mobile application shell & responsive navigation router
 │   ├── index.css                # Tailwind CSS v4 @theme tokens & Cohere 2026 variables
 │   └── main.tsx                 # React DOM mount entrypoint
 ├── DESIGN.md                    # Canonical Cohere 2026 Enterprise UI design tokens

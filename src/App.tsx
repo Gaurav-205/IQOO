@@ -44,6 +44,12 @@ export default function App() {
   const handlePersonaSwitch = (pId: string) => {
     playTone("tap")
     setActivePersonaId(pId)
+    const targetWorker = personas[pId]
+    if (targetWorker) {
+      setConnected(
+        targetWorker.platforms.filter((p) => p.monthly > 0).map((p) => p.id),
+      )
+    }
   }
 
   const store: Store = useMemo(

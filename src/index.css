@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Bricolage Grotesque', 'Space Grotesk', sans-serif;
+  --font-body: 'Hanken Grotesk', sans-serif;
+  --font-hindi: 'Hind', 'Hanken Grotesk', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  /* Base & Surfaces (Cohere 2026 Inspired Palette) */
+  --color-ink: #070a10;
+  --color-ink-2: #0e131d;
+  --color-panel: #131a26;
+  --color-panel-2: #192231;
+  --color-cohere-black: #000000;
+  --color-primary-dark: #17171c;
+  --color-deep-green: #003c33;
+  --color-dark-navy: #071829;
+  --color-soft-stone: #eeece7;
+
+  /* Borders & Translucents */
+  --color-hair: rgba(255, 255, 255, 0.08);
+  --color-hair-strong: rgba(255, 255, 255, 0.16);
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+
+  /* Typography Colors */
+  --color-fg: #f4f6fa;
+  --color-fg-dim: #9aa7b8;
+  --color-fg-faint: #627084;
+
+  /* Accents & Brand Colors */
+  --color-saffron: #ff9a3c;
+  --color-saffron-soft: #ffb673;
+  --color-coral: #ff7759;
+  --color-coral-soft: #ffad9b;
+  --color-verify: #4fd1a1;
+  --color-verify-soft: #7fe4c1;
+  --color-action-blue: #1863dc;
+  --color-sky: #6fa8ff;
+  --color-warn: #ffce6b;
+  --color-emerald-deep: #003c33;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(255, 119, 89, 0.35);
+  color: #ffffff;
+}
+
+/* Hide scrollbars until scrolling */
+.scroll-area {
+  scrollbar-width: none;
+}
+.scroll-area::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+@keyframes v-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes v-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes v-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes v-pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+@keyframes v-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes v-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes v-scan-laser {
+  0% {
+    top: 8%;
+    opacity: 0.2;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 86%;
+    opacity: 0.2;
+  }
+}
+@keyframes v-beam-flow {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+@keyframes v-marquee-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes v-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+.animate-fade-up {
+  animation: v-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade {
+  animation: v-fade 0.5s ease both;
+}
+.animate-scale-in {
+  animation: v-scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+.cohere-card {
+  background: rgba(19, 26, 38, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cohere-pill {
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}

@@ -1,4 +1,5 @@
 import type { Request, Response } from "express"
+import { query } from "./db"
 
 export interface PlatformItem {
   id: string
@@ -151,15 +152,22 @@ const INITIAL_PROFILE: WorkerProfile = {
   beamedLender: null,
 }
 
-// In-Memory Database State
+// In-Memory fallback cache
 let currentProfile: WorkerProfile = JSON.parse(JSON.stringify(INITIAL_PROFILE))
 
 export const apiHandlers = {
   // GET /api/health
-  getHealth(_req: Request, res: Response) {
+  async getHealth(_req: Request, res: Response) {
+    let dbStatus = "CONNECTED"
+    try {
+      await query("SELECT 1")
+    } catch {
+      dbStatus = "FALLBACK_CACHE"
+    }
     res.json({
       status: "ok",
       version: "1.4.0",
+      database: dbStatus,
       npuEngine: "Qualcomm Hexagon INT8 Coprocessor",
       npuStatus: "ONLINE",
       timestamp: new Date().toISOString(),
@@ -167,7 +175,18 @@ export const apiHandlers = {
   },
 
   // GET /api/profile
-  getProfile(_req: Request, res: Response) {
+  async getProfile(_req: Request, res: Response) {
+    try {
+      const dbPlatforms = await query(
+        "SELECT id, name, kind, color, glyph, monthly_earnings as monthly, txns_count as txns, connected FROM platforms WHERE worker_id = $1",
+        ["anjali"],
+      )
+      if (dbPlatforms && dbPlatforms.length > 0) {
+        currentProfile.platforms = dbPlatforms
+      }
+    } catch (e) {
+      console.warn("[DB] Fallback to in-memory profile", e)
+    }
     res.json({
       success: true,
       profile: currentProfile,
@@ -175,9 +194,17 @@ export const apiHandlers = {
   },
 
   // POST /api/consent/grant
-  grantConsent(req: Request, res: Response) {
+  async grantConsent(_req: Request, res: Response) {
     currentProfile.consentActive = true
     currentProfile.consentRef = `CN-90D-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+    try {
+      await query(
+        "INSERT INTO consent_records (worker_id, consent_ref, status, expires_at) VALUES ($1, $2, $3, $4)",
+        ["anjali", currentProfile.consentRef, "ACTIVE", "30 Nov 2026 (90 days)"],
+      )
+    } catch (e) {
+      console.warn("[DB] Error inserting consent record", e)
+    }
     res.json({
       success: true,
       consentRef: currentProfile.consentRef,
@@ -186,9 +213,21 @@ export const apiHandlers = {
   },
 
   // POST /api/consent/revoke
-  revokeConsent(_req: Request, res: Response) {
+  async revokeConsent(_req: Request, res: Response) {
     currentProfile.consentActive = false
     currentProfile.platforms.forEach((p) => (p.connected = false))
+    try {
+      await query(
+        "UPDATE consent_records SET status = 'REVOKED' WHERE worker_id = $1",
+        ["anjali"],
+      )
+      await query(
+        "UPDATE platforms SET connected = false WHERE worker_id = $1",
+        ["anjali"],
+      )
+    } catch (e) {
+      console.warn("[DB] Error revoking consent", e)
+    }
     res.json({
       success: true,
       message: "Consent successfully revoked",
@@ -196,11 +235,19 @@ export const apiHandlers = {
   },
 
   // POST /api/connect/link
-  linkPlatform(req: Request, res: Response) {
+  async linkPlatform(req: Request, res: Response) {
     const { platformId } = req.body || {}
     const p = currentProfile.platforms.find((item) => item.id === platformId)
     if (p) {
       p.connected = true
+      try {
+        await query(
+          "UPDATE platforms SET connected = true WHERE id = $1 AND worker_id = $2",
+          [platformId, "anjali"],
+        )
+      } catch (e) {
+        console.warn("[DB] Error linking platform", e)
+      }
       res.json({ success: true, platform: p })
     } else {
       res.status(404).json({ success: false, error: "Platform not found" })
@@ -208,11 +255,21 @@ export const apiHandlers = {
   },
 
   // POST /api/connect/verify-otp
-  verifyOtp(req: Request, res: Response) {
+  async verifyOtp(req: Request, res: Response) {
     const { otp, platformId } = req.body || {}
     if (otp === "8924" || otp?.length === 4) {
       const p = currentProfile.platforms.find((item) => item.id === platformId)
-      if (p) p.connected = true
+      if (p) {
+        p.connected = true
+        try {
+          await query(
+            "UPDATE platforms SET connected = true WHERE id = $1 AND worker_id = $2",
+            [platformId, "anjali"],
+          )
+        } catch (e) {
+          console.warn("[DB] Error updating platform connection", e)
+        }
+      }
       res.json({
         success: true,
         authenticated: true,
@@ -240,7 +297,7 @@ export const apiHandlers = {
   },
 
   // POST /api/ocr/verify
-  verifyOcr(req: Request, res: Response) {
+  verifyOcr(_req: Request, res: Response) {
     res.json({
       success: true,
       ocrMatch: 0.994,
@@ -268,9 +325,21 @@ export const apiHandlers = {
   },
 
   // POST /api/privacy/wipe
-  wipeData(_req: Request, res: Response) {
+  async wipeData(_req: Request, res: Response) {
     currentProfile.dataDeleted = true
     currentProfile.consentActive = false
+    try {
+      await query(
+        "UPDATE platforms SET connected = false WHERE worker_id = $1",
+        ["anjali"],
+      )
+      await query(
+        "UPDATE consent_records SET status = 'WIPED' WHERE worker_id = $1",
+        ["anjali"],
+      )
+    } catch (e) {
+      console.warn("[DB] Error wiping data", e)
+    }
     res.json({
       success: true,
       message: "Device financial records erased",
@@ -278,8 +347,16 @@ export const apiHandlers = {
   },
 
   // POST /api/privacy/restore
-  restoreData(_req: Request, res: Response) {
+  async restoreData(_req: Request, res: Response) {
     currentProfile = JSON.parse(JSON.stringify(INITIAL_PROFILE))
+    try {
+      await query(
+        "UPDATE platforms SET connected = true WHERE worker_id = $1 AND monthly_earnings > 0",
+        ["anjali"],
+      )
+    } catch (e) {
+      console.warn("[DB] Error restoring data", e)
+    }
     res.json({
       success: true,
       profile: currentProfile,

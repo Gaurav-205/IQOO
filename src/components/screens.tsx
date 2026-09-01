@@ -2001,6 +2001,25 @@ export function Share({ s }: { s: Store }) {
     playTone("beam")
     setPhase("beaming")
     s.setBeamedLender(chosen.id)
+    try {
+      const channel = new BroadcastChannel("visible_iqoo_p2p_channel")
+      channel.postMessage({
+        type: "OFFICE_KIT_BEAM",
+        worker: activeWorker,
+        lender: chosen,
+        timestamp: Date.now(),
+      })
+      localStorage.setItem(
+        "visible_last_beam",
+        JSON.stringify({
+          worker: activeWorker,
+          lender: chosen,
+          timestamp: Date.now(),
+        }),
+      )
+    } catch (e) {
+      console.warn("[P2P] BroadcastChannel not supported in this runtime", e)
+    }
     setTimeout(() => {
       setPhase("landed")
       playTone("success")

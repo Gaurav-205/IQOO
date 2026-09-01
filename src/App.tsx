@@ -241,7 +241,7 @@ export default function App() {
   }[step]
 
   return (
-    <div className="relative flex min-h-dvh w-full items-center justify-center bg-[#f4f3ef] text-[#212121] p-0 md:py-6 overflow-x-hidden">
+    <div className="relative flex min-h-dvh w-full items-center justify-center bg-[#f0eee9] text-[#212121] p-0 md:py-6 overflow-x-hidden">
       {/* Real-World Production Live Telemetry Inspector */}
       <LiveSystemInspector
         isOpen={showInspector}
@@ -249,27 +249,24 @@ export default function App() {
       />
 
       {/* Clean, Modern Mobile Application Frame */}
-      <div className="relative z-10 flex h-dvh md:h-[90vh] md:max-h-[890px] w-full max-w-none md:max-w-[430px] flex-col bg-[#ffffff] md:rounded-[36px] md:border md:border-[#d9d9dd] md:shadow-[0_20px_60px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.06)] overflow-hidden">
-        {/* Mobile Status Bar (Clean & Fully Readable) */}
-        <header className="relative flex shrink-0 items-center justify-between px-4 py-3 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2] bg-[#ffffff]">
+      <div className="relative z-10 flex h-dvh md:h-[92vh] md:max-h-[900px] w-full max-w-none md:max-w-[460px] flex-col bg-[#ffffff] md:rounded-[32px] md:border md:border-[#d9d9dd] md:shadow-[0_20px_60px_rgba(0,0,0,0.1)] overflow-hidden">
+        {/* Mobile Status Bar (Clean, Minimal, Non-AI) */}
+        <header className="relative flex shrink-0 items-center justify-between px-5 py-3 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2] bg-[#ffffff]">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[12px] font-semibold text-[#17171c]">
               14:20
             </span>
-            {/* Real-World Production Live System Badge */}
+            {/* Live Indicator */}
             <button
               onClick={() => {
                 playTone("tap")
                 setShowInspector(true)
               }}
-              className="flex items-center gap-1.5 rounded-full bg-[#edfce9] text-[#00875a] border border-[#bbf7d0] px-2 py-0.5 text-[9.5px] font-mono font-bold cursor-pointer hover:bg-[#dcfce7] transition-all shadow-xs"
-              title="Open Real-World Infrastructure Inspector"
+              className="flex items-center gap-1.5 rounded-full bg-[#edfce9] text-[#00875a] border border-[#bbf7d0] px-2 py-0.5 text-[10px] font-mono font-medium cursor-pointer hover:bg-[#dcfce7] transition-colors"
+              title="Open Infrastructure Inspector"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00875a] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00875a]" />
-              </span>
-              <span>LIVE SYSTEM</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00875a]" />
+              <span>LIVE</span>
             </button>
           </div>
 

@@ -41,53 +41,48 @@ export function Welcome({ s }: { s: Store }) {
     <ScreenScroll>
       {/* Top Brand & Trust Header */}
       <div className="flex items-center justify-between pb-3 border-b border-[#f2f2f2]">
-        <Eyebrow>
-          Visible · {hi ? "क्रेडिट-रेडीनेस" : "Credit-Readiness Engine"}
-        </Eyebrow>
+        <Eyebrow>Visible · {hi ? "क्रेडिट प्रोफ़ाइल" : "Credit Readiness"}</Eyebrow>
         <Pill tone="pale-green">
-          <Icon.cpu size={11} /> 100% NPU
+          <Icon.shield size={11} />{" "}
+          {hi ? "सुरक्षित व निजी" : "Private & On-Device"}
         </Pill>
       </div>
 
-      {/* Hero Visual: Enterprise Credit Intelligence Console Card */}
-      <div className="mt-4 overflow-hidden rounded-[24px] border border-white/10 bg-[#17171c] p-5 text-[#ffffff] shadow-xl animate-fade-up">
+      {/* Hero Visual: Clean Financial Dossier Card */}
+      <div className="mt-4 overflow-hidden rounded-2xl bg-[#14171f] p-5 text-[#ffffff] shadow-lg animate-fade-up">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
-          <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[#ff7759]">
-            <Icon.spark size={13} />
-            <span>{hi ? "एकीकृत मासिक आय" : "Unified Income Dossier"}</span>
-          </div>
-          <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[10px] text-white/80">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-[#ff9a3c]">
+            {hi ? "एकीकृत मासिक आय" : "Unified Monthly Income"}
+          </span>
+          <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-white/80">
             {activeWorker.idCode}
           </span>
         </div>
 
-        {/* Primary Unified Amount Display */}
+        {/* Primary Amount */}
         <div className="my-4">
-          <div className="font-display text-4xl font-extrabold text-[#ffffff] tracking-tight">
+          <div className="font-display text-4xl font-bold tracking-tight text-[#ffffff]">
             {inr(totalIncome || activeWorker.document)}
           </div>
-          <div className="mt-1 flex items-center gap-2 text-[12px] text-white/70">
-            <span className="flex h-2 w-2 rounded-full bg-[#00875a] animate-pulse" />
-            <span className="font-medium">
-              {chips.length} {hi ? "प्लेटफ़ॉर्म एकीकृत" : "Platforms Unified"}
+          <div className="mt-1 flex items-center gap-2 text-[12.5px] text-white/70">
+            <span className="h-2 w-2 rounded-full bg-[#00875a]" />
+            <span>
+              {chips.length}{" "}
+              {hi ? "प्लेटफ़ॉर्म से सत्यापित कमाई" : "Platforms Linked & Verified"}
             </span>
-            <span className="text-white/40">·</span>
-            <span className="font-mono text-[#7fe4c1]">99.4% Confidence</span>
           </div>
         </div>
 
-        {/* Live Platform Breakdown Tiles */}
-        <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-3 text-[11px]">
+        {/* Platform Breakdown Tiles */}
+        <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-3">
           {chips.slice(0, 3).map((p) => (
             <div
               key={p.id}
-              className="rounded-xl border border-white/10 bg-white/5 p-2"
+              className="rounded-xl bg-white/5 p-2.5 border border-white/5"
             >
-              <div className="flex items-center gap-1 text-[12px]">
+              <div className="flex items-center gap-1 text-[11px] text-white/80 font-medium">
                 <span>{p.glyph}</span>
-                <span className="font-semibold truncate text-white/90">
-                  {p.name}
-                </span>
+                <span className="truncate">{p.name}</span>
               </div>
               <div className="mt-1 font-mono text-[12px] font-bold text-[#ff9a3c]">
                 {inr(p.monthly)}
@@ -96,20 +91,20 @@ export function Welcome({ s }: { s: Store }) {
           ))}
         </div>
 
-        {/* NPU On-Device Seal Footer */}
-        <div className="mt-3.5 flex items-center justify-between border-t border-white/10 pt-3 text-[10.5px] font-mono text-white/60">
+        {/* Security Seal */}
+        <div className="mt-3.5 flex items-center justify-between border-t border-white/10 pt-2.5 text-[10.5px] font-mono text-white/60">
           <span className="flex items-center gap-1">
-            <Icon.shield size={12} className="text-[#00875a]" /> Zero Cloud
-            Storage
+            <Icon.lock size={11} className="text-[#00875a]" />{" "}
+            {hi ? "ज़ीरो-क्लाउड स्टोरेज" : "Zero-Cloud Storage"}
           </span>
-          <span className="text-[#7fe4c1]">Qualcomm Hexagon NPU</span>
+          <span>{hi ? "RBI AA स्वीकृत" : "RBI AA Compliant"}</span>
         </div>
       </div>
 
-      {/* Editorial Typographic Narrative */}
-      <div className="mt-5 space-y-2.5">
+      {/* Editorial Headline */}
+      <div className="mt-6 space-y-2">
         <h1
-          className={`text-[25px] font-bold leading-[1.15] tracking-tight text-[#17171c] ${
+          className={`text-[23px] font-bold leading-tight tracking-tight text-[#17171c] ${
             hi ? "font-hindi" : "font-display"
           }`}
         >
@@ -128,55 +123,59 @@ export function Welcome({ s }: { s: Store }) {
           )}
         </h1>
         <p
-          className={`text-[13.5px] leading-relaxed text-[#616161] ${
+          className={`text-[13px] leading-relaxed text-[#616161] ${
             hi ? "font-hindi" : ""
           }`}
         >
           {hi
-            ? "Visible आपकी अलग-अलग platforms (Swiggy, Ola, Rapido, Zomato) की कमाई को एक भरोसेमंद, बैंक-स्वीकृत प्रोफ़ाइल में बदलता है। बिना किसी कागज़ी कार्रवाई के।"
-            : "Visible turns fragmented earnings across delivery and ride apps into a verifiable, RBI-compliant credit profile any microfinance lender understands."}
+            ? "Visible आपकी अलग-अलग डिलीवरी और राइड ऐप्स की कमाई को एक प्रामाणिक क्रेडिट प्रोफ़ाइल में जोड़ता है ताकि आप बैंक लोन और क्रेडिट पा सकें।"
+            : "Visible unifies your gig earnings across delivery and ride apps into a bank-ready credit profile for microfinance loans without paperwork."}
         </p>
       </div>
 
-      {/* Three Pillar Value Cards */}
-      <div className="mt-4 space-y-2">
+      {/* 3 Core Trust Pillars */}
+      <div className="mt-5 space-y-2">
         {[
           {
             icon: Icon.database,
-            title: hi ? "बिना बैंक के चक्कर" : "Zero Bank Paperwork",
+            title: hi
+              ? "बिना किसी कागजी कार्रवाई के"
+              : "100% Paperless Connection",
             desc: hi
-              ? "Account Aggregator से सीधे कमाई प्रमाणित होती है।"
-              : "Direct statement ingestion via RBI Account Aggregator.",
+              ? "Account Aggregator से सीधे बैंक स्टेटमेंट सत्यापन।"
+              : "Direct automated verification via RBI Account Aggregator.",
           },
           {
-            icon: Icon.cpu,
-            title: hi ? "100% निजी व सुरक्षित" : "100% Private On-Device AI",
+            icon: Icon.shield,
+            title: hi ? "निजी और गोपनीय" : "Strict On-Device Privacy",
             desc: hi
-              ? "आपका raw data फ़ोन से बाहर कभी नहीं जाता।"
-              : "Neural processing happens strictly on your Qualcomm NPU chip.",
+              ? "आपकी कमाई का डेटा कभी आपके फोन से बाहर नहीं जाता।"
+              : "Your financial records stay encrypted on your device.",
           },
           {
             icon: Icon.send,
-            title: hi ? "सीधा लोन अफ़सर को शेयर" : "Instant Wireless Beam",
+            title: hi
+              ? "लोन अधिकारियों को तुरंत शेयर करें"
+              : "Direct Wireless Sharing",
             desc: hi
-              ? "लेंडर के डेस्क पर बिना इंटरनेट वायरलेस शेयर करें।"
-              : "Beam tamper-proof dossier to branch desks via Wi-Fi Direct.",
+              ? "सत्यापित क्रेडिट रिपोर्ट बैंक लोन अधिकारी को सीधे भेजें।"
+              : "Beam tamper-proof credit dossier directly to branch desks.",
           },
         ].map((item, idx) => {
           const I = item.icon
           return (
             <div
               key={idx}
-              className="flex items-center gap-3 rounded-2xl border border-[#e5e7eb] bg-[#f7f6f3] p-3 text-left shadow-2xs"
+              className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-[#f7f6f3] p-3 text-left"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ffffff] border border-[#d9d9dd] text-[#17171c]">
-                <I size={16} />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#ffffff] border border-[#d9d9dd] text-[#17171c]">
+                <I size={15} />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-[13px] font-semibold text-[#17171c]">
+                <div className="text-[12.5px] font-semibold text-[#17171c]">
                   {item.title}
                 </div>
-                <div className="text-[11.5px] text-[#616161]">{item.desc}</div>
+                <div className="text-[11px] text-[#616161]">{item.desc}</div>
               </div>
             </div>
           )

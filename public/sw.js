@@ -1,15 +1,15 @@
-const CACHE_NAME = "visible-v1"
+const CACHE_NAME = "visible-v2"
 const ASSETS_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/icon.svg",
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./icon.svg",
 ]
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE)
+      return cache.addAll(ASSETS_TO_CACHE).catch(() => {})
     })
   )
   self.skipWaiting()
@@ -37,20 +37,22 @@ self.addEventListener("fetch", (event) => {
       if (cachedResponse) {
         return cachedResponse
       }
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== "basic") {
+      return fetch(event.request)
+        .then((response) => {
+          if (!response || response.status !== 200 || response.type !== "basic") {
+            return response
+          }
+          const responseToCache = response.clone()
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache)
+          })
           return response
-        }
-        const responseToCache = response.clone()
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache)
         })
-        return response
-      }).catch(() => {
-        if (event.request.mode === "navigate") {
-          return caches.match("/index.html")
-        }
-      })
+        .catch(() => {
+          if (event.request.mode === "navigate") {
+            return caches.match("./index.html")
+          }
+        })
     })
   )
 })

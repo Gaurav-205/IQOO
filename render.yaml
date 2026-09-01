@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: visible-iqoo
+    env: node
+    buildCommand: pnpm install && pnpm run build
+    startCommand: node server/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_DqxFgmHTMz90@ep-long-hill-ae4sbxn9-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require

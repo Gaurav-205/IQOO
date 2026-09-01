@@ -662,36 +662,40 @@ export function Analysis({ s }: { s: Store }) {
       Math.floor((progress / 100) * steps.length),
     )
     return (
-      <div className="flex h-full flex-col items-center justify-center p-8 text-center">
-        <div className="relative flex h-44 w-44 items-center justify-center">
+      <div className="flex h-full flex-col items-center justify-center p-6 text-center bg-[#003c33] text-[#ffffff] animate-fade">
+        <div className="relative flex h-40 w-40 items-center justify-center">
           <div
-            className="absolute inset-0 rounded-full border border-saffron/20"
+            className="absolute inset-0 rounded-full border border-white/20"
             style={{ animation: "v-pulse-ring 2s ease-out infinite" }}
           />
           <div
-            className="absolute inset-3 rounded-full border border-saffron/15"
+            className="absolute inset-3 rounded-full border border-white/10"
             style={{ animation: "v-pulse-ring 2s ease-out infinite 0.6s" }}
           />
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-panel-2 shadow-inner text-saffron border border-saffron/30">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/10 shadow-inner text-[#ffffff] border border-white/25 backdrop-blur-md">
             <Icon.cpu size={36} className="animate-pulse" />
           </div>
         </div>
-        <div className="mt-8 font-mono text-3xl font-bold tabular-nums text-fg">
+        <div className="mt-6 font-mono text-3xl font-bold tabular-nums text-[#ffffff]">
           {Math.round(progress)}%
         </div>
         <div
-          className={`mt-2 text-[15px] font-medium text-fg ${
+          className={`mt-2 text-[15px] font-medium text-white/90 ${
             hi ? "font-hindi" : ""
           }`}
         >
           {steps[stepIdx]}…
         </div>
-        <div className="mt-6 flex items-center gap-2 rounded-full border border-hair bg-panel/60 px-4 py-2">
-          <Icon.lock size={14} className="text-verify" />
-          <span className={`text-[12px] text-fg-dim ${hi ? "font-hindi" : ""}`}>
+        <div className="mt-6 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-white/90">
+          <Icon.lock size={14} className="text-[#edfce9]" />
+          <span
+            className={`text-[12px] font-mono tracking-wide ${
+              hi ? "font-hindi" : ""
+            }`}
+          >
             {hi
-              ? "आपका data फ़ोन पर ही रहता है (NPU)"
-              : "On-device NPU · Raw data never leaves phone"}
+              ? "आपका data फ़ोन पर ही रहता है (Qualcomm NPU)"
+              : "On-Device Qualcomm NPU · Zero Cloud Storage"}
           </span>
         </div>
       </div>
@@ -793,24 +797,24 @@ function BarChart({
 
   return (
     <Card className="mt-5 p-5">
-      <div className="flex items-center justify-between pb-2 border-b border-hair">
-        <div className="text-[12px] text-fg-dim">
-          <span className="font-semibold text-fg">
+      <div className="flex items-center justify-between pb-2.5 border-b border-[#f2f2f2]">
+        <div className="text-[12.5px] text-[#616161]">
+          <span className="font-semibold text-[#17171c]">
             {hi ? activePt.labelHi : activePt.label} 2026
           </span>
           :{" "}
-          <span className="font-mono text-saffron font-bold">
+          <span className="font-mono text-[#ff7759] font-bold">
             {inr(activePt.amount)}
           </span>
         </div>
-        <span className="font-mono text-[10px] text-fg-faint">
-          {hi ? "टैप करके विवरण देखें" : "Tap bar to inspect"}
+        <span className="font-mono text-[10px] text-[#75758a] uppercase tracking-wider">
+          {hi ? "विवरण देखें" : "Tap bar to inspect"}
         </span>
       </div>
 
       <div
         className="mt-4 flex items-end justify-between gap-2"
-        style={{ height: 140 }}
+        style={{ height: 130 }}
       >
         {historyData.map((h, i) => {
           const pct = (h.amount / max) * 100
@@ -826,26 +830,28 @@ function BarChart({
               className="group flex flex-1 flex-col items-center justify-end gap-1.5 focus:outline-none cursor-pointer"
               style={{ height: "100%" }}
             >
-              <div className="font-mono text-[9px] text-fg-faint group-hover:text-fg font-medium">
+              <div className="font-mono text-[9.5px] text-[#75758a] group-hover:text-[#17171c] font-medium">
                 {(h.amount / 1000).toFixed(1)}k
               </div>
               <div
-                className={`w-full rounded-t-lg transition-all duration-500 ease-out ${
-                  isSelected ? "ring-2 ring-saffron" : ""
+                className={`w-full rounded-t-md transition-all duration-500 ease-out ${
+                  isSelected ? "ring-2 ring-[#17171c]" : ""
                 }`}
                 style={{
                   height: shown ? `${pct}%` : "0%",
-                  transitionDelay: `${i * 60}ms`,
-                  background: isBest
-                    ? "linear-gradient(180deg, var(--color-saffron), rgba(255,154,60,0.35))"
-                    : "linear-gradient(180deg, rgba(111,168,255,0.7), rgba(111,168,255,0.15))",
+                  transitionDelay: `${i * 50}ms`,
+                  background: isSelected
+                    ? "#17171c"
+                    : isBest
+                      ? "#ff7759"
+                      : "#d9d9dd",
                 }}
               />
             </button>
           )
         })}
       </div>
-      <div className="mt-2 flex justify-between">
+      <div className="mt-2.5 flex justify-between border-t border-[#f2f2f2] pt-2">
         {historyData.map((h) => (
           <button
             key={h.label}
@@ -853,10 +859,10 @@ function BarChart({
               playTone("tap")
               setSelectedMonth(h.label)
             }}
-            className={`flex-1 text-center text-[11px] transition-colors cursor-pointer ${
+            className={`flex-1 text-center text-[11px] font-mono transition-colors cursor-pointer ${
               h.label === selectedMonth
-                ? "font-bold text-saffron"
-                : "text-fg-faint hover:text-fg"
+                ? "font-bold text-[#17171c]"
+                : "text-[#75758a] hover:text-[#17171c]"
             } ${hi ? "font-hindi" : ""}`}
           >
             {hi ? h.labelHi.slice(0, 3) : h.label}
@@ -879,18 +885,20 @@ function Stat({
   tone?: "verify"
 }) {
   return (
-    <div className="rounded-2xl border border-hair bg-panel/55 p-3.5 backdrop-blur-xs">
-      <div className="font-mono text-[10px] uppercase tracking-wider text-fg-faint">
+    <div className="rounded-2xl border border-[#e5e7eb] bg-[#ffffff] p-3.5 shadow-xs">
+      <div className="font-mono text-[10px] uppercase tracking-[0.28px] text-[#75758a]">
         {label}
       </div>
       <div
-        className={`mt-1 font-display text-lg font-bold ${
-          tone === "verify" ? "text-verify" : "text-fg"
+        className={`mt-1 font-display text-[18px] font-bold ${
+          tone === "verify" ? "text-[#00875a]" : "text-[#17171c]"
         }`}
       >
         {value}
       </div>
-      {sub && <div className="text-[12px] text-fg-dim">{sub}</div>}
+      {sub && (
+        <div className="text-[11.5px] text-[#616161] font-mono">{sub}</div>
+      )}
     </div>
   )
 }

@@ -11,7 +11,7 @@
   --font-hindi: 'Hind', 'Hanken Grotesk', sans-serif;
   --font-mono: 'DM Mono', monospace;
 
-  /* Canonical Cohere 2026 Color System (from DESIGN.md) */
+  /* Canonical Cohere 2026 Color Palette (from DESIGN.md) */
   --color-canvas: #ffffff;
   --color-canvas-stone: #f7f6f3;
   --color-soft-stone: #eeece7;
@@ -21,22 +21,34 @@
   --color-border-light: #e5e7eb;
   --color-hairline: #d9d9dd;
 
+  /* Text & Surface Tokens */
   --color-cohere-black: #000000;
   --color-primary-dark: #17171c;
   --color-ink: #212121;
+  --color-fg: #17171c;
+  --color-fg-dim: #616161;
+  --color-fg-faint: #75758a;
   --color-body-muted: #616161;
   --color-slate: #75758a;
   --color-muted: #93939f;
 
+  /* Semantic UI Surfaces */
+  --color-panel: #ffffff;
+  --color-panel-2: #eeece7;
+  --color-hair: #e5e7eb;
+  --color-hair-strong: #d9d9dd;
+
+  /* Enterprise Product Bands & Accents */
   --color-deep-green: #003c33;
   --color-dark-navy: #071829;
   --color-action-blue: #1863dc;
   --color-focus-blue: #4c6ee6;
   --color-coral: #ff7759;
   --color-coral-soft: #ffad9b;
+  --color-saffron: #ff7759;
+  --color-saffron-soft: #ffad9b;
   --color-verify: #00875a;
   --color-verify-soft: #edfce9;
-  --color-saffron: #ff9a3c;
   --color-warn: #e28a00;
   --color-error: #b30000;
 }
@@ -50,7 +62,7 @@ body,
 body {
   margin: 0;
   background: var(--color-canvas-stone);
-  color: var(--color-ink);
+  color: var(--color-fg);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
@@ -143,32 +155,4 @@ body {
 }
 .animate-scale-in {
   animation: v-scale-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.cohere-card-white {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-}
-
-.cohere-card-stone {
-  background: #eeece7;
-  border: 1px solid #d9d9dd;
-}
-
-.cohere-card-dark {
-  background: #17171c;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.cohere-card-green {
-  background: #003c33;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.cohere-card-navy {
-  background: #071829;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
 }

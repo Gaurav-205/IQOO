@@ -170,7 +170,7 @@ export const Icon = {
   ),
 }
 
-// ── Buttons & Components (Cohere Inspired Precision) ────────────
+// ── Buttons & Components (Cohere 2026 Enterprise AI Specs) ─────
 export function Button({
   children,
   onClick,
@@ -181,20 +181,22 @@ export function Button({
 }: {
   children: ReactNode
   onClick?: () => void
-  variant?: "primary" | "coral" | "ghost" | "soft" | "emerald"
+  variant?: "primary" | "coral" | "ghost" | "soft" | "emerald" | "outline"
   disabled?: boolean
   full?: boolean
   className?: string
 }) {
   const styles = {
     primary:
-      "bg-saffron text-ink font-bold shadow-[0_8px_25px_-6px_rgba(255,154,60,0.5)] hover:brightness-105 active:scale-[0.98]",
+      "bg-saffron text-ink font-bold shadow-[0_10px_28px_-6px_rgba(255,154,60,0.45)] hover:brightness-105 active:scale-[0.98] border border-saffron/40",
     coral:
-      "bg-coral text-white font-bold shadow-[0_8px_25px_-6px_rgba(255,119,89,0.5)] hover:brightness-105 active:scale-[0.98]",
+      "bg-coral text-white font-bold shadow-[0_10px_28px_-6px_rgba(255,119,89,0.45)] hover:brightness-105 active:scale-[0.98] border border-coral/40",
     emerald:
-      "bg-verify text-ink font-bold shadow-[0_8px_25px_-6px_rgba(79,209,161,0.5)] hover:brightness-105 active:scale-[0.98]",
+      "bg-verify text-ink font-bold shadow-[0_10px_28px_-6px_rgba(79,209,161,0.45)] hover:brightness-105 active:scale-[0.98] border border-verify/40",
+    outline:
+      "bg-transparent border border-hair-strong text-fg hover:border-saffron hover:text-saffron active:scale-[0.98]",
     ghost:
-      "border border-hair-strong text-fg hover:border-saffron/60 hover:text-saffron active:scale-[0.98]",
+      "bg-transparent text-fg-dim hover:text-fg hover:bg-white/5 active:scale-[0.98]",
     soft: "bg-panel-2 text-fg border border-hair hover:border-hair-strong active:scale-[0.98]",
   }[variant]
 
@@ -202,7 +204,7 @@ export function Button({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[14.5px] transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:pointer-events-none ${
+      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[14.5px] font-medium tracking-tight transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:pointer-events-none ${
         full ? "w-full" : ""
       } ${styles} ${className}`}
     >
@@ -216,7 +218,7 @@ export function Pill({
   tone = "dim",
 }: {
   children: ReactNode
-  tone?: "dim" | "verify" | "saffron" | "coral" | "sky" | "warn" | "deep-green"
+  tone?: "dim" | "verify" | "saffron" | "coral" | "sky" | "warn" | "deep-green" | "stone"
 }) {
   const map = {
     dim: "bg-white/5 text-fg-dim border-hair",
@@ -226,6 +228,7 @@ export function Pill({
     sky: "bg-sky/15 text-sky border-sky/30",
     warn: "bg-warn/15 text-warn border-warn/30",
     "deep-green": "bg-emerald-deep/40 text-verify border-verify/30",
+    stone: "bg-[#eeece7]/10 text-[#eeece7] border-white/10",
   }[tone]
 
   return (
@@ -240,13 +243,22 @@ export function Pill({
 export function Card({
   children,
   className = "",
+  variant = "default",
 }: {
   children: ReactNode
   className?: string
+  variant?: "default" | "stone" | "deep-green" | "dark-navy"
 }) {
+  const bgStyles = {
+    default: "bg-panel/85 border-hair",
+    stone: "bg-panel-2 border-hair-strong",
+    "deep-green": "bg-emerald-deep/30 border-verify/20",
+    "dark-navy": "bg-[#071829]/80 border-sky/20",
+  }[variant]
+
   return (
     <div
-      className={`rounded-3xl border border-hair bg-panel/85 backdrop-blur-md transition-all duration-200 ${className}`}
+      className={`rounded-3xl border backdrop-blur-md transition-all duration-200 ${bgStyles} ${className}`}
     >
       {children}
     </div>

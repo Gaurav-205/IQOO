@@ -50,6 +50,7 @@ export default function App() {
   const [beamedLender, setBeamedLender] = useState<string | null>(null)
   const [officerApproved, setOfficerApproved] = useState(false)
   const [showDesktopStation, setShowDesktopStation] = useState(true)
+  const [showAnnouncement, setShowAnnouncement] = useState(true)
 
   const store: Store = useMemo(
     () => ({
@@ -144,7 +145,36 @@ export default function App() {
   const currentLender = lenders.find((l) => l.id === beamedLender) ?? lenders[0]
 
   return (
-    <div className="grain relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-ink p-0 sm:p-6 lg:p-10">
+    <div className="grain relative flex min-h-screen w-full flex-col items-center justify-between overflow-x-hidden bg-ink text-fg">
+      {/* ── COHERE SPEC: ANNOUNCEMENT BAR (Height 36px, Black, Microcopy) ── */}
+      {showAnnouncement && (
+        <div className="relative z-30 flex h-9 w-full items-center justify-between border-b border-hair-strong bg-cohere-black px-4 font-mono text-[11px] text-fg-dim">
+          <div className="mx-auto flex items-center gap-2 text-center">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-saffron animate-pulse" />
+            <span>
+              On-Device Qualcomm NPU Inference · Zero-Cloud Storage · RBI
+              Account Aggregator Gateway
+            </span>
+            <button
+              onClick={() => {
+                playTone("tap")
+                store.go("consent")
+              }}
+              className="ml-2 font-semibold text-saffron underline hover:text-saffron-soft cursor-pointer"
+            >
+              Learn more
+            </button>
+          </div>
+          <button
+            onClick={() => setShowAnnouncement(false)}
+            className="text-fg-faint hover:text-fg text-xs px-2 cursor-pointer"
+            aria-label="Close announcement bar"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Ambient background aura */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -154,31 +184,12 @@ export default function App() {
         }}
       />
 
-      {/* Top Header / Branding */}
-      <header className="pointer-events-none absolute left-6 top-6 hidden items-center gap-3 lg:flex">
-        <VisibleMark size={32} />
-        <div>
-          <span className="font-display text-xl font-extrabold tracking-tight text-fg">
-            Visible
-          </span>
-          <span className="ml-2 rounded-full border border-saffron/30 bg-saffron/10 px-2 py-0.5 font-mono text-[10px] text-saffron font-bold">
-            iQOO 15 Edition
-          </span>
-        </div>
-      </header>
-
-      {/* Bottom Tagline */}
-      <div className="pointer-events-none absolute bottom-6 left-6 hidden max-w-[280px] text-[12px] leading-relaxed text-fg-faint lg:block">
-        Phone-native Credit-Readiness Profile for India&apos;s gig workforce.
-        Powered by on-device NPU &amp; Office Kit.
-      </div>
-
       {/* Main Workspace Layout (Phone + Optional Companion Desktop Station) */}
-      <div className="relative z-10 flex w-full flex-col items-center justify-center gap-8 lg:flex-row lg:items-center">
+      <div className="relative z-10 my-auto flex w-full flex-col items-center justify-center gap-8 p-0 sm:p-6 lg:flex-row lg:items-center lg:p-10">
         {/* ── PHONE CONTAINER ───────────────────────────── */}
         <div className="flex w-full flex-col items-center sm:w-auto">
           <div
-            className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-ink-2 sm:h-[780px] sm:w-[390px] sm:max-h-[calc(100vh-2.5rem)] sm:rounded-[2.8rem] sm:border sm:border-hair-strong sm:shadow-[0_40px_120px_-30px_rgba(0,0,0,0.95)]"
+            className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-ink-2 sm:h-[780px] sm:w-[390px] sm:max-h-[calc(100vh-4.5rem)] sm:rounded-[2.8rem] sm:border sm:border-hair-strong sm:shadow-[0_40px_120px_-30px_rgba(0,0,0,0.95)]"
             style={{
               boxShadow:
                 "0 0 0 10px #06090f, 0 40px 120px -30px rgba(0,0,0,0.9)",
@@ -469,6 +480,22 @@ export default function App() {
           </aside>
         )}
       </div>
+
+      {/* ── COHERE SPEC: TRUST LOGO STRIP (Monochrome Partner Marks) ── */}
+      <footer className="relative z-10 hidden w-full max-w-5xl items-center justify-between border-t border-hair/50 px-6 py-4 font-mono text-[11px] text-fg-faint lg:flex">
+        <div className="flex items-center gap-2">
+          <VisibleMark size={16} />
+          <span>Visible Fintech · On-Device Architecture</span>
+        </div>
+        <div className="flex items-center gap-6 opacity-70">
+          <span>🛵 Swiggy</span>
+          <span>🚗 Ola</span>
+          <span>🏍️ Rapido</span>
+          <span>⚡ Qualcomm NPU</span>
+          <span>🖥️ Vivo Office Kit</span>
+          <span>🔒 Setu AA</span>
+        </div>
+      </footer>
     </div>
   )
 }

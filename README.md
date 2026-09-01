@@ -2,11 +2,14 @@
 ### *The Phone-Native, On-Device Credit-Readiness Engine for India’s Gig Workforce*
 
 [![iQOO Hackathon 2026](https://img.shields.io/badge/iQOO_Hackathon-2026_City_Battle-ff9a3c?style=flat-square)](https://github.com/Gaurav-205/IQOO)
+[![CI Build](https://img.shields.io/badge/CI-Passing-27c93f?style=flat-square&logo=githubactions)](https://github.com/Gaurav-205/IQOO/actions)
 [![React](https://img.shields.io/badge/React-19.0-61dafb?style=flat-square&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
 [![Design System](https://img.shields.io/badge/Design_System-Cohere_2026-003c33?style=flat-square)](./DESIGN.md)
 [![Hardware Acceleration](https://img.shields.io/badge/Qualcomm-NPU_Accelerated-4fd1a1?style=flat-square)](https://qualcomm.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-1863dc?style=flat-square)](./LICENSE)
+[![Zero-Cloud Privacy](https://img.shields.io/badge/Privacy-Zero--Cloud_NPU-ff7759?style=flat-square)](./SECURITY.md)
 
 ---
 

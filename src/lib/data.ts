@@ -60,68 +60,320 @@ export interface LoanOffer {
   tag: string
 }
 
-export const worker = {
-  name: "Anjali Verma",
-  nameHi: "अंजली वर्मा",
-  city: "Pune, Maharashtra",
-  cityHi: "पुणे, महाराष्ट्र",
-  phone: "+91 98•• ••• 214",
-  id: "VIS-2K9F-A14",
+export interface Persona {
+  id: string
+  name: string
+  nameHi: string
+  city: string
+  cityHi: string
+  phone: string
+  idCode: string
+  role: string
+  roleHi: string
+  platforms: Platform[]
+  history: MonthPoint[]
+  avgMonthly: number
+  claimed: number
+  aa: number
+  document: number
+  readinessScore: number
+  ratings: Rating[]
 }
 
-// Account Aggregator — discoverable gig platforms
-export const platforms: Platform[] = [
-  {
-    id: "swiggy",
-    name: "Swiggy",
-    kind: "Food delivery",
-    color: "#fc8019",
-    glyph: "🛵",
-    monthly: 18400,
-    txns: 212,
+export const personas: Record<string, Persona> = {
+  anjali: {
+    id: "anjali",
+    name: "Anjali Verma",
+    nameHi: "अंजली वर्मा",
+    city: "Pune, Maharashtra",
+    cityHi: "पुणे, महाराष्ट्र",
+    phone: "+91 98•• ••• 214",
+    idCode: "VIS-2K9F-A14",
+    role: "Delivery & Transit Courier",
+    roleHi: "डिलीवरी व ट्रांजिट कूरियर",
+    platforms: [
+      {
+        id: "swiggy",
+        name: "Swiggy",
+        kind: "Food delivery",
+        color: "#fc8019",
+        glyph: "🛵",
+        monthly: 18400,
+        txns: 212,
+      },
+      {
+        id: "ola",
+        name: "Ola",
+        kind: "Ride-hailing",
+        color: "#4fd1a1",
+        glyph: "🚗",
+        monthly: 7200,
+        txns: 96,
+      },
+      {
+        id: "rapido",
+        name: "Rapido",
+        kind: "Bike taxi",
+        color: "#f5c518",
+        glyph: "🏍️",
+        monthly: 4800,
+        txns: 141,
+      },
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 0,
+        txns: 0,
+      },
+    ],
+    history: [
+      { label: "Apr", labelHi: "अप्रैल", amount: 26800 },
+      { label: "May", labelHi: "मई", amount: 24100 },
+      { label: "Jun", labelHi: "जून", amount: 29800 },
+      { label: "Jul", labelHi: "जुलाई", amount: 27300 },
+      { label: "Aug", labelHi: "अगस्त", amount: 22900 },
+      { label: "Sep", labelHi: "सितंबर", amount: 30400 },
+    ],
+    avgMonthly: 26883,
+    claimed: 30000,
+    aa: 29700,
+    document: 29800,
+    readinessScore: 78,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "STRONG",
+        score: 82,
+        reason:
+          "Your income stayed relatively stable across the last 6 months, with no month falling sharply below average.",
+        reasonHi:
+          "पिछले 6 महीने में आपकी income relatively stable रही — कोई भी महीना औसत से बहुत नीचे नहीं गया।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: "STRONG",
+        score: 78,
+        reason:
+          "Your income arrives from 3 different platforms, so a slow week on one does not stop your earnings.",
+        reasonHi:
+          "आपकी income 3 platforms से आ रही है, इसलिए एक जगह काम कम हो तो भी कमाई रुकती नहीं।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "MODERATE",
+        score: 74,
+        reason:
+          "Your recurring payouts show consistent behaviour, with occasional minor gaps between settlement cycles.",
+        reasonHi:
+          "आपके recurring payouts काफ़ी हद तक consistent हैं, बीच-बीच में settlement में थोड़ा अंतर आता है।",
+      },
+    ],
   },
-  {
-    id: "ola",
-    name: "Ola",
-    kind: "Ride-hailing",
-    color: "#4fd1a1",
-    glyph: "🚗",
-    monthly: 7200,
-    txns: 96,
+  ramesh: {
+    id: "ramesh",
+    name: "Ramesh Kumar",
+    nameHi: "रमेश कुमार",
+    city: "New Delhi, NCR",
+    cityHi: "नई दिल्ली, एनसीआर",
+    phone: "+91 97•• ••• 882",
+    idCode: "VIS-88R2-D11",
+    role: "Full-Time Fleet Captain",
+    roleHi: "फुल-टाइम फ्लीट कैप्टन",
+    platforms: [
+      {
+        id: "swiggy",
+        name: "Uber",
+        kind: "Cab Services",
+        color: "#ffffff",
+        glyph: "🚕",
+        monthly: 25400,
+        txns: 180,
+      },
+      {
+        id: "ola",
+        name: "Ola",
+        kind: "Ride-hailing",
+        color: "#4fd1a1",
+        glyph: "🚗",
+        monthly: 16600,
+        txns: 120,
+      },
+      {
+        id: "rapido",
+        name: "Rapido",
+        kind: "Bike taxi",
+        color: "#f5c518",
+        glyph: "🏍️",
+        monthly: 0,
+        txns: 0,
+      },
+      {
+        id: "urban",
+        name: "Urban Company",
+        kind: "Home services",
+        color: "#6fa8ff",
+        glyph: "🔧",
+        monthly: 0,
+        txns: 0,
+      },
+    ],
+    history: [
+      { label: "Apr", labelHi: "अप्रैल", amount: 38400 },
+      { label: "May", labelHi: "मई", amount: 41200 },
+      { label: "Jun", labelHi: "जून", amount: 39500 },
+      { label: "Jul", labelHi: "जुलाई", amount: 43100 },
+      { label: "Aug", labelHi: "अगस्त", amount: 40800 },
+      { label: "Sep", labelHi: "सितंबर", amount: 42000 },
+    ],
+    avgMonthly: 40833,
+    claimed: 42000,
+    aa: 41800,
+    document: 42000,
+    readinessScore: 86,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "STRONG",
+        score: 92,
+        reason:
+          "Rock-solid earnings exceeding ₹38,000 every single month for 6 consecutive months.",
+        reasonHi:
+          "पिछले 6 महीनों में हर महीने ₹38,000 से अधिक की ठोस और नियमित कमाई।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: "STRONG",
+        score: 84,
+        reason: "Well-balanced distribution between Uber (60%) and Ola (40%).",
+        reasonHi: "Uber और Ola के बीच संतुलित और सुरक्षित आय वितरण।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "STRONG",
+        score: 83,
+        reason:
+          "Flawless daily direct bank deposits with 100% settlement uptime.",
+        reasonHi: "100% समय पर दैनिक बैंक जमा और शून्य विफलता।",
+      },
+    ],
   },
-  {
-    id: "rapido",
-    name: "Rapido",
-    kind: "Bike taxi",
-    color: "#f5c518",
-    glyph: "🏍️",
-    monthly: 4800,
-    txns: 141,
+  pooja: {
+    id: "pooja",
+    name: "Pooja Sharma",
+    nameHi: "पूजा शर्मा",
+    city: "Bengaluru, Karnataka",
+    cityHi: "बेंगलुरु, कर्नाटक",
+    phone: "+91 96•• ••• 419",
+    idCode: "VIS-41P9-K08",
+    role: "Home Salon & Delivery",
+    roleHi: "होम सैलून व डिलीवरी",
+    platforms: [
+      {
+        id: "swiggy",
+        name: "Swiggy Instamart",
+        kind: "Grocery delivery",
+        color: "#fc8019",
+        glyph: "🛍️",
+        monthly: 8500,
+        txns: 110,
+      },
+      {
+        id: "ola",
+        name: "Urban Company",
+        kind: "Home Salon",
+        color: "#6fa8ff",
+        glyph: "💅",
+        monthly: 14000,
+        txns: 48,
+      },
+      {
+        id: "rapido",
+        name: "Rapido",
+        kind: "Bike taxi",
+        color: "#f5c518",
+        glyph: "🏍️",
+        monthly: 0,
+        txns: 0,
+      },
+      {
+        id: "urban",
+        name: "Zomato",
+        kind: "Food delivery",
+        color: "#e23744",
+        glyph: "🍲",
+        monthly: 0,
+        txns: 0,
+      },
+    ],
+    history: [
+      { label: "Apr", labelHi: "अप्रैल", amount: 18200 },
+      { label: "May", labelHi: "मई", amount: 19500 },
+      { label: "Jun", labelHi: "जून", amount: 21000 },
+      { label: "Jul", labelHi: "जुलाई", amount: 23400 },
+      { label: "Aug", labelHi: "अगस्त", amount: 20100 },
+      { label: "Sep", labelHi: "सितंबर", amount: 22500 },
+    ],
+    avgMonthly: 20783,
+    claimed: 22000,
+    aa: 21900,
+    document: 22500,
+    readinessScore: 68,
+    ratings: [
+      {
+        key: "consistency",
+        title: "Income Consistency",
+        titleHi: "आय की निरंतरता",
+        level: "MODERATE",
+        score: 72,
+        reason:
+          "Gradually increasing income with slight seasonal variance during monsoon periods.",
+        reasonHi: "लगातार बढ़ती आय, मानसूनी महीनों में मामूली उतार-चढ़ाव।",
+      },
+      {
+        key: "diversity",
+        title: "Platform Diversity",
+        titleHi: "प्लेटफ़ॉर्म विविधता",
+        level: "MODERATE",
+        score: 68,
+        reason:
+          "Heavy reliance on home services (62%) with grocery deliveries as secondary.",
+        reasonHi: "मुख्य रूप से होम सर्विसेज (62%) और ग्रॉसरी डिलीवरी पर निर्भर।",
+      },
+      {
+        key: "reliability",
+        title: "Payment Reliability",
+        titleHi: "भुगतान विश्वसनीयता",
+        level: "MODERATE",
+        score: 65,
+        reason: "Payouts arrive within standard 3-day batch cycles.",
+        reasonHi: "भुगतान सामान्य 3-दिवसीय बैच चक्र में प्राप्त होते हैं।",
+      },
+    ],
   },
-  {
-    id: "urban",
-    name: "Urban Company",
-    kind: "Home services",
-    color: "#6fa8ff",
-    glyph: "🔧",
-    monthly: 0,
-    txns: 0,
-  },
-]
+}
 
-// 6-month unified income history (₹)
-export const history: MonthPoint[] = [
-  { label: "Apr", labelHi: "अप्रैल", amount: 26800 },
-  { label: "May", labelHi: "मई", amount: 24100 },
-  { label: "Jun", labelHi: "जून", amount: 29800 },
-  { label: "Jul", labelHi: "जुलाई", amount: 27300 },
-  { label: "Aug", labelHi: "अगस्त", amount: 22900 },
-  { label: "Sep", labelHi: "सितंबर", amount: 30400 },
-]
+export const worker = personas.anjali
+export const platforms: Platform[] = personas.anjali.platforms
+export const history: MonthPoint[] = personas.anjali.history
 
 export const analysis = {
   monthsAnalysed: 6,
-  avgMonthly: 26883,
+  avgMonthly: personas.anjali.avgMonthly,
   bestMonth: { label: "September", labelHi: "सितंबर", amount: 30400 },
   worstMonth: { label: "August", labelHi: "अगस्त", amount: 22900 },
   trend: "+7.4%",
@@ -131,46 +383,12 @@ export const analysis = {
 }
 
 export const verification = {
-  claimed: 30000,
-  aa: 29700,
-  document: 29800,
+  claimed: personas.anjali.claimed,
+  aa: personas.anjali.aa,
+  document: personas.anjali.document,
 }
 
-export const ratings: Rating[] = [
-  {
-    key: "consistency",
-    title: "Income Consistency",
-    titleHi: "आय की निरंतरता",
-    level: "STRONG",
-    score: 82,
-    reason:
-      "Your income stayed relatively stable across the last 6 months, with no month falling sharply below your average.",
-    reasonHi:
-      "पिछले 6 महीने में आपकी income relatively stable रही — कोई भी महीना औसत से बहुत नीचे नहीं गया।",
-  },
-  {
-    key: "diversity",
-    title: "Platform Diversity",
-    titleHi: "प्लेटफ़ॉर्म विविधता",
-    level: "STRONG",
-    score: 78,
-    reason:
-      "Your income arrives from 3 different platforms, so a slow week on one does not stop your earnings.",
-    reasonHi:
-      "आपकी income 3 platforms से आ रही है, इसलिए एक जगह काम कम हो तो भी कमाई रुकती नहीं।",
-  },
-  {
-    key: "reliability",
-    title: "Payment Reliability",
-    titleHi: "भुगतान विश्वसनीयता",
-    level: "MODERATE",
-    score: 74,
-    reason:
-      "Your recurring payouts show generally consistent behaviour, with occasional gaps between settlement cycles.",
-    reasonHi:
-      "आपके recurring payouts काफ़ी हद तक consistent हैं, बीच-बीच में settlement में थोड़ा अंतर आता है।",
-  },
-]
+export const ratings: Rating[] = personas.anjali.ratings
 
 export const lenders = [
   {
@@ -252,7 +470,19 @@ export const loanOffers: LoanOffer[] = [
   },
 ]
 
-// i18n — only the recurring chrome strings; long copy carries its own *Hi field.
+export const npuTelemetry = {
+  npuCore: "Qualcomm Hexagon NPU v75",
+  modelQuant: "1D-CNN TimeSeries · INT8 Quantized",
+  inferenceLatency: "12.4 ms",
+  memoryUsage: "18.2 MB RAM",
+  cloudBandwidth: "0 KB (100% On-Device)",
+  energyDraw: "< 0.02% battery / run",
+  hashSHA256:
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  tamperSeal: "Ed25519 Hardware Cryptographic Signature",
+}
+
+// i18n
 export const t: Record<string, { en: string hi: string }> = {
   appTag: { en: "Credit-Readiness Profile", hi: "क्रेडिट-रेडीनेस प्रोफ़ाइल" },
   continue: { en: "Continue", hi: "आगे बढ़ें" },
@@ -277,12 +507,11 @@ export function inr(n: number) {
   return "₹" + n.toLocaleString("en-IN")
 }
 
-// Simulated async — stands in for real SDK calls later.
 export function delay(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms))
 }
 
-// Synthesized Audio Feedback via Web Audio API
+// Synthesized Audio Feedback
 export function playTone(type: "tap" | "success" | "beam" | "scan") {
   try {
     const AudioContext =
@@ -334,8 +563,7 @@ export function playTone(type: "tap" | "success" | "beam" | "scan") {
   }
 }
 
-// Voice narration via Web Speech API. Best-effort:
-// Supports both Hindi and English narration with fallback.
+// Voice narration via Web Speech API
 export function speakText(text: string, lang: Lang = "hi") {
   try {
     const synth = typeof window !== "undefined" ? window.speechSynthesis : null
@@ -356,10 +584,6 @@ export function speakText(text: string, lang: Lang = "hi") {
   } catch {
     /* narration unavailable */
   }
-}
-
-export function speakHindi(text: string) {
-  speakText(text, "hi")
 }
 
 export function stopSpeaking() {

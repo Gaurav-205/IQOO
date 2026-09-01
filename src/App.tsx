@@ -15,11 +15,10 @@ import {
   Lang,
   inr,
   lenders,
+  npuTelemetry,
+  personas,
   playTone,
-  ratings,
   stopSpeaking,
-  verification,
-  worker,
 } from "./lib/data"
 import type { Step, Store } from "./lib/store"
 
@@ -33,6 +32,9 @@ const MAIN: Step[] = [
 ]
 
 export default function App() {
+  const [activePersonaId, setActivePersonaId] = useState<string>("anjali")
+  const activeWorker = personas[activePersonaId] || personas.anjali
+
   const [lang, setLangRaw] = useState<Lang>("en")
   const [step, setStep] = useState<Step>("welcome")
   const [connected, setConnected] = useState<string[]>([
@@ -51,6 +53,13 @@ export default function App() {
   const [officerApproved, setOfficerApproved] = useState(false)
   const [showDesktopStation, setShowDesktopStation] = useState(true)
   const [showAnnouncement, setShowAnnouncement] = useState(true)
+  const [stationTab, setStationTab] = useState<"dossier" | "npu">("dossier")
+
+  const handlePersonaSwitch = (pId: string) => {
+    playTone("tap")
+    setActivePersonaId(pId)
+    setOfficerApproved(false)
+  }
 
   const store: Store = useMemo(
     () => ({
@@ -313,7 +322,7 @@ export default function App() {
 
         {/* ── DESKTOP COMPANION: LOAN OFFICER WORKSTATION (Office Kit) ─────────────── */}
         {showDesktopStation && (
-          <aside className="w-full max-w-[500px] px-3 sm:px-0 lg:w-[460px] animate-fade-up">
+          <aside className="w-full max-w-[520px] px-3 sm:px-0 lg:w-[480px] animate-fade-up">
             <div className="rounded-3xl border border-hair-strong bg-panel/90 backdrop-blur-md p-5 shadow-2xl">
               {/* Laptop Header */}
               <div className="flex items-center justify-between border-b border-hair pb-3">
@@ -339,141 +348,246 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Station Body */}
-              <div className="mt-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-[12px] font-mono text-fg-faint">
-                      BRANCH WORKSTATION
-                    </div>
-                    <div className="text-[15px] font-bold text-fg">
-                      {currentLender.name}
-                    </div>
-                    <div className="text-[12px] text-fg-dim">
-                      Officer: {currentLender.officer} ({currentLender.branch})
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[10px] font-mono text-fg-faint">
-                      SECURE PROTOCOL
-                    </div>
-                    <div className="text-[11px] font-mono text-saffron">
-                      Wi-Fi Direct P2P
-                    </div>
-                  </div>
+              {/* Persona Switcher for Hackathon Judges */}
+              <div className="mt-3.5 flex items-center justify-between rounded-2xl border border-hair bg-panel-2 p-2 text-[11px]">
+                <span className="font-mono text-fg-faint uppercase text-[10px] pl-1">
+                  Evaluate Persona:
+                </span>
+                <div className="flex gap-1">
+                  {Object.values(personas).map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => handlePersonaSwitch(p.id)}
+                      className={`rounded-xl px-2.5 py-1 font-semibold transition-all cursor-pointer ${
+                        activePersonaId === p.id
+                          ? "bg-saffron text-ink shadow-xs"
+                          : "text-fg-dim hover:text-fg"
+                      }`}
+                    >
+                      {p.name.split(" ")[0]} ({p.city.split(",")[0]})
+                    </button>
+                  ))}
                 </div>
+              </div>
 
-                {beamedLender ? (
-                  <div className="space-y-3 rounded-2xl border border-verify/30 bg-verify/5 p-4 animate-fade-up">
-                    <div className="flex items-center justify-between border-b border-hair/50 pb-2">
-                      <div className="flex items-center gap-2">
-                        <Icon.badge size={16} className="text-verify" />
-                        <span className="text-[13px] font-bold text-fg">
-                          {worker.name}
+              {/* Station Tabs */}
+              <div className="mt-3 flex gap-2 border-b border-hair/50 pb-2">
+                <button
+                  onClick={() => setStationTab("dossier")}
+                  className={`text-[12px] font-bold transition-colors cursor-pointer ${
+                    stationTab === "dossier"
+                      ? "text-saffron border-b-2 border-saffron pb-1"
+                      : "text-fg-dim hover:text-fg"
+                  }`}
+                >
+                  Applicant Credit Dossier
+                </button>
+                <button
+                  onClick={() => setStationTab("npu")}
+                  className={`text-[12px] font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
+                    stationTab === "npu"
+                      ? "text-verify border-b-2 border-verify pb-1"
+                      : "text-fg-dim hover:text-fg"
+                  }`}
+                >
+                  <Icon.cpu size={13} /> NPU Hardware Telemetry
+                </button>
+              </div>
+
+              {/* Station Body */}
+              <div className="mt-3 space-y-4">
+                {stationTab === "npu" ? (
+                  /* ── NPU HARDWARE TELEMETRY ── */
+                  <div className="space-y-3 rounded-2xl border border-verify/30 bg-verify/5 p-4 animate-fade-up text-[12px]">
+                    <div className="flex items-center justify-between border-b border-hair pb-2">
+                      <span className="font-bold text-fg">
+                        Qualcomm Neural Engine
+                      </span>
+                      <Pill tone="verify">INT8 QUANTIZED</Pill>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-fg-faint">Silicon Core:</span>
+                        <span className="font-mono font-semibold text-fg">
+                          {npuTelemetry.npuCore}
                         </span>
                       </div>
-                      <span className="font-mono text-[11px] text-fg-faint">
-                        {worker.id}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-[11px]">
-                      <div className="rounded-xl bg-panel-2 p-2.5">
-                        <div className="text-fg-faint">
-                          Verified Monthly Income
-                        </div>
-                        <div className="font-mono text-[14px] font-bold text-verify mt-0.5">
-                          {inr(verification.document)}
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-fg-faint">Model Spec:</span>
+                        <span className="font-mono font-semibold text-saffron">
+                          {npuTelemetry.modelQuant}
+                        </span>
                       </div>
-                      <div className="rounded-xl bg-panel-2 p-2.5">
-                        <div className="text-fg-faint">Data Sources</div>
-                        <div className="font-mono text-[14px] font-bold text-fg mt-0.5">
-                          3 Gig Apps (AA)
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-fg-faint">
+                          Inference Latency:
+                        </span>
+                        <span className="font-mono font-bold text-verify">
+                          {npuTelemetry.inferenceLatency}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-fg-faint">Memory Footprint:</span>
+                        <span className="font-mono text-fg">
+                          {npuTelemetry.memoryUsage}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-fg-faint">Cloud Bandwidth:</span>
+                        <span className="font-mono font-bold text-verify">
+                          {npuTelemetry.cloudBandwidth}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-fg-faint">Battery Impact:</span>
+                        <span className="font-mono text-fg">
+                          {npuTelemetry.energyDraw}
+                        </span>
                       </div>
                     </div>
-
-                    <div className="space-y-1.5">
-                      <div className="text-[10px] uppercase font-mono tracking-wider text-fg-faint">
-                        Readiness Dimension Breakdown
-                      </div>
-                      {ratings.map((r) => (
-                        <div
-                          key={r.key}
-                          className="flex items-center justify-between rounded-lg bg-panel-2/60 px-3 py-1.5 text-[11px]"
-                        >
-                          <span className="text-fg">{r.title}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-fg-dim">
-                              {r.score}%
-                            </span>
-                            <span
-                              className={`font-mono text-[10px] font-bold ${
-                                r.level === "STRONG"
-                                  ? "text-verify"
-                                  : "text-warn"
-                              }`}
-                            >
-                              {r.level}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="mt-2 border-t border-hair pt-2 text-[10px] text-fg-faint font-mono truncate">
+                      SHA256: {npuTelemetry.hashSHA256}
                     </div>
-
-                    <div className="flex items-center justify-between text-[11px] text-fg-faint pt-1">
-                      <span>Consent Ref: CN-90D-A14</span>
-                      <span className="text-verify font-mono">
-                        NPU Verified (99.4%)
-                      </span>
-                    </div>
-
-                    {officerApproved ? (
-                      <div className="rounded-xl border border-verify bg-verify/15 p-3 text-center animate-scale-in">
-                        <div className="flex items-center justify-center gap-1.5 text-verify font-bold text-[13px]">
-                          <Icon.check size={16} /> Pre-Approved for ₹30,000
-                          Micro-Credit
-                        </div>
-                        <div className="text-[10px] text-fg-dim mt-0.5">
-                          Disbursement packet ready at 1.1%/month · Zero
-                          Collateral
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          playTone("success")
-                          setOfficerApproved(true)
-                        }}
-                        className="w-full rounded-xl bg-verify px-4 py-2.5 font-display text-[13px] font-bold text-ink transition-all hover:brightness-105 active:scale-[0.98] cursor-pointer"
-                      >
-                        Approve ₹30,000 Micro-Credit Loan
-                      </button>
-                    )}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-hair p-8 text-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-panel-2 text-fg-faint">
-                      <Icon.device size={24} />
+                  /* ── APPLICANT DOSSIER ── */
+                  <>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-[12px] font-mono text-fg-faint">
+                          BRANCH WORKSTATION
+                        </div>
+                        <div className="text-[15px] font-bold text-fg">
+                          {currentLender.name}
+                        </div>
+                        <div className="text-[12px] text-fg-dim">
+                          Officer: {currentLender.officer} (
+                          {currentLender.branch})
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] font-mono text-fg-faint">
+                          SECURE PROTOCOL
+                        </div>
+                        <div className="text-[11px] font-mono text-saffron">
+                          Wi-Fi Direct P2P
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-3 text-[14px] font-semibold text-fg">
-                      Waiting for Wireless Beam
-                    </div>
-                    <p className="mt-1 text-[12px] text-fg-dim max-w-[240px]">
-                      Complete your profile on the phone and tap
-                      &quot;Share&quot; to beam directly onto this desk.
-                    </p>
-                    <button
-                      onClick={() => {
-                        playTone("tap")
-                        store.go("share")
-                      }}
-                      className="mt-4 text-[12px] font-medium text-saffron underline hover:text-saffron-soft cursor-pointer"
-                    >
-                      Jump to Share Screen
-                    </button>
-                  </div>
+
+                    {beamedLender ? (
+                      <div className="space-y-3 rounded-2xl border border-verify/30 bg-verify/5 p-4 animate-fade-up">
+                        <div className="flex items-center justify-between border-b border-hair/50 pb-2">
+                          <div className="flex items-center gap-2">
+                            <Icon.badge size={16} className="text-verify" />
+                            <span className="text-[13px] font-bold text-fg">
+                              {activeWorker.name}
+                            </span>
+                          </div>
+                          <span className="font-mono text-[11px] text-fg-faint">
+                            {activeWorker.idCode}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div className="rounded-xl bg-panel-2 p-2.5">
+                            <div className="text-fg-faint">
+                              Verified Monthly Income
+                            </div>
+                            <div className="font-mono text-[14px] font-bold text-verify mt-0.5">
+                              {inr(activeWorker.document)}
+                            </div>
+                          </div>
+                          <div className="rounded-xl bg-panel-2 p-2.5">
+                            <div className="text-fg-faint">Readiness Score</div>
+                            <div className="font-mono text-[14px] font-bold text-saffron mt-0.5">
+                              {activeWorker.readinessScore}% (High)
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <div className="text-[10px] uppercase font-mono tracking-wider text-fg-faint">
+                            Readiness Dimension Breakdown
+                          </div>
+                          {activeWorker.ratings.map((r) => (
+                            <div
+                              key={r.key}
+                              className="flex items-center justify-between rounded-lg bg-panel-2/60 px-3 py-1.5 text-[11px]"
+                            >
+                              <span className="text-fg">{r.title}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-fg-dim">
+                                  {r.score}%
+                                </span>
+                                <span
+                                  className={`font-mono text-[10px] font-bold ${
+                                    r.level === "STRONG"
+                                      ? "text-verify"
+                                      : "text-warn"
+                                  }`}
+                                >
+                                  {r.level}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-fg-faint pt-1">
+                          <span>Consent Ref: CN-90D-A14</span>
+                          <span className="text-verify font-mono">
+                            NPU Verified (99.4%)
+                          </span>
+                        </div>
+
+                        {officerApproved ? (
+                          <div className="rounded-xl border border-verify bg-verify/15 p-3 text-center animate-scale-in">
+                            <div className="flex items-center justify-center gap-1.5 text-verify font-bold text-[13px]">
+                              <Icon.check size={16} /> Pre-Approved for ₹30,000
+                              Micro-Credit
+                            </div>
+                            <div className="text-[10px] text-fg-dim mt-0.5">
+                              Disbursement packet ready at 1.1%/month · Zero
+                              Collateral
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              playTone("success")
+                              setOfficerApproved(true)
+                            }}
+                            className="w-full rounded-xl bg-verify px-4 py-2.5 font-display text-[13px] font-bold text-ink transition-all hover:brightness-105 active:scale-[0.98] cursor-pointer"
+                          >
+                            Approve ₹30,000 Micro-Credit Loan
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-hair p-8 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-panel-2 text-fg-faint">
+                          <Icon.device size={24} />
+                        </div>
+                        <div className="mt-3 text-[14px] font-semibold text-fg">
+                          Waiting for Wireless Beam
+                        </div>
+                        <p className="mt-1 text-[12px] text-fg-dim max-w-[240px]">
+                          Complete your profile on the phone and tap
+                          &quot;Share&quot; to beam directly onto this desk.
+                        </p>
+                        <button
+                          onClick={() => {
+                            playTone("tap")
+                            store.go("share")
+                          }}
+                          className="mt-4 text-[12px] font-medium text-saffron underline hover:text-saffron-soft cursor-pointer"
+                        >
+                          Jump to Share Screen
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>

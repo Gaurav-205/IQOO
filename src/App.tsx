@@ -12,6 +12,7 @@ import {
   Welcome,
 } from "./components/screens"
 import { AuthScreen } from "./components/AuthScreen"
+import { LiveSystemInspector } from "./components/LiveSystemInspector"
 import { Lang, personas, playTone, stopSpeaking } from "./lib/data"
 import { api } from "./lib/api"
 import type { Step, Store } from "./lib/store"
@@ -56,6 +57,7 @@ export default function App() {
   const [narrate, setNarrate] = useState(false)
   const [beamedLender, setBeamedLender] = useState<string | null>(null)
   const [showTourDrawer, setShowTourDrawer] = useState(false)
+  const [showInspector, setShowInspector] = useState(false)
 
   // Sync profile from backend on mount
   useEffect(() => {
@@ -204,15 +206,38 @@ export default function App() {
 
   return (
     <div className="relative flex min-h-dvh w-full justify-center bg-[#f7f6f3] text-[#212121] overflow-hidden">
+      {/* Real-World Production Live Telemetry Inspector */}
+      <LiveSystemInspector
+        isOpen={showInspector}
+        onClose={() => setShowInspector(false)}
+      />
+
       {/* Pure Mobile Viewport Container */}
       <div className="relative z-10 flex min-h-dvh h-dvh w-full max-w-md flex-col bg-[#ffffff] shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border-x border-[#e5e7eb]">
         {/* Mobile Status Bar (Authentic Mobile System Status) */}
-        <header className="relative flex shrink-0 items-center justify-between px-5 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
-          <span className="font-mono text-[12px] font-semibold text-[#17171c]">
-            14:20
-          </span>
+        <header className="relative flex shrink-0 items-center justify-between px-4 pt-3.5 pb-2 text-[12px] text-[#616161] select-none border-b border-[#f2f2f2]">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[12px] font-semibold text-[#17171c]">
+              14:20
+            </span>
+            {/* Real-World Production Live System Badge */}
+            <button
+              onClick={() => {
+                playTone("tap")
+                setShowInspector(true)
+              }}
+              className="flex items-center gap-1.5 rounded-full bg-[#edfce9] text-[#00875a] border border-[#bbf7d0] px-2 py-0.5 text-[9.5px] font-mono font-bold cursor-pointer hover:bg-[#dcfce7] transition-all shadow-xs"
+              title="Open Real-World Infrastructure Inspector"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00875a] opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00875a]" />
+              </span>
+              <span>LIVE SYSTEM</span>
+            </button>
+          </div>
 
-          <div className="flex items-center gap-2 font-mono text-[11px]">
+          <div className="flex items-center gap-1.5 font-mono text-[11px]">
             {isLoggedIn && (
               <>
                 {/* Account / Switch Button */}
@@ -231,7 +256,7 @@ export default function App() {
                     playTone("tap")
                     setShowTourDrawer(!showTourDrawer)
                   }}
-                  className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2.5 py-0.5 text-[10.5px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
+                  className="flex items-center gap-1 rounded-full bg-[#17171c] text-[#ffffff] px-2 py-0.5 text-[10px] font-bold tracking-tight cursor-pointer hover:bg-black transition-colors"
                   title="Quick Tour Navigator"
                 >
                   Tour{" "}
@@ -244,14 +269,16 @@ export default function App() {
             )}
 
             {offline ? (
-              <span className="flex items-center gap-1 text-[#e28a00] font-semibold">
-                <Icon.wifiOff size={12} />
-                OFFLINE
+              <span className="flex items-center gap-1 text-[#e28a00] font-semibold text-[10px]">
+                <Icon.wifiOff size={11} />
+                OFF
               </span>
             ) : (
-              <span className="text-[#00875a] font-semibold">5G</span>
+              <span className="text-[#00875a] font-semibold text-[10.5px]">
+                5G
+              </span>
             )}
-            <span className="text-[#75758a]">86%</span>
+            <span className="text-[#75758a] text-[10.5px]">86%</span>
           </div>
         </header>
 
